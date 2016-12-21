@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="TournamentGenerator.exe" version="1.0.0.0" publicKeyToken="d83d9c3fbbe34e3d" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="TournamentGenerator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="TournamentGenerator.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the 
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward 
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NPOI.dll" size="1677824">
+      <assemblyIdentity name="NPOI" version="2.2.0.0" publicKeyToken="0DF73EC7942B34E1" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>oryHReC9sVM+goM+iNuTCIdCLyU=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TournamentGenerator.exe" size="20344">
+      <assemblyIdentity name="TournamentGenerator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>1B0/g2bPyS1TZ8FM77VdnvtsCTs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="TournamentGenerator.exe.config" size="373">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>4FIb75y7c42DUWxUu0EcsVTS43o=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=BRJNT\JUM" issuerKeyHash="632a39fff7895fcba3ae8921318f977038385eb3" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>oRB0lODXqR/OfRu5Whx2IJq4jog=</DigestValue></Reference></SignedInfo><SignatureValue>iMpouXbYvZp5ti8wfIe/ibMdyJUaqP6jEGqo4BAQojZC4atQDNHdBWvZK5Aa1IC2ckBdR0zWKsz3w8NO3+92NmpgUXI1OpacKdk/w/jNiJCbt+sksu4ixTIO2zOPpDcyR8W1ELKLYOd4Js/kqtHcEVSq4DhAenU9fyjhi1I5ozs=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>pOQGWVrNKxmZza6yPmYRD9zPXy3n2idJs9jJ/rUzruBDEfJ9FSaE14kIXiD/qlLct9Hh3wGusZxIMJrg3pcT98G0ZkjejtGVegHRC7elqdxUQ+DzaB8DnZUH5HgaP+e1fdUHdYfoQj0ASZRPkMZZjFNhJn3tY1d5o2IsXFNACQk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="888eb89a20761c5ab91b7dce1fa9d7e0947410a1" Description="" Url=""><as:assemblyIdentity name="TournamentGenerator.exe" version="1.0.0.0" publicKeyToken="d83d9c3fbbe34e3d" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=BRJNT\JUM</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>FrvqA1EC6T4jwDkl+9mMcPW/NfQ=</DigestValue></Reference></SignedInfo><SignatureValue>i9kaPgLvK4zic5rtS4niIavl6D/JaHONDOyZR+kXh5NgKgcR7LcQes3uLtUxzhu5qFvo9B2IT6EA+mESEn5ff8XsiXLFV0HSE/JLNX1Mj/reprUj3nzRJvbZhpTw8qaWW+n+akpH9TxrRUokxp/Oq6tAfu+9wqay6JSt4y/wQgM=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>pOQGWVrNKxmZza6yPmYRD9zPXy3n2idJs9jJ/rUzruBDEfJ9FSaE14kIXiD/qlLct9Hh3wGusZxIMJrg3pcT98G0ZkjejtGVegHRC7elqdxUQ+DzaB8DnZUH5HgaP+e1fdUHdYfoQj0ASZRPkMZZjFNhJn3tY1d5o2IsXFNACQk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIBvTCCASagAwIBAgIQK0Zo4kr8Np9PJb2s47P/ljANBgkqhkiG9w0BAQUFADAdMRswGQYDVQQDHhIAQgBSAEoATgBUAFwASgBVAE0wHhcNMTYxMTE3MTEwNDIzWhcNMTcxMTE3MTcwNDIzWjAdMRswGQYDVQQDHhIAQgBSAEoATgBUAFwASgBVAE0wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKTkBllazSsZmc2usj5mEQ/cz18t59onSbPYyf61M67gQxHyfRUmhNeJCF4g/6pS3LfR4d8BrrGcSDCa4N6XE/fBtGZI3o7RlXoB0Qu3pancVEPg82gfA52VB+R4Gj/ntX3VB3WH6EI9AEmUT5DGWYxTYSZ97WNXeaNiLFxTQAkJAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAKP5IoDid1MsPdzWPg0FKKXau6BBfJmV3Ed/OsMXs2GK408BCcamdnTlff3g1/vwv6PP7lWnv3FmM0gQ5FWk1xRhdiiktXbH6IcPmH1zeJOT6STA1sSv7BuF5e6Z5L3PMY6/vE37djod6eQW+Xz4dmuDgcdRKGe3f8pMR9j3R1Yo=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

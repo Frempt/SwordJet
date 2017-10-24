@@ -1,166 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using System.IO;
+using System.Xml.Serialization;
 using NPOI.HSSF.UserModel;
 using NPOI.HPSF;
-using NPOI.POIFS.FileSystem;
 using NPOI.SS.UserModel;
-using System.Configuration;
-using System.IO;
 
 namespace TournamentGenerator
 {
-    public partial class Form1 : Form
+    public static class Helpers
     {
-        public List<Fighter> fighters = new List<Fighter>();
-        private Random rng = new Random();
+        public static Random rng = new Random();
 
-        public Form1()
+        /// <summary>
+        /// Randomise the order of items in a generic list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">The list to shuffle</param>
+        public static void Shuffle<T>(this IList<T> list)
         {
-            InitializeComponent();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //ensure a name has been entered
-            if (txtName.Text != "")
+            int size = list.Count;
+            while (size > 1)
             {
-                //add the new fighter to the list with the next ID, and refresh the listbox
-                Fighter fighter = new Fighter(GetNextFighterID(), txtName.Text);
-                fighters.Add(fighter);
-
-                lstFighters.DataSource = null;
-                lstFighters.DataSource = fighters;
-
-                lblFighterCount.Text = "Number of Fighters: " + fighters.Count;
-
-                txtName.Text = "";
-
-                //recalculate the pool length message
-                CalculateMessage();
+                size--;
+                int index = rng.Next(size + 1);
+                T value = list[index];
+                list[index] = list[size];
+                list[size] = value;
             }
         }
+    }
 
-        private int GetNextFighterID()
+    public static class FileAccessHelper
+    {
+        public static void SaveTournament(Tournament tournament, string filePath)
         {
-            if(fighters.Count > 0)
+            XmlSerializer xml = new XmlSerializer(typeof(Tournament));
+
+            using (TextWriter w = new StreamWriter(filePath))
             {
-                return fighters.OrderBy(o => o.id).Last().id + 1;
-            }
-            return 1;
-        }
-
-        private void btnGenerate_Click(object sender, EventArgs e)
-        {
-            //calculate number of fighters per pool
-            int numFighters = fighters.Count;
-            int fightersPerPool = (numFighters / (int)txtPools.Value);
-
-            //only generate pools if there are more fighters in each pool than rounds - otherwise fights will be repeated
-            if (numFighters > 2 && fightersPerPool > Math.Max(3, txtRounds.Value))
-            {
-                //keep trying to generate pools until we succeed, or have tried too many times - randomness means it may not always work
-                //something, something, halting problem
-                List<Pool> pools = null;
-                int tries = 0;
-                int retryLimit = 50;
-                int.TryParse(ConfigurationManager.AppSettings["fightGenerationRetryLimit"], out retryLimit);
-
-                do
-                {
-                    pools = GenerateTournament(fightersPerPool);
-                    tries++;
-                }
-                while (pools == null && tries < retryLimit);
-
-                //ensure pools have generated successfully
-                if (pools != null)
-                {
-                    //put the results into a spreadsheet for the user
-                    GenerateSpreadsheet(pools);
-                }
-                else
-                {
-                    MessageBox.Show("Too many fuck-ups, try again or modify parameters.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Insufficient fighters for number of pools/rounds.");
+                xml.Serialize(w, tournament);
+                w.Close();
             }
         }
 
-        //build the time message
-        private void CalculateMessage()
+        public static Tournament LoadTournament(string filePath)
         {
-            int numFighters = fighters.Count;
-            int numPools = (int)txtPools.Value;
-            int numRounds = (int)txtRounds.Value;
-            int fightersPerPool = (numFighters / numPools);
+            Tournament tournament = null;
 
-            //only valid if there are more fighters in each pool than rounds - otherwise fights will be repeated
-            if (numFighters > 2 && fightersPerPool > Math.Max(3, numRounds))
+            XmlSerializer xml = new XmlSerializer(typeof(Tournament));
+
+            using (Stream s = new FileStream(filePath, FileMode.Open))
             {
-                //caclulate the number of fights there will be in total
-                int numFights = numFighters * numRounds;
-                int fightLength = (int)txtFightTime.Value;
+                tournament = (Tournament)xml.Deserialize(s);
 
-                StringBuilder message = new StringBuilder();
-                message.Append(numFights);
-                message.Append(" total fights at ");
-                message.Append(fightLength);
-                message.Append(" minutes maximum time means a total of ");
-
-                //calculate total maximum length of fighting time
-                double totalTime = (fightLength * numFights)/numPools;
-
-                if (totalTime > 60)
-                {
-                    int totalHours = (int)Math.Floor((totalTime / 60));
-                    message.Append(totalHours);
-                    message.Append(" ");
-                    message.Append((totalHours == 1) ? "hour " : "hours ");
-
-                    totalTime -= totalHours * 60;
-                }
-
-                if(totalTime > 0)
-                {
-                    message.Append(totalTime);
-                    message.Append(" ");
-                    message.Append((totalTime == 1.0) ? "minute " : "minutes ");
-                }
-
-                /*string unit = (totalTime == 1.0) ? "minute" : "minutes";
-
-                //if more than 60 minutes, show hours instead
-                if(totalTime > 60)
-                {
-                    totalTime /= 60;
-                    unit = (totalTime == 1.0) ? "hour" : "hours";
-                }
-
-                message.Append(totalTime);
-                message.Append(" ");
-                message.Append(unit);*/
-
-                message.Append("maximum fighting time per pool.");
-
-                lblLengthMessage.Text = message.ToString();
+                s.Close();
             }
-            else
-            {
-                lblLengthMessage.Text = "Insufficient fighters for number of pools/rounds.";
-            }
+
+            return tournament;
         }
 
-        private void GenerateSpreadsheet(List<Pool> pools)
+        public static void GenerateSpreadsheet(Tournament tournament, string filePath)
         {
+            List<Pool> pools = tournament.pools;
+
             HSSFWorkbook book = new HSSFWorkbook();
 
             //create a entry of DocumentSummaryInformation
@@ -172,7 +76,7 @@ namespace TournamentGenerator
             SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
             si.Subject = "Generated Tournament";
             book.SummaryInformation = si;
-            
+
             IFont plainFont = book.CreateFont();
             plainFont.Boldweight = (short)FontBoldWeight.Normal;
 
@@ -242,8 +146,9 @@ namespace TournamentGenerator
                 rowIndex += 2;
 
                 //add each fighter in the pool to the pool sheet
-                foreach (Fighter fighter in pool.fighters)
+                foreach (int fighterId in pool.fighters)
                 {
+                    Fighter fighter = tournament.fighters.Where(f => f.id == fighterId).First();
                     IRow row = sheet.CreateRow(rowIndex);
 
                     ICell cellID = row.CreateCell(row.Cells.Count);
@@ -271,7 +176,7 @@ namespace TournamentGenerator
                 rowIndex += 3;
 
                 //add each round of fights to the pool sheet
-                foreach(List<Fight> round in pool.rounds)
+                foreach (List<Fight> round in pool.rounds)
                 {
                     //add merged title cell
                     IRow roundTitleRow = sheet.CreateRow(rowIndex);
@@ -317,24 +222,27 @@ namespace TournamentGenerator
                     rowIndex += 2;
 
                     //add each fight to the round
-                    foreach(Fight fight in round)
+                    foreach (Fight fight in round)
                     {
                         IRow row = sheet.CreateRow(rowIndex);
+
+                        Fighter fighterA = tournament.fighters.Where(f => f.id == fight.fighterA).First();
+                        Fighter fighterB = tournament.fighters.Where(f => f.id == fight.fighterB).First();
 
                         ICell cellNameFighterADoubles = row.CreateCell(row.Cells.Count);
                         cellNameFighterADoubles.CellStyle = plainStyle;
                         //update the fighter's doubles formula
-                        if (fight.fighterA.doubleFormula != "") fight.fighterA.doubleFormula += ("+A" + (rowIndex + 1));
-                        else fight.fighterA.doubleFormula += ("A" + (rowIndex + 1));
+                        if (fighterA.doubleFormula != "") fighterA.doubleFormula += ("+A" + (rowIndex + 1));
+                        else fighterA.doubleFormula += ("A" + (rowIndex + 1));
 
                         ICell cellNameFighterAScore = row.CreateCell(row.Cells.Count);
                         cellNameFighterAScore.CellStyle = plainStyle;
                         //update the fighter's score formula
-                        if (fight.fighterA.scoreFormula != "") fight.fighterA.scoreFormula += ("+B" + (rowIndex + 1));
-                        else fight.fighterA.scoreFormula += ("B" + (rowIndex + 1));
+                        if (fighterA.scoreFormula != "") fighterA.scoreFormula += ("+B" + (rowIndex + 1));
+                        else fighterA.scoreFormula += ("B" + (rowIndex + 1));
 
                         ICell cellNameFighterA = row.CreateCell(row.Cells.Count);
-                        cellNameFighterA.SetCellValue(fight.fighterA.name);
+                        cellNameFighterA.SetCellValue(fighterA.name);
                         cellNameFighterA.CellStyle = plainStyle;
 
                         ICell cellV = row.CreateCell(row.Cells.Count);
@@ -342,7 +250,7 @@ namespace TournamentGenerator
                         cellV.CellStyle = plainCenterStyle;
 
                         ICell cellNameFighterB = row.CreateCell(row.Cells.Count);
-                        cellNameFighterB.SetCellValue(fight.fighterB.name);
+                        cellNameFighterB.SetCellValue(fighterB.name);
                         cellNameFighterB.CellStyle = plainStyle;
 
                         ICell cellNameFighterBScore = row.CreateCell(row.Cells.Count);
@@ -354,8 +262,8 @@ namespace TournamentGenerator
                         else
                         {
                             //update the fighter's score formula
-                            if (fight.fighterB.scoreFormula != "") fight.fighterB.scoreFormula += ("+F" + (rowIndex + 1));
-                            else fight.fighterB.scoreFormula += ("F" + (rowIndex + 1));
+                            if (fighterB.scoreFormula != "") fighterB.scoreFormula += ("+F" + (rowIndex + 1));
+                            else fighterB.scoreFormula += ("F" + (rowIndex + 1));
                         }
 
                         ICell cellNameFighterBDoubles = row.CreateCell(row.Cells.Count);
@@ -367,10 +275,9 @@ namespace TournamentGenerator
                         else
                         {
                             //update the fighter's doubles formula
-                            if (fight.fighterB.doubleFormula != "") fight.fighterB.doubleFormula += ("+G" + (rowIndex + 1));
-                            else fight.fighterB.doubleFormula += ("G" + (rowIndex + 1));
+                            if (fighterB.doubleFormula != "") fighterB.doubleFormula += ("+G" + (rowIndex + 1));
+                            else fighterB.doubleFormula += ("G" + (rowIndex + 1));
                         }
-                        
 
                         rowIndex++;
                     }
@@ -379,8 +286,10 @@ namespace TournamentGenerator
                 }
 
                 //update each pool fighter score and doubles forumlae
-                foreach(Fighter fighter in pool.fighters)
+                foreach (int fighterId in pool.fighters)
                 {
+                    Fighter fighter = tournament.fighters.Where(f => f.id == fighterId).First();
+
                     if (fighter.scoreCellRef != null)
                     {
                         IRow scoreRow = sheet.GetRow(fighter.scoreCellRef[0]);
@@ -401,78 +310,97 @@ namespace TournamentGenerator
                     fighter.doubleCellRef = null;
                     fighter.scoreCellRef = null;
                 }
-            }
 
-            string filename = "Tournament" + Guid.NewGuid() + ".xls";
-
-            //create the file save dialog
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "Excel |*.xls";
-            dialog.FileName = filename;
-            dialog.CheckFileExists = false;
-
-            //call the ShowDialog method to show the save dialog box.
-            DialogResult userClickedOK = dialog.ShowDialog();
-
-            //process input if the user clicked OK.
-            if (userClickedOK == DialogResult.OK)
-            {
-                filename = dialog.FileName;
-                FileStream stream = new FileStream(dialog.FileName, FileMode.Create);
+                FileStream stream = new FileStream(filePath, FileMode.Create);
                 book.Write(stream);
                 stream.Close();
+
+                book.Close();
             }
+        }
+    }
 
-            //cleanup
-            dialog.Dispose();
-            book.Close();
+    [Serializable]
+    public class Tournament
+    {
+        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS = 1, ELIMINATIONS = 2, FINALS = 3 }
 
-            //open the spreadsheet
-            System.Diagnostics.Process.Start(filename);
+        public string name;
+        public int numberOfRounds;
+        public int numberOfPools;
+        public int fightTimeMinutes;
+        public TournamentStage stage;
+        public int eliminationSize;
+        public bool matchedEliminations;
+        public int winPoints;
+        public int drawPoints;
+        public int lossPoints;
+        public int? doubleThreshold;
+
+        public List<Fighter> fighters = new List<Fighter>();
+        public List<Pool> pools = new List<Pool>();
+        public List<Pool> eliminations = new List<Pool>();
+
+        public Tournament()
+        {
+            name = "Tournament - " + DateTime.Today.ToString("dd MM yyyy");
+            numberOfPools = 1;
+            numberOfRounds = 1;
+            fightTimeMinutes = 1;
+            eliminationSize = 8;
+            matchedEliminations = false;
+            winPoints = 3;
+            drawPoints = 2;
+            lossPoints = 1;
+            doubleThreshold = null;
         }
 
-        private List<Pool> GenerateTournament(int fightersPerPool)
+        public int GetNextFighterID()
         {
+            if (fighters.Count > 0)
+            {
+                return fighters.OrderBy(o => o.id).Last().id + 1;
+            }
+            return 1;
+        }
+
+        public List<Pool> GeneratePools(int retryLimit, List<string> poolNames)
+        {
+            int fightersPerPool = fighters.Count / numberOfPools;
             List<Pool> pools = new List<Pool>();
-
-            int retryLimit = 50;
-            int.TryParse(ConfigurationManager.AppSettings["fightGenerationRetryLimit"], out retryLimit);
-
-            List<string> poolNames = new List<string>();
-            poolNames.AddRange(ConfigurationManager.AppSettings["poolNames"].Split(','));
 
             //clone the list of fighters so we don't remove from the master list
             List<Fighter> fightersClone = new List<Fighter>();
             fightersClone.AddRange(fighters);
 
-            for (int i = 0; i < txtPools.Value; i++)
+            for (int i = 0; i < numberOfPools; i++)
             {
                 Pool pool = new Pool();
 
-                int nameIndex = rng.Next(0, poolNames.Count);
+                int nameIndex = Helpers.rng.Next(0, poolNames.Count);
                 pool.name = poolNames[nameIndex];
                 poolNames.RemoveAt(nameIndex);
 
                 //add random fighters to the pool until we have the correct size
                 for (int j = 0; j < fightersPerPool; j++)
                 {
-                    int randIndex = rng.Next(0, fightersClone.Count);
-                    pool.fighters.Add(fightersClone[randIndex]);
+                    int randIndex = Helpers.rng.Next(0, fightersClone.Count);
+                    pool.fighters.Add(fightersClone[randIndex].id);
                     fightersClone.RemoveAt(randIndex);
                 }
 
                 //if there are any odd fighters, add them to the last pool
-                if (i == txtPools.Value - 1 && fightersClone.Count > 0)
+                if (i == numberOfPools - 1 && fightersClone.Count > 0)
                 {
-                    pool.fighters.Add(fightersClone[0]);
+                    pool.fighters.Add(fightersClone[0].id);
                 }
 
-                for (int k = 0; k < txtRounds.Value; k++)
+                for (int k = 0; k < numberOfRounds; k++)
                 {
                     List<Fight> fights = new List<Fight>();
 
                     //clone the pool fighter list so we don't remove from the master list
-                    List<Fighter> roundFighters = new List<Fighter>();
+                    List<int> roundFighters = new List<int>();
                     roundFighters.AddRange(pool.fighters);
                     Helpers.Shuffle(roundFighters);
 
@@ -487,7 +415,7 @@ namespace TournamentGenerator
                             int tries = 0;
                             do
                             {
-                                opponent = rng.Next(l + 1, roundFighters.Count);
+                                opponent = Helpers.rng.Next(l + 1, roundFighters.Count);
                                 tries++;
 
                                 //start again if we fuck up too much
@@ -507,14 +435,14 @@ namespace TournamentGenerator
                             int tries = 0;
                             do
                             {
-                                opponent = rng.Next(l + 1, pool.fighters.Count);
+                                opponent = Helpers.rng.Next(l + 1, pool.fighters.Count);
                                 tries++;
 
                                 //start again if we fuck up too much
                                 if (tries > retryLimit) return null;
                             }
                             //ensure the fight hasn't happened already, and the fighter isn't fighting themselves, and the opponent was not in the last fight
-                            while (pool.HasFightHappenedAlready(new Fight(roundFighters[l], pool.fighters[opponent])) || roundFighters[l] == pool.fighters[opponent] || fights.Last().fighterA.id == pool.fighters[opponent].id || fights.Last().fighterB.id == pool.fighters[opponent].id);
+                            while (pool.HasFightHappenedAlready(new Fight(roundFighters[l], pool.fighters[opponent])) || roundFighters[l] == pool.fighters[opponent] || fights.Last().fighterA == pool.fighters[opponent] || fights.Last().fighterB == pool.fighters[opponent]);
 
                             Fight fight = new Fight(roundFighters[l], pool.fighters[opponent]);
                             fight.oddFight = true;
@@ -529,55 +457,16 @@ namespace TournamentGenerator
                 pools.Add(pool);
             }
 
+            this.pools = pools;
+
             return pools;
         }
-
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            //remove selected fighter
-            if(lstFighters.SelectedItem != null)
-            {
-                fighters.RemoveAt(lstFighters.SelectedIndex);
-                lstFighters.DataSource = null;
-                lstFighters.DataSource = fighters;
-
-                lblFighterCount.Text = "Number of Fighters: " + fighters.Count;
-            }
-        }
-
-        private void upDown_ValueChanged(object sender, EventArgs e)
-        {
-            //recalulate pool length message
-            CalculateMessage();
-        }
     }
 
-    public static class Helpers
-    {
-        static Random rng = new Random();
-
-        /// <summary>
-        /// Randomise the order of items in a generic list
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list">The list to shuffle</param>
-        public static void Shuffle<T>(this IList<T> list)
-        {
-            int size = list.Count;
-            while (size > 1)
-            {
-                size--;
-                int index = rng.Next(size + 1);
-                T value = list[index];
-                list[index] = list[size];
-                list[size] = value;
-            }
-        }
-    }
-
+    [Serializable]
     public class Pool
     {
-        public List<Fighter> fighters = new List<Fighter>();
+        public List<int> fighters = new List<int>();
         public List<List<Fight>> rounds = new List<List<Fight>>();
         public string name;
 
@@ -599,13 +488,25 @@ namespace TournamentGenerator
         }
     }
 
+    [Serializable]
     public class Fight
     {
-        public Fighter fighterA;
-        public Fighter fighterB;
+        public enum FightResult { PENDING = 0, WIN = 1, DRAW = 2, LOSS = 3, DQ = 4 };
+
+        public int fighterA;
+        public int fighterB;
+        public int doubleCount;
+        public FightResult fighterAResult;
+        public FightResult fighterBResult;
         public bool oddFight = false;
 
-        public Fight(Fighter a, Fighter b)
+        public Fight()
+        {
+            fighterAResult = FightResult.PENDING;
+            fighterBResult = FightResult.PENDING;
+        }
+
+        public Fight(int a, int b)
         {
             fighterA = a;
             fighterB = b;
@@ -614,9 +515,9 @@ namespace TournamentGenerator
         public bool Equals(Fight obj)
         {
             //if the two fighters are the same, the fight is equal regardless of order
-            if (fighterA.id == obj.fighterA.id || fighterA.id == obj.fighterB.id)
+            if (fighterA == obj.fighterA || fighterA == obj.fighterB)
             {
-                if (fighterB.id == obj.fighterA.id || fighterB.id == obj.fighterB.id)
+                if (fighterB == obj.fighterA || fighterB == obj.fighterB)
                 {
                     return true;
                 }
@@ -625,6 +526,7 @@ namespace TournamentGenerator
         }
     }
 
+    [Serializable]
     public class Fighter
     {
         public int id;
@@ -635,6 +537,8 @@ namespace TournamentGenerator
         public string scoreFormula = "";
         public int[] doubleCellRef;
         public string doubleFormula = "";
+
+        public Fighter() { }
 
         public Fighter(int fighterId, string fighterName)
         {

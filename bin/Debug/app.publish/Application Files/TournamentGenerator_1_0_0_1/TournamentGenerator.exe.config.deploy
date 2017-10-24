@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <appSettings>
-    <add key="fightGenerationRetryLimit" value="50"/>
-    <add key="poolNames" value="Barbarian,Bard,Cleric,Druid,Fighter,Wizard,Monk,Paladin,Ranger,Sorcerer,Thief,Warlock"/>
-  </appSettings>
-<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup></configuration>

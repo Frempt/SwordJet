@@ -31,17 +31,28 @@ namespace TournamentGenerator
             if (txtName.Text != "")
             {
                 //add the new fighter to the list with the next ID, and refresh the listbox
-                Fighter fighter = new Fighter(fighters.Last().id + 1, txtName.Text);
+                Fighter fighter = new Fighter(GetNextFighterID(), txtName.Text);
                 fighters.Add(fighter);
 
                 lstFighters.DataSource = null;
                 lstFighters.DataSource = fighters;
+
+                lblFighterCount.Text = "Number of Fighters: " + fighters.Count;
 
                 txtName.Text = "";
 
                 //recalculate the pool length message
                 CalculateMessage();
             }
+        }
+
+        private int GetNextFighterID()
+        {
+            if(fighters.Count > 0)
+            {
+                return fighters.OrderBy(o => o.id).Last().id + 1;
+            }
+            return 1;
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -107,7 +118,25 @@ namespace TournamentGenerator
 
                 //calculate total maximum length of fighting time
                 double totalTime = (fightLength * numFights)/numPools;
-                string unit = (totalTime == 1.0) ? "minute" : "minutes";
+
+                if (totalTime > 60)
+                {
+                    int totalHours = (int)Math.Floor((totalTime / 60));
+                    message.Append(totalHours);
+                    message.Append(" ");
+                    message.Append((totalHours == 1) ? "hour " : "hours ");
+
+                    totalTime -= totalHours * 60;
+                }
+
+                if(totalTime > 0)
+                {
+                    message.Append(totalTime);
+                    message.Append(" ");
+                    message.Append((totalTime == 1.0) ? "minute " : "minutes ");
+                }
+
+                /*string unit = (totalTime == 1.0) ? "minute" : "minutes";
 
                 //if more than 60 minutes, show hours instead
                 if(totalTime > 60)
@@ -118,9 +147,9 @@ namespace TournamentGenerator
 
                 message.Append(totalTime);
                 message.Append(" ");
-                message.Append(unit);
+                message.Append(unit);*/
 
-                message.Append(" maximum fighting time per pool.");
+                message.Append("maximum fighting time per pool.");
 
                 lblLengthMessage.Text = message.ToString();
             }
@@ -374,10 +403,12 @@ namespace TournamentGenerator
                 }
             }
 
+            string filename = "Tournament" + Guid.NewGuid() + ".xls";
+
             //create the file save dialog
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "Excel |*.xls";
-            dialog.FileName = "Tournament" + Guid.NewGuid() + ".xls";
+            dialog.FileName = filename;
             dialog.CheckFileExists = false;
 
             //call the ShowDialog method to show the save dialog box.
@@ -386,6 +417,7 @@ namespace TournamentGenerator
             //process input if the user clicked OK.
             if (userClickedOK == DialogResult.OK)
             {
+                filename = dialog.FileName;
                 FileStream stream = new FileStream(dialog.FileName, FileMode.Create);
                 book.Write(stream);
                 stream.Close();
@@ -394,6 +426,9 @@ namespace TournamentGenerator
             //cleanup
             dialog.Dispose();
             book.Close();
+
+            //open the spreadsheet
+            System.Diagnostics.Process.Start(filename);
         }
 
         private List<Pool> GenerateTournament(int fightersPerPool)
@@ -505,6 +540,8 @@ namespace TournamentGenerator
                 fighters.RemoveAt(lstFighters.SelectedIndex);
                 lstFighters.DataSource = null;
                 lstFighters.DataSource = fighters;
+
+                lblFighterCount.Text = "Number of Fighters: " + fighters.Count;
             }
         }
 

@@ -42,6 +42,7 @@
             this.lblLengthMessage = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtFightTime = new System.Windows.Forms.NumericUpDown();
+            this.lblFighterCount = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -51,7 +52,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(152, 7);
+            this.button1.Location = new System.Drawing.Point(252, 7);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -68,7 +69,7 @@
             this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(13, 233);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(230, 33);
+            this.panel1.Size = new System.Drawing.Size(330, 33);
             this.panel1.TabIndex = 2;
             // 
             // label1
@@ -116,7 +117,7 @@
             0,
             0});
             this.txtPools.Name = "txtPools";
-            this.txtPools.Size = new System.Drawing.Size(120, 20);
+            this.txtPools.Size = new System.Drawing.Size(216, 20);
             this.txtPools.TabIndex = 5;
             this.txtPools.Value = new decimal(new int[] {
             1,
@@ -134,7 +135,7 @@
             0,
             0});
             this.txtRounds.Name = "txtRounds";
-            this.txtRounds.Size = new System.Drawing.Size(120, 20);
+            this.txtRounds.Size = new System.Drawing.Size(219, 20);
             this.txtRounds.TabIndex = 6;
             this.txtRounds.Value = new decimal(new int[] {
             1,
@@ -145,7 +146,7 @@
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(152, 102);
+            this.btnGenerate.Location = new System.Drawing.Point(252, 102);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(91, 23);
             this.btnGenerate.TabIndex = 7;
@@ -160,13 +161,13 @@
             this.lstFighters.FormattingEnabled = true;
             this.lstFighters.Location = new System.Drawing.Point(13, 272);
             this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(230, 225);
+            this.lstFighters.Size = new System.Drawing.Size(330, 225);
             this.lstFighters.TabIndex = 8;
             // 
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(165, 503);
+            this.btnDelete.Location = new System.Drawing.Point(265, 503);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 23);
             this.btnDelete.TabIndex = 10;
@@ -179,7 +180,7 @@
             this.lblLengthMessage.AutoEllipsis = true;
             this.lblLengthMessage.Location = new System.Drawing.Point(12, 163);
             this.lblLengthMessage.Name = "lblLengthMessage";
-            this.lblLengthMessage.Size = new System.Drawing.Size(232, 67);
+            this.lblLengthMessage.Size = new System.Drawing.Size(328, 67);
             this.lblLengthMessage.TabIndex = 11;
             // 
             // label4
@@ -193,7 +194,7 @@
             // 
             // txtFightTime
             // 
-            this.txtFightTime.Location = new System.Drawing.Point(124, 140);
+            this.txtFightTime.Location = new System.Drawing.Point(124, 142);
             this.txtFightTime.Maximum = new decimal(new int[] {
             10,
             0,
@@ -205,7 +206,7 @@
             0,
             0});
             this.txtFightTime.Name = "txtFightTime";
-            this.txtFightTime.Size = new System.Drawing.Size(120, 20);
+            this.txtFightTime.Size = new System.Drawing.Size(216, 20);
             this.txtFightTime.TabIndex = 13;
             this.txtFightTime.Value = new decimal(new int[] {
             1,
@@ -214,11 +215,21 @@
             0});
             this.txtFightTime.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
             // 
+            // lblFighterCount
+            // 
+            this.lblFighterCount.AutoSize = true;
+            this.lblFighterCount.Location = new System.Drawing.Point(16, 508);
+            this.lblFighterCount.Name = "lblFighterCount";
+            this.lblFighterCount.Size = new System.Drawing.Size(108, 13);
+            this.lblFighterCount.TabIndex = 14;
+            this.lblFighterCount.Text = "Number of Fighters: 0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(255, 527);
+            this.ClientSize = new System.Drawing.Size(355, 527);
+            this.Controls.Add(this.lblFighterCount);
             this.Controls.Add(this.txtFightTime);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lblLengthMessage);
@@ -259,6 +270,7 @@
         private System.Windows.Forms.Label lblLengthMessage;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown txtFightTime;
+        private System.Windows.Forms.Label lblFighterCount;
     }
 }
 

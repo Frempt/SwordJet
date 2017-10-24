@@ -20,3 +20,6 @@ C:\Users\jum\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerat
 C:\Users\jum\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\bin\Debug\TournamentGenerator.application
 C:\Users\jum\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.exe.manifest
 C:\Users\jum\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.application
+C:\Users\jomacgilp\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\TournamentGenerator\bin\Debug\TournamentGenerator.exe.config
+C:\Users\jomacgilp\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.exe
+C:\Users\jomacgilp\Downloads\TournamentGenerator\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.pdb

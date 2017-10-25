@@ -364,6 +364,114 @@ namespace TournamentGenerator
             return 1;
         }
 
+        public Fighter GetFighterByID(int id)
+        {
+            foreach(Fighter f in fighters)
+            {
+                if (f.id == id) return f;
+            }
+
+            return null;
+        }
+
+        public Fight GetFightByID(Guid id)
+        {
+            foreach (Pool p in pools)
+            {
+                foreach (List<Fight> r in p.rounds)
+                {
+                    foreach (Fight f in r)
+                    {
+                        if (f.fightID == id) return f;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public int GetFighterScore(Fighter fighter)
+        {
+            int score = 0;
+
+            foreach(Pool pool in pools)
+            {
+                if(pool.fighters.Contains(fighter.id))
+                {
+                    foreach(List<Fight> round in pool.rounds)
+                    {
+                        foreach(Fight fight in round)
+                        {
+                            Fight.FightResult result = Fight.FightResult.PENDING;
+
+                            if(fight.fighterA == fighter.id)
+                            {
+                                result = fight.fighterAResult;
+                            }
+                            else if (fight.fighterB == fighter.id && !fight.oddFight)
+                            {
+                                result = fight.fighterBResult;
+                            }
+
+                            if(result != Fight.FightResult.PENDING)
+                            {
+                                int gainedScore = 0;
+
+                                switch(result)
+                                {
+                                    case Fight.FightResult.WIN: gainedScore = winPoints; break;
+                                    case Fight.FightResult.LOSS: gainedScore = lossPoints; break;
+                                    case Fight.FightResult.DRAW: gainedScore = drawPoints; break;
+                                    case Fight.FightResult.DQ: gainedScore = 0; break;
+                                }
+
+                                score += gainedScore;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return score;
+        }
+
+        public int GetFighterDoubles(Fighter fighter)
+        {
+            int doubles = 0;
+
+            foreach (Pool pool in pools)
+            {
+                if (pool.fighters.Contains(fighter.id))
+                {
+                    foreach (List<Fight> round in pool.rounds)
+                    {
+                        foreach (Fight fight in round)
+                        {
+                            Fight.FightResult result = Fight.FightResult.PENDING;
+
+                            if (fight.fighterA == fighter.id)
+                            {
+                                result = fight.fighterAResult;
+                            }
+                            else if (fight.fighterB == fighter.id && !fight.oddFight)
+                            {
+                                result = fight.fighterBResult;
+                            }
+
+                            if (result != Fight.FightResult.PENDING)
+                            {
+                                doubles += fight.doubleCount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return doubles;
+        }
+
         public List<Pool> GeneratePools(int retryLimit, List<string> poolNames)
         {
             int fightersPerPool = fighters.Count / numberOfPools;
@@ -461,6 +569,12 @@ namespace TournamentGenerator
 
             return pools;
         }
+
+        public List<Fight> GenerateEliminationBracket()
+        {
+            //todo write function
+            return null;
+        }
     }
 
     [Serializable]
@@ -493,6 +607,7 @@ namespace TournamentGenerator
     {
         public enum FightResult { PENDING = 0, WIN = 1, DRAW = 2, LOSS = 3, DQ = 4 };
 
+        public Guid fightID;
         public int fighterA;
         public int fighterB;
         public int doubleCount;
@@ -504,12 +619,16 @@ namespace TournamentGenerator
         {
             fighterAResult = FightResult.PENDING;
             fighterBResult = FightResult.PENDING;
+            fightID = Guid.NewGuid();
         }
 
         public Fight(int a, int b)
         {
             fighterA = a;
             fighterB = b;
+            fighterAResult = FightResult.PENDING;
+            fighterBResult = FightResult.PENDING;
+            fightID = Guid.NewGuid();
         }
 
         public bool Equals(Fight obj)

@@ -55,6 +55,7 @@
             this.txtDoubleLimit = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.chkDoubleOut = new System.Windows.Forms.CheckBox();
+            this.btnManage = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -68,8 +69,8 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(336, 9);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Location = new System.Drawing.Point(334, 9);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 28);
             this.button1.TabIndex = 1;
@@ -85,9 +86,9 @@
             this.panel1.Controls.Add(this.txtName);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(17, 395);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(440, 41);
+            this.panel1.Size = new System.Drawing.Size(438, 41);
             this.panel1.TabIndex = 2;
             // 
             // label1
@@ -105,7 +106,7 @@
             // 
             this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtName.Location = new System.Drawing.Point(59, 11);
-            this.txtName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(132, 22);
             this.txtName.TabIndex = 2;
@@ -133,7 +134,7 @@
             // txtPools
             // 
             this.txtPools.Location = new System.Drawing.Point(165, 49);
-            this.txtPools.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtPools.Margin = new System.Windows.Forms.Padding(4);
             this.txtPools.Minimum = new decimal(new int[] {
             1,
             0,
@@ -152,7 +153,7 @@
             // txtRounds
             // 
             this.txtRounds.Location = new System.Drawing.Point(165, 88);
-            this.txtRounds.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtRounds.Margin = new System.Windows.Forms.Padding(4);
             this.txtRounds.Minimum = new decimal(new int[] {
             1,
             0,
@@ -171,7 +172,7 @@
             // btnGenerate
             // 
             this.btnGenerate.Location = new System.Drawing.Point(335, 118);
-            this.btnGenerate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnGenerate.Margin = new System.Windows.Forms.Padding(4);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(121, 28);
             this.btnGenerate.TabIndex = 7;
@@ -186,16 +187,16 @@
             this.lstFighters.FormattingEnabled = true;
             this.lstFighters.ItemHeight = 16;
             this.lstFighters.Location = new System.Drawing.Point(17, 443);
-            this.lstFighters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lstFighters.Margin = new System.Windows.Forms.Padding(4);
             this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(439, 276);
+            this.lstFighters.Size = new System.Drawing.Size(437, 276);
             this.lstFighters.TabIndex = 8;
             // 
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(353, 727);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDelete.Location = new System.Drawing.Point(351, 727);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 28);
             this.btnDelete.TabIndex = 10;
@@ -225,7 +226,7 @@
             // txtFightTime
             // 
             this.txtFightTime.Location = new System.Drawing.Point(169, 154);
-            this.txtFightTime.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFightTime.Margin = new System.Windows.Forms.Padding(4);
             this.txtFightTime.Maximum = new decimal(new int[] {
             10,
             0,
@@ -397,11 +398,22 @@
             this.chkDoubleOut.UseVisualStyleBackColor = true;
             this.chkDoubleOut.CheckedChanged += new System.EventHandler(this.upDown_ValueChanged);
             // 
+            // btnManage
+            // 
+            this.btnManage.Location = new System.Drawing.Point(24, 118);
+            this.btnManage.Name = "btnManage";
+            this.btnManage.Size = new System.Drawing.Size(153, 28);
+            this.btnManage.TabIndex = 28;
+            this.btnManage.Text = "Manage Tournament";
+            this.btnManage.UseVisualStyleBackColor = true;
+            this.btnManage.Click += new System.EventHandler(this.btnManage_Click);
+            // 
             // TournamentSetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 757);
+            this.ClientSize = new System.Drawing.Size(471, 757);
+            this.Controls.Add(this.btnManage);
             this.Controls.Add(this.chkDoubleOut);
             this.Controls.Add(this.txtDoubleLimit);
             this.Controls.Add(this.label9);
@@ -427,7 +439,7 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "TournamentSetupForm";
             this.Text = "Tournament Setup";
@@ -472,6 +484,7 @@
         private System.Windows.Forms.NumericUpDown txtDoubleLimit;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox chkDoubleOut;
+        private System.Windows.Forms.Button btnManage;
     }
 }
 

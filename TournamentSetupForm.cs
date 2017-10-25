@@ -11,6 +11,7 @@ namespace TournamentGenerator
     public partial class TournamentSetupForm : Form
     {
         private string FilePath;
+        private bool loading = false;
 
         public Tournament tournament;
 
@@ -192,11 +193,14 @@ namespace TournamentGenerator
 
         private void upDown_ValueChanged(object sender, EventArgs e)
         {
-            //recalulate pool length message
-            CalculateMessage();
+            if (!loading)
+            {
+                //recalulate pool length message
+                CalculateMessage();
 
-            //save changes
-            SaveTournament();
+                //save changes
+                SaveTournament();
+            }
         }
 
         private void SaveTournament()
@@ -215,6 +219,8 @@ namespace TournamentGenerator
 
         private void LoadTournament()
         {
+            loading = true;
+
             tournament = FileAccessHelper.LoadTournament(FilePath);
 
             txtPools.Value = tournament.numberOfPools;
@@ -245,6 +251,17 @@ namespace TournamentGenerator
                 txtRounds.Enabled = false;
                 txtFightTime.Enabled = false;
                 chkDoubleOut.Enabled = false;
+            }
+
+            loading = false;
+        }
+
+        private void btnManage_Click(object sender, EventArgs e)
+        {
+            if(tournament.pools.Count > 0)
+            {
+                ManageTournament manager = new ManageTournament(FilePath);
+                manager.Show();
             }
         }
     }

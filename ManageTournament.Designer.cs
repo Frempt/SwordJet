@@ -31,6 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageTournament));
             this.tbcFights = new System.Windows.Forms.TabControl();
             this.dgvFighters = new System.Windows.Forms.DataGridView();
+            this.btnExtendPools = new System.Windows.Forms.Button();
+            this.btnExcel = new System.Windows.Forms.Button();
+            this.btnAdvance = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFighters)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,11 +57,43 @@
             this.dgvFighters.Size = new System.Drawing.Size(514, 232);
             this.dgvFighters.TabIndex = 1;
             // 
+            // btnExtendPools
+            // 
+            this.btnExtendPools.Location = new System.Drawing.Point(927, 12);
+            this.btnExtendPools.Name = "btnExtendPools";
+            this.btnExtendPools.Size = new System.Drawing.Size(129, 35);
+            this.btnExtendPools.TabIndex = 2;
+            this.btnExtendPools.Text = "Extend Pools";
+            this.btnExtendPools.UseVisualStyleBackColor = true;
+            this.btnExtendPools.Click += new System.EventHandler(this.btnExtendPools_Click);
+            // 
+            // btnExcel
+            // 
+            this.btnExcel.Location = new System.Drawing.Point(532, 12);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(117, 35);
+            this.btnExcel.TabIndex = 3;
+            this.btnExcel.Text = "Export to Excel";
+            this.btnExcel.UseVisualStyleBackColor = true;
+            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
+            // 
+            // btnAdvance
+            // 
+            this.btnAdvance.Location = new System.Drawing.Point(927, 211);
+            this.btnAdvance.Name = "btnAdvance";
+            this.btnAdvance.Size = new System.Drawing.Size(129, 33);
+            this.btnAdvance.TabIndex = 4;
+            this.btnAdvance.UseVisualStyleBackColor = true;
+            this.btnAdvance.Click += new System.EventHandler(this.btnAdvance_Click);
+            // 
             // ManageTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1068, 546);
+            this.Controls.Add(this.btnAdvance);
+            this.Controls.Add(this.btnExcel);
+            this.Controls.Add(this.btnExtendPools);
             this.Controls.Add(this.dgvFighters);
             this.Controls.Add(this.tbcFights);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -74,5 +109,8 @@
 
         private System.Windows.Forms.TabControl tbcFights;
         private System.Windows.Forms.DataGridView dgvFighters;
+        private System.Windows.Forms.Button btnExtendPools;
+        private System.Windows.Forms.Button btnExcel;
+        private System.Windows.Forms.Button btnAdvance;
     }
 }

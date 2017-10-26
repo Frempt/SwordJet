@@ -19,6 +19,9 @@ namespace TournamentGenerator
         {
             InitializeComponent();
 
+            foreach (var item in Enum.GetValues(typeof(Tournament.EliminationType))) { ddlElimType.Items.Add(item); }
+            foreach (var item in ConfigValues.eliminationSizes) { ddlElimSize.Items.Add(item); }
+
             FilePath = filePath;
             LoadTournament();
         }
@@ -47,7 +50,7 @@ namespace TournamentGenerator
             }
         }
 
-        private void btnGenerate_Click(object sender, EventArgs e)
+        /*private void btnGenerate_Click(object sender, EventArgs e)
         {
             //calculate number of fighters per pool
             int numFighters = tournament.fighters.Count;
@@ -60,18 +63,13 @@ namespace TournamentGenerator
                 //something, something, halting problem
                 List<Pool> pools = null;
                 int tries = 0;
-                int retryLimit = 50;
-                int.TryParse(ConfigurationManager.AppSettings["fightGenerationRetryLimit"], out retryLimit);
-
-                List<string> poolNames = new List<string>();
-                poolNames.AddRange(ConfigurationManager.AppSettings["poolNames"].Split(','));
 
                 do
                 {
-                    pools = tournament.GeneratePools(retryLimit, poolNames);
+                    pools = tournament.GeneratePools();
                     tries++;
                 }
-                while (pools == null && tries < retryLimit);
+                while (pools == null && tries < ConfigValues.fightGenerationRetryLimit);
 
                 //ensure pools have generated successfully
                 if (pools != null)
@@ -80,7 +78,7 @@ namespace TournamentGenerator
                     FileAccessHelper.SaveTournament(tournament, FilePath);
 
                     //put the results into a spreadsheet for the user
-                    GenerateSpreadsheet();
+                    //GenerateSpreadsheet();
                 }
                 else
                 {
@@ -91,7 +89,7 @@ namespace TournamentGenerator
             {
                 MessageBox.Show("Insufficient fighters for number of pools/rounds.");
             }
-        }
+        }*/
 
         //build the time message
         private void CalculateMessage()
@@ -142,35 +140,6 @@ namespace TournamentGenerator
             {
                 lblLengthMessage.Text = "Insufficient fighters for number of pools/rounds.";
             }
-        }
-
-
-        private void GenerateSpreadsheet()
-        {
-            string filename = "Tournament" + Guid.NewGuid() + ".xls";
-
-            //create the file save dialog
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "Excel |*.xls";
-            dialog.FileName = filename;
-            dialog.CheckFileExists = false;
-
-            //call the ShowDialog method to show the save dialog box.
-            DialogResult userClickedOK = dialog.ShowDialog();
-
-            //process input if the user clicked OK.
-            if (userClickedOK == DialogResult.OK)
-            {
-                filename = dialog.FileName;
-
-                FileAccessHelper.GenerateSpreadsheet(tournament, filename);
-
-                //open the spreadsheet
-                System.Diagnostics.Process.Start(filename);
-            }
-
-            //cleanup
-            dialog.Dispose();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -226,6 +195,8 @@ namespace TournamentGenerator
             txtPools.Value = tournament.numberOfPools;
             txtRounds.Value = tournament.numberOfRounds;
             txtTournamentName.Text = tournament.name;
+            ddlElimType.SelectedItem = tournament.eliminationType;
+            ddlElimType.SelectedItem = tournament.eliminationSize;
             txtWinPoints.Value = tournament.winPoints;
             txtDrawPoints.Value = tournament.drawPoints;
             txtLossPoints.Value = tournament.lossPoints;
@@ -241,7 +212,6 @@ namespace TournamentGenerator
             if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
             {
                 button1.Enabled = false;
-                btnGenerate.Enabled = false;
                 btnDelete.Enabled = false;
                 txtDoubleLimit.Enabled = false;
                 txtDrawPoints.Enabled = false;

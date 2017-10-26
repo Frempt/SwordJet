@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Data;
 using System.Xml.Serialization;
 using NPOI.HSSF.UserModel;
 using NPOI.HPSF;
@@ -9,6 +10,13 @@ using NPOI.SS.UserModel;
 
 namespace TournamentGenerator
 {
+    public static class ConfigValues
+    {
+        public static int fightGenerationRetryLimit;
+        public static List<string> poolNames;
+        public static List<int> eliminationSizes;
+    }
+
     public static class Helpers
     {
         public static Random rng = new Random();
@@ -323,13 +331,15 @@ namespace TournamentGenerator
     [Serializable]
     public class Tournament
     {
-        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS = 1, ELIMINATIONS = 2, FINALS = 3 }
+        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS = 1, ELIMINATIONS = 2, FINALS = 3, CLOSED = 4}
+        public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
 
         public string name;
         public int numberOfRounds;
         public int numberOfPools;
         public int fightTimeMinutes;
-        public TournamentStage stage;
+        public TournamentStage stage = TournamentStage.REGISTRATION;
+        public EliminationType eliminationType = EliminationType.RANDOMISED;
         public int eliminationSize;
         public bool matchedEliminations;
         public int winPoints;
@@ -340,6 +350,7 @@ namespace TournamentGenerator
         public List<Fighter> fighters = new List<Fighter>();
         public List<Pool> pools = new List<Pool>();
         public List<Pool> eliminations = new List<Pool>();
+        public List<Fight> finals = new List<Fight>();
 
         public Tournament()
         {
@@ -472,10 +483,43 @@ namespace TournamentGenerator
             return doubles;
         }
 
-        public List<Pool> GeneratePools(int retryLimit, List<string> poolNames)
+        public bool ExtendPools()
+        {
+            int poolFighters = pools[0].fighters.Count;
+
+            //ensure pools can be extended
+            if ((poolFighters-1) <= (numberOfRounds + 1)) return false;
+
+            foreach(Pool p in pools)
+            {
+                p.GenerateRound();
+            }
+
+            numberOfRounds++;
+
+            return true;
+        }
+
+        public Pool GeneratePool(string name, List<int> fighters)
+        {
+            Pool pool = new Pool();
+            pool.name = name;
+            pool.fighters = fighters;
+
+            for (int k = 0; k < numberOfRounds; k++)
+            {
+                List<Fight> round = pool.GenerateRound();
+
+                if (round == null) return null;
+            }
+
+            return pool;
+        }
+
+        public List<Pool> GeneratePools()
         {
             int fightersPerPool = fighters.Count / numberOfPools;
-            List<Pool> pools = new List<Pool>();
+            pools = new List<Pool>();
 
             //clone the list of fighters so we don't remove from the master list
             List<Fighter> fightersClone = new List<Fighter>();
@@ -483,97 +527,152 @@ namespace TournamentGenerator
 
             for (int i = 0; i < numberOfPools; i++)
             {
-                Pool pool = new Pool();
+                List<string> poolNames = new List<string>();
+                poolNames.AddRange(ConfigValues.poolNames);
 
                 int nameIndex = Helpers.rng.Next(0, poolNames.Count);
-                pool.name = poolNames[nameIndex];
+                string name = poolNames[nameIndex];
                 poolNames.RemoveAt(nameIndex);
+
+                List<int> poolFighters = new List<int>();
 
                 //add random fighters to the pool until we have the correct size
                 for (int j = 0; j < fightersPerPool; j++)
                 {
                     int randIndex = Helpers.rng.Next(0, fightersClone.Count);
-                    pool.fighters.Add(fightersClone[randIndex].id);
+                    poolFighters.Add(fightersClone[randIndex].id);
                     fightersClone.RemoveAt(randIndex);
                 }
 
                 //if there are any odd fighters, add them to the last pool
                 if (i == numberOfPools - 1 && fightersClone.Count > 0)
                 {
-                    pool.fighters.Add(fightersClone[0].id);
+                    poolFighters.Add(fightersClone[0].id);
                 }
 
-                for (int k = 0; k < numberOfRounds; k++)
-                {
-                    List<Fight> fights = new List<Fight>();
-
-                    //clone the pool fighter list so we don't remove from the master list
-                    List<int> roundFighters = new List<int>();
-                    roundFighters.AddRange(pool.fighters);
-                    Helpers.Shuffle(roundFighters);
-
-                    //don't increment l because we will be removing from the list while iterating anyway
-                    for (int l = 0; l < roundFighters.Count;)
-                    {
-                        int opponent = 0;
-
-                        //if there is more than one fighter in this round, generate a normal fight
-                        if (roundFighters.Count > 1)
-                        {
-                            int tries = 0;
-                            do
-                            {
-                                opponent = Helpers.rng.Next(l + 1, roundFighters.Count);
-                                tries++;
-
-                                //start again if we fuck up too much
-                                if (tries > retryLimit) return null;
-                            }
-                            //ensure the fight hasn't happened already, and the fighter isn't fighting themselves (that would be pretty dumb)
-                            while (pool.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) || opponent == l);
-
-                            Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
-                            fights.Add(fight);
-                            roundFighters.Remove(fight.fighterA);
-                            roundFighters.Remove(fight.fighterB);
-                        }
-                        //odd fight if only one fighter left - find a fight from the pool which has not happened yet
-                        else
-                        {
-                            int tries = 0;
-                            do
-                            {
-                                opponent = Helpers.rng.Next(l + 1, pool.fighters.Count);
-                                tries++;
-
-                                //start again if we fuck up too much
-                                if (tries > retryLimit) return null;
-                            }
-                            //ensure the fight hasn't happened already, and the fighter isn't fighting themselves, and the opponent was not in the last fight
-                            while (pool.HasFightHappenedAlready(new Fight(roundFighters[l], pool.fighters[opponent])) || roundFighters[l] == pool.fighters[opponent] || fights.Last().fighterA == pool.fighters[opponent] || fights.Last().fighterB == pool.fighters[opponent]);
-
-                            Fight fight = new Fight(roundFighters[l], pool.fighters[opponent]);
-                            fight.oddFight = true;
-                            fights.Add(fight);
-                            roundFighters.Remove(fight.fighterA);
-                        }
-                    }
-
-                    pool.rounds.Add(fights);
-                }
-
-                pools.Add(pool);
+                pools.Add(GeneratePool(name,poolFighters));
             }
-
-            this.pools = pools;
 
             return pools;
         }
 
-        public List<Fight> GenerateEliminationBracket()
+        public void GenerateNextEliminationBracket()
         {
+            Pool bracket = new Pool();
+
+            if (eliminations.Count > 0)
+            {
+                foreach(Fight f in eliminations.Last().rounds.Last())
+                {
+                    if (f.fighterAResult == Fight.FightResult.WIN) bracket.fighters.Add(f.fighterA);
+                    else bracket.fighters.Add(f.fighterB);
+                }    
+            }
+            else
+            {
+                DataTable table = new DataTable();
+                table.Columns.Add("ID");
+                table.Columns.Add("Score");
+                table.Columns.Add("Doubles");
+
+                foreach (Fighter fighter in fighters)
+                {
+                    DataRow row = table.NewRow();
+
+                    row["ID"] = fighter.id;
+                    row["Score"] = GetFighterScore(fighter);
+                    row["Doubles"] = GetFighterDoubles(fighter);
+
+                    table.Rows.Add(row);
+                }
+
+                DataView dv = table.DefaultView;
+                dv.Sort = "Score DESC, Doubles ASC";
+
+                for (int i = 0; i < eliminationSize; i++)
+                {
+                    if(i == eliminationSize - 1)
+                    {
+                        //TODO handle tie-breakers
+                    }
+
+                    bracket.fighters.Add((int)dv[i]["ID"]);
+                }
+            }
+
             //todo write function
-            return null;
+            if(eliminationType == EliminationType.RANDOMISED)
+            {
+                bracket.fighters.Shuffle();
+            }
+
+            List<Fight> fights = new List<Fight>();
+
+            for(int i = 0; i < bracket.fighters.Count/2; i++)
+            {
+                Fight fight = new Fight();
+                fight.fighterA = bracket.fighters[i];
+                fight.fighterB = bracket.fighters[bracket.fighters.Count - i];
+
+                fights.Add(fight);
+            }
+            bracket.rounds.Add(fights);
+            eliminations.Add(bracket);
+        }
+
+        public void GenerateFinals()
+        {
+            if(eliminations.Last().fighters.Count == 4)
+            {
+                Fight bronzeFight = new Fight();
+                Fight goldFight = new Fight();
+
+                Fight fightA = eliminations.Last().rounds.Last().First();
+                if (fightA.fighterAResult == Fight.FightResult.WIN)
+                {
+                    goldFight.fighterA = fightA.fighterA;
+                    bronzeFight.fighterA = fightA.fighterB;
+                }
+                else
+                {
+                    goldFight.fighterA = fightA.fighterB;
+                    bronzeFight.fighterA = fightA.fighterA;
+                }
+
+                Fight fightB = eliminations.Last().rounds.Last().Last();
+                if (fightB.fighterAResult == Fight.FightResult.WIN)
+                {
+                    goldFight.fighterB = fightB.fighterA;
+                    bronzeFight.fighterB = fightB.fighterB;
+                }
+                else
+                {
+                    goldFight.fighterB = fightB.fighterB;
+                    bronzeFight.fighterB = fightB.fighterA;
+                }
+                
+                finals = new List<Fight>() { bronzeFight, goldFight };
+            }
+        }
+
+        public bool IsComplete()
+        {
+            foreach(Pool pool in pools)
+            {
+                if (!pool.IsComplete()) return false;
+            }
+
+            foreach(Pool pool in eliminations)
+            {
+                if (!pool.IsComplete()) return false;
+            }
+
+            foreach(Fight fight in finals)
+            {
+                if (!fight.IsComplete()) return false;
+            }
+
+            return true;
         }
     }
 
@@ -589,6 +688,67 @@ namespace TournamentGenerator
 
         }
 
+        public List<Fight> GenerateRound()
+        {
+            List<Fight> round = new List<Fight>();
+
+            //clone the pool fighter list so we don't remove from the master list
+            List<int> roundFighters = new List<int>();
+            roundFighters.AddRange(fighters);
+            Helpers.Shuffle(roundFighters);
+
+            //don't increment l because we will be removing from the list while iterating anyway
+            for (int l = 0; l < roundFighters.Count;)
+            {
+                int opponent = 0;
+
+                //if there is more than one fighter in this round, generate a normal fight
+                if (roundFighters.Count > 1)
+                {
+                    int tries = 0;
+                    do
+                    {
+                        opponent = Helpers.rng.Next(l + 1, roundFighters.Count);
+                        tries++;
+
+                        //start again if we fuck up too much
+                        if (tries > ConfigValues.fightGenerationRetryLimit) return null;
+                    }
+                    //ensure the fight hasn't happened already, and the fighter isn't fighting themselves (that would be pretty dumb)
+                    while (HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) || opponent == l);
+
+                    Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
+                    round.Add(fight);
+                    roundFighters.Remove(fight.fighterA);
+                    roundFighters.Remove(fight.fighterB);
+                }
+                //odd fight if only one fighter left - find a fight from the pool which has not happened yet
+                else
+                {
+                    int tries = 0;
+                    do
+                    {
+                        opponent = Helpers.rng.Next(l + 1, fighters.Count);
+                        tries++;
+
+                        //start again if we fuck up too much
+                        if (tries > ConfigValues.fightGenerationRetryLimit) return null;
+                    }
+                    //ensure the fight hasn't happened already, and the fighter isn't fighting themselves, and the opponent was not in the last fight
+                    while (HasFightHappenedAlready(new Fight(roundFighters[l], fighters[opponent])) || roundFighters[l] == fighters[opponent] || round.Last().fighterA == fighters[opponent] || round.Last().fighterB == fighters[opponent]);
+
+                    Fight fight = new Fight(roundFighters[l], fighters[opponent]);
+                    fight.oddFight = true;
+                    round.Add(fight);
+                    roundFighters.Remove(fight.fighterA);
+                }
+            }
+
+            rounds.Add(round);
+
+            return round;
+        }
+
         public bool HasFightHappenedAlready(Fight newFight)
         {
             foreach (List<Fight> round in rounds)
@@ -599,6 +759,19 @@ namespace TournamentGenerator
                 }
             }
             return false;
+        }
+
+        public bool IsComplete()
+        {
+            foreach(List<Fight> round in rounds)
+            {
+                foreach(Fight fight in round)
+                {
+                    if (!fight.IsComplete()) return false;
+                }
+            }
+
+            return true;
         }
     }
 
@@ -643,6 +816,11 @@ namespace TournamentGenerator
             }
             return false;
         }
+
+        public bool IsComplete()
+        {
+            return (fighterAResult != FightResult.PENDING && fighterBResult != FightResult.PENDING);
+        }
     }
 
     [Serializable]
@@ -650,6 +828,10 @@ namespace TournamentGenerator
     {
         public int id;
         public string name;
+
+        //supplemental information, may or may not be used
+        public string club;
+        public string country;
 
         //excel values
         public int[] scoreCellRef;

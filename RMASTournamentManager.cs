@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Configuration;
+using System.Collections.Generic;
 
 namespace TournamentGenerator
 {
@@ -8,6 +10,23 @@ namespace TournamentGenerator
         public RMASTournamentManager()
         {
             InitializeComponent();
+
+            int retryLimit = 50;
+            int.TryParse(ConfigurationManager.AppSettings["fightGenerationRetryLimit"], out retryLimit);
+            ConfigValues.fightGenerationRetryLimit = retryLimit;
+
+            List<string> poolNames = new List<string>();
+            poolNames.AddRange(ConfigurationManager.AppSettings["poolNames"].Split(','));
+            ConfigValues.poolNames = poolNames;
+
+            List<int> elimSizes = new List<int>();
+            List<string> tempElimSizes = new List<string>();
+            tempElimSizes.AddRange(ConfigurationManager.AppSettings["elimSizes"].Split(','));
+            foreach(string str in tempElimSizes)
+            {
+                elimSizes.Add(int.Parse(str));
+            }
+            ConfigValues.eliminationSizes = elimSizes;
         }
 
         private void btnNew_Click(object sender, EventArgs e)

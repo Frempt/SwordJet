@@ -64,6 +64,35 @@ namespace TournamentGenerator
         {
             tournament = FileAccessHelper.LoadTournament(FilePath);
 
+            string advanceButtonText = "";
+
+            switch (tournament.stage)
+            {
+                case Tournament.TournamentStage.REGISTRATION:
+                    advanceButtonText = "Begin Pools";
+                    break;
+
+                case Tournament.TournamentStage.POOLFIGHTS:
+                    advanceButtonText = "Begin Eliminations";
+                    break;
+
+                case Tournament.TournamentStage.ELIMINATIONS:
+                    advanceButtonText = "Next Elimination Round";
+
+                    if (tournament.eliminations.Last().fighters.Count == 4)
+                    {
+                        advanceButtonText = "Begin Finals";
+                    }
+
+                    break;
+
+                case Tournament.TournamentStage.FINALS:
+                    advanceButtonText = "End Tournament";
+                    break;
+            }
+
+            btnAdvance.Text = advanceButtonText;
+
             LoadFighters();
 
             tbcFights.TabPages.Clear();
@@ -120,13 +149,13 @@ namespace TournamentGenerator
                         ddlResultA.Tag = fight.fightID;
                         ddlResultA.Name = "AResult";
                         ddlResultA.DropDownStyle = ComboBoxStyle.DropDownList;
-                        foreach(var item in Enum.GetValues(typeof(Fight.FightResult))) { ddlResultA.Items.Add(item); }
+                        foreach (var item in Enum.GetValues(typeof(Fight.FightResult))) { ddlResultA.Items.Add(item); }
                         ddlResultA.SelectedItem = fight.fighterAResult;
                         ddlResultA.SelectedValueChanged += control_ValueChanged;
                         if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) ddlResultA.Enabled = false;
                         panel.Controls.Add(ddlResultA, 1, rowIndex);
 
-                        panel.Controls.Add(new Label() { Text =  " V " }, 2, rowIndex);
+                        panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
 
                         panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
 
@@ -164,7 +193,7 @@ namespace TournamentGenerator
             Control changedControl = (Control)sender;
             Fight fight = tournament.GetFightByID((Guid)changedControl.Tag);
 
-            if(changedControl.Name == "AResult")
+            if (changedControl.Name == "AResult")
             {
                 Fight.FightResult result = (Fight.FightResult)((ComboBox)changedControl).SelectedItem;
 
@@ -176,7 +205,7 @@ namespace TournamentGenerator
 
                 fight.fighterBResult = result;
             }
-            else if(changedControl.Name == "DBLCount")
+            else if (changedControl.Name == "DBLCount")
             {
                 fight.doubleCount = (int)((NumericUpDown)changedControl).Value;
             }
@@ -185,6 +214,114 @@ namespace TournamentGenerator
             FileAccessHelper.SaveTournament(tournament, FilePath);
 
             LoadFighters();
+        }
+
+        private void btnExtendPools_Click(object sender, EventArgs e)
+        {
+            if (tournament.ExtendPools())
+            {
+                FileAccessHelper.SaveTournament(tournament, FilePath);
+                LoadTournament();
+            }
+            else
+            {
+                MessageBox.Show("Insufficient fighters per pool to generate a new round.");
+            }
+        }
+
+        private void GenerateSpreadsheet()
+        {
+            string filename = "Tournament" + Guid.NewGuid() + ".xls";
+
+            //create the file save dialog
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Excel |*.xls";
+            dialog.FileName = filename;
+            dialog.CheckFileExists = false;
+
+            //call the ShowDialog method to show the save dialog box.
+            DialogResult userClickedOK = dialog.ShowDialog();
+
+            //process input if the user clicked OK.
+            if (userClickedOK == DialogResult.OK)
+            {
+                filename = dialog.FileName;
+
+                FileAccessHelper.GenerateSpreadsheet(tournament, filename);
+
+                //open the spreadsheet
+                System.Diagnostics.Process.Start(filename);
+            }
+
+            //cleanup
+            dialog.Dispose();
+        }
+
+        private void btnExcel_Click(object sender, EventArgs e)
+        {
+            GenerateSpreadsheet();
+        }
+
+        private void btnAdvance_Click(object sender, EventArgs e)
+        {
+            switch (tournament.stage)
+            {
+                case Tournament.TournamentStage.REGISTRATION:
+
+                    //todo warn user that fighters cannot be changed once pools are created
+
+                    tournament.GeneratePools();
+                    tournament.stage = Tournament.TournamentStage.POOLFIGHTS;
+
+                    break;
+
+                case Tournament.TournamentStage.POOLFIGHTS:
+                    if (tournament.IsComplete())
+                    {
+                        //todo warn user that pool results cannot be changed once eliminations are generated
+                        tournament.GenerateNextEliminationBracket();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fights are not all complete!");
+                    }
+                    break;
+
+                case Tournament.TournamentStage.ELIMINATIONS:
+                    if (tournament.IsComplete())
+                    {
+                        //todo warn user that elimination bracket results cannot be changed once the next round is generated
+
+                        //check if we are moving to the finals
+                        if (tournament.eliminations.Last().fighters.Count == 4)
+                        {
+                            tournament.stage = Tournament.TournamentStage.FINALS;
+                            tournament.GenerateFinals();
+                        }
+                        else
+                        {
+                            tournament.GenerateNextEliminationBracket();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fights are not all complete!");
+                    }
+                    break;
+
+                case Tournament.TournamentStage.FINALS:
+                    if (tournament.IsComplete())
+                    {
+                        tournament.stage = Tournament.TournamentStage.CLOSED;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fights are not all complete!");
+                    }
+                    break;
+
+                default:break;
+            }
         }
     }
 }

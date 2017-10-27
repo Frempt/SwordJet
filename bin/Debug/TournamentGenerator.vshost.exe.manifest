@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TournamentGenerator.exe" size="490360">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TournamentGenerator.exe" size="491384">
       <assemblyIdentity name="TournamentGenerator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>ZVY0g/J13U+YyORCmpzAG6jwT9s=</dsig:DigestValue>
+        <dsig:DigestValue>VpbMZQaDbPycfnWeC2Gwb9Mggd0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

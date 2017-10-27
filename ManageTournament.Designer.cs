@@ -45,21 +45,24 @@
             this.tbcFights.Location = new System.Drawing.Point(12, 250);
             this.tbcFights.Name = "tbcFights";
             this.tbcFights.SelectedIndex = 0;
-            this.tbcFights.Size = new System.Drawing.Size(1044, 284);
+            this.tbcFights.Size = new System.Drawing.Size(713, 265);
             this.tbcFights.TabIndex = 0;
             // 
             // dgvFighters
             // 
+            this.dgvFighters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvFighters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvFighters.Location = new System.Drawing.Point(12, 12);
             this.dgvFighters.Name = "dgvFighters";
             this.dgvFighters.RowTemplate.Height = 24;
-            this.dgvFighters.Size = new System.Drawing.Size(514, 232);
+            this.dgvFighters.Size = new System.Drawing.Size(579, 232);
             this.dgvFighters.TabIndex = 1;
             // 
             // btnExtendPools
             // 
-            this.btnExtendPools.Location = new System.Drawing.Point(927, 12);
+            this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExtendPools.Location = new System.Drawing.Point(597, 53);
             this.btnExtendPools.Name = "btnExtendPools";
             this.btnExtendPools.Size = new System.Drawing.Size(129, 35);
             this.btnExtendPools.TabIndex = 2;
@@ -69,9 +72,10 @@
             // 
             // btnExcel
             // 
-            this.btnExcel.Location = new System.Drawing.Point(532, 12);
+            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcel.Location = new System.Drawing.Point(597, 12);
             this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(117, 35);
+            this.btnExcel.Size = new System.Drawing.Size(129, 35);
             this.btnExcel.TabIndex = 3;
             this.btnExcel.Text = "Export to Excel";
             this.btnExcel.UseVisualStyleBackColor = true;
@@ -79,10 +83,12 @@
             // 
             // btnAdvance
             // 
-            this.btnAdvance.Location = new System.Drawing.Point(927, 211);
+            this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdvance.Location = new System.Drawing.Point(597, 211);
             this.btnAdvance.Name = "btnAdvance";
             this.btnAdvance.Size = new System.Drawing.Size(129, 33);
             this.btnAdvance.TabIndex = 4;
+            this.btnAdvance.Text = "Advance";
             this.btnAdvance.UseVisualStyleBackColor = true;
             this.btnAdvance.Click += new System.EventHandler(this.btnAdvance_Click);
             // 
@@ -90,7 +96,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1068, 546);
+            this.ClientSize = new System.Drawing.Size(737, 527);
             this.Controls.Add(this.btnAdvance);
             this.Controls.Add(this.btnExcel);
             this.Controls.Add(this.btnExtendPools);

@@ -349,6 +349,7 @@ namespace TournamentGenerator
 
         public List<Fighter> fighters = new List<Fighter>();
         public List<Pool> pools = new List<Pool>();
+        public Pool tieBreakers = new Pool(); 
         public List<Pool> eliminations = new List<Pool>();
         public List<Fight> finals = new List<Fight>();
 
@@ -594,13 +595,63 @@ namespace TournamentGenerator
                     if(i == eliminationSize - 1)
                     {
                         //TODO handle tie-breakers
+                        //not sure what the best way to handle this is, particularly 3-way tie breakers
+                        //add a tie breaker pool?
+                        List<int> tiedFighters = new List<int>();
+                        tiedFighters.Add((int)dv[i]["ID"]);
+
+                        int j = i + 1;
+
+                        int lastPlaceScore = (int)dv[i]["Score"];
+                        int lastPlaceDoubles = (int)dv[i]["Doubles"];
+
+                        //work down list
+                        while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
+                        {
+                            tiedFighters.Add((int)dv[j]["ID"]);
+                            j++;
+                        }
+
+                        j = i - 1;
+
+                        //work up list
+                        while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
+                        {
+                            tiedFighters.Add((int)dv[j]["ID"]);
+                            j--;
+                        }
+
+                        if(tiedFighters.Count > 1)
+                        {
+                            tieBreakers.fighters = tiedFighters;
+
+                            //ensure every permutation happens
+                            for (int k = 0; k < tiedFighters.Count - 1; k++)
+                            {
+                                tieBreakers.GenerateRound();
+                            }
+                        }
                     }
 
                     bracket.fighters.Add((int)dv[i]["ID"]);
                 }
             }
 
-            //todo write function
+            switch(bracket.fighters.Count)
+            {
+                case 4:
+                    bracket.name = "Semi Finals";
+                    break;
+
+                case 8:
+                    bracket.name = "Quarter Finals";
+                    break;
+
+                default:
+                    bracket.name = "Top " + bracket.fighters.Count;
+                    break;
+            }
+
             if(eliminationType == EliminationType.RANDOMISED)
             {
                 bracket.fighters.Shuffle();

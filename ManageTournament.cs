@@ -186,6 +186,122 @@ namespace TournamentGenerator
 
                 tbcFights.TabPages.Add(page);
             }
+
+            for (int i = 0; i < tournament.eliminations.Count; i++)
+            {
+                Pool bracket = tournament.eliminations[i];
+
+                TabPage page = new TabPage("ELIM - " + bracket.name);
+                page.Width = tbcFights.Width;
+                page.Height = tbcFights.Height;
+
+                List<Fight> round = bracket.rounds[0];
+
+                TableLayoutPanel panel = new TableLayoutPanel();
+                panel.Width = page.Width;
+                panel.Height = page.Height;
+
+                Font boldFont = new Font(Font, FontStyle.Bold);
+
+                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterALabel, 0, 0);
+                panel.SetColumnSpan(fighterALabel, 2);
+
+                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterBLabel, 3, 0);
+                panel.SetColumnSpan(fighterBLabel, 2);
+
+                for (int j = 0; j < round.Count; j++)
+                {
+                    Fight fight = round[j];
+
+                    Fighter fighterA = tournament.GetFighterByID(fight.fighterA);
+                    Fighter fighterB = tournament.GetFighterByID(fight.fighterB);
+
+                    int rowIndex = j + 1;
+
+                    panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
+
+                    RadioButton rbWinA = new RadioButton();
+                    rbWinA.Text = "Win";
+                    rbWinA.Tag = fight.fightID;
+                    rbWinA.Name = "AResultRB";
+                    rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinA.Enabled = false;
+                    panel.Controls.Add(rbWinA, 1, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
+
+                    RadioButton rbWinB = new RadioButton();
+                    rbWinB.Text = "Win";
+                    rbWinB.Tag = fight.fightID;
+                    rbWinB.Name = "BResultRB";
+                    rbWinB.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinB.Enabled = false;
+                    panel.Controls.Add(rbWinB, 1, rowIndex);
+                }
+
+                page.Controls.Add(panel);
+            }
+
+            if(tournament.finals.Count > 0)
+            {
+                TabPage page = new TabPage("Finals");
+                page.Width = tbcFights.Width;
+                page.Height = tbcFights.Height;
+
+                List<Fight> round = tournament.finals;
+
+                TableLayoutPanel panel = new TableLayoutPanel();
+                panel.Width = page.Width;
+                panel.Height = page.Height;
+
+                Font boldFont = new Font(Font, FontStyle.Bold);
+
+                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterALabel, 0, 0);
+                panel.SetColumnSpan(fighterALabel, 2);
+
+                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterBLabel, 3, 0);
+                panel.SetColumnSpan(fighterBLabel, 2);
+
+                for (int j = 0; j < round.Count; j++)
+                {
+                    Fight fight = round[j];
+
+                    Fighter fighterA = tournament.GetFighterByID(fight.fighterA);
+                    Fighter fighterB = tournament.GetFighterByID(fight.fighterB);
+
+                    int rowIndex = j + 1;
+
+                    panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
+
+                    RadioButton rbWinA = new RadioButton();
+                    rbWinA.Text = "Win";
+                    rbWinA.Tag = fight.fightID;
+                    rbWinA.Name = "AResultRB";
+                    rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    if (tournament.stage != Tournament.TournamentStage.FINALS) rbWinA.Enabled = false;
+                    panel.Controls.Add(rbWinA, 1, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
+
+                    RadioButton rbWinB = new RadioButton();
+                    rbWinB.Text = "Win";
+                    rbWinB.Tag = fight.fightID;
+                    rbWinB.Name = "BResultRB";
+                    rbWinB.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    if (tournament.stage != Tournament.TournamentStage.FINALS) rbWinB.Enabled = false;
+                    panel.Controls.Add(rbWinB, 1, rowIndex);
+                }
+
+                page.Controls.Add(panel);
+            }
         }
 
         private void control_ValueChanged(object sender, EventArgs e)
@@ -204,6 +320,30 @@ namespace TournamentGenerator
                 Fight.FightResult result = (Fight.FightResult)((ComboBox)changedControl).SelectedItem;
 
                 fight.fighterBResult = result;
+            }
+            else if (changedControl.Name == "AResultRB")
+            {
+                RadioButton rbCtrl = (RadioButton)changedControl;
+
+                fight.fighterAResult = (rbCtrl.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
+
+                Control[] ctrls = changedControl.Parent.Controls.Find("BResultRB", false);
+                RadioButton rbCtrl2 = (RadioButton)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID);
+                rbCtrl2.Checked = (!rbCtrl.Checked);
+
+                fight.fighterBResult = (rbCtrl2.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
+            }
+            else if (changedControl.Name == "BResultRB")
+            {
+                RadioButton rbCtrl = (RadioButton)changedControl;
+
+                fight.fighterBResult = (rbCtrl.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
+
+                Control[] ctrls = changedControl.Parent.Controls.Find("AResultRB", false);
+                RadioButton rbCtrl2 = (RadioButton)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID);
+                rbCtrl2.Checked = (!rbCtrl.Checked);
+
+                fight.fighterAResult = (rbCtrl2.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
             }
             else if (changedControl.Name == "DBLCount")
             {
@@ -264,22 +404,33 @@ namespace TournamentGenerator
 
         private void btnAdvance_Click(object sender, EventArgs e)
         {
+            DialogResult result;
+
             switch (tournament.stage)
             {
                 case Tournament.TournamentStage.REGISTRATION:
 
-                    //todo warn user that fighters cannot be changed once pools are created
+                    //warn user that fighters cannot be changed once pools are created
+                    result = MessageBox.Show("Once pools are created, the tournament details will be locked. Do you wish to advance to the pool fights?", "Are you sure?", MessageBoxButtons.YesNo);
 
-                    tournament.GeneratePools();
-                    tournament.stage = Tournament.TournamentStage.POOLFIGHTS;
-
+                    if (result == DialogResult.Yes)
+                    {
+                        tournament.GeneratePools();
+                        tournament.stage = Tournament.TournamentStage.POOLFIGHTS;
+                    }
                     break;
 
                 case Tournament.TournamentStage.POOLFIGHTS:
                     if (tournament.IsComplete())
                     {
-                        //todo warn user that pool results cannot be changed once eliminations are generated
-                        tournament.GenerateNextEliminationBracket();
+                        //warn user that pool results cannot be changed once eliminations are generated
+                        result = MessageBox.Show("Once elimination brackets are created, the pool results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            tournament.GenerateNextEliminationBracket();
+                            tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
+                        }
                     }
                     else
                     {
@@ -290,17 +441,21 @@ namespace TournamentGenerator
                 case Tournament.TournamentStage.ELIMINATIONS:
                     if (tournament.IsComplete())
                     {
-                        //todo warn user that elimination bracket results cannot be changed once the next round is generated
+                        //warn user that elimination bracket results cannot be changed once the next round is generated
+                        result = MessageBox.Show("Once eliminations are progressed, the previous round's results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
 
-                        //check if we are moving to the finals
-                        if (tournament.eliminations.Last().fighters.Count == 4)
+                        if (result == DialogResult.Yes)
                         {
-                            tournament.stage = Tournament.TournamentStage.FINALS;
-                            tournament.GenerateFinals();
-                        }
-                        else
-                        {
-                            tournament.GenerateNextEliminationBracket();
+                            //check if we are moving to the finals
+                            if (tournament.eliminations.Last().fighters.Count == 4)
+                            {
+                                tournament.stage = Tournament.TournamentStage.FINALS;
+                                tournament.GenerateFinals();
+                            }
+                            else
+                            {
+                                tournament.GenerateNextEliminationBracket();
+                            }
                         }
                     }
                     else
@@ -312,7 +467,12 @@ namespace TournamentGenerator
                 case Tournament.TournamentStage.FINALS:
                     if (tournament.IsComplete())
                     {
-                        tournament.stage = Tournament.TournamentStage.CLOSED;
+                        result = MessageBox.Show("Once tournament is closed, the fight results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            tournament.stage = Tournament.TournamentStage.CLOSED;
+                        }
                     }
                     else
                     {
@@ -320,7 +480,7 @@ namespace TournamentGenerator
                     }
                     break;
 
-                default:break;
+                default: break;
             }
         }
     }

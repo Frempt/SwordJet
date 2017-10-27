@@ -137,6 +137,7 @@
             // 
             // txtPools
             // 
+            this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPools.Location = new System.Drawing.Point(165, 49);
             this.txtPools.Margin = new System.Windows.Forms.Padding(4);
             this.txtPools.Minimum = new decimal(new int[] {
@@ -156,6 +157,7 @@
             // 
             // txtRounds
             // 
+            this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRounds.Location = new System.Drawing.Point(165, 88);
             this.txtRounds.Margin = new System.Windows.Forms.Padding(4);
             this.txtRounds.Minimum = new decimal(new int[] {
@@ -199,6 +201,8 @@
             // 
             // lblLengthMessage
             // 
+            this.lblLengthMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLengthMessage.AutoEllipsis = true;
             this.lblLengthMessage.Location = new System.Drawing.Point(8, 137);
             this.lblLengthMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -218,6 +222,7 @@
             // 
             // txtFightTime
             // 
+            this.txtFightTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFightTime.Location = new System.Drawing.Point(153, 111);
             this.txtFightTime.Margin = new System.Windows.Forms.Padding(4);
             this.txtFightTime.Maximum = new decimal(new int[] {
@@ -262,6 +267,7 @@
             // 
             // txtTournamentName
             // 
+            this.txtTournamentName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTournamentName.Location = new System.Drawing.Point(165, 20);
             this.txtTournamentName.Name = "txtTournamentName";
             this.txtTournamentName.Size = new System.Drawing.Size(292, 22);
@@ -270,6 +276,7 @@
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(9, 302);
             this.label6.Name = "label6";
@@ -279,6 +286,7 @@
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(9, 332);
             this.label7.Name = "label7";
@@ -288,6 +296,7 @@
             // 
             // label8
             // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(8, 362);
             this.label8.Name = "label8";
@@ -297,6 +306,7 @@
             // 
             // txtLossPoints
             // 
+            this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLossPoints.Location = new System.Drawing.Point(153, 360);
             this.txtLossPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtLossPoints.Minimum = new decimal(new int[] {
@@ -316,6 +326,7 @@
             // 
             // txtDrawPoints
             // 
+            this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDrawPoints.Location = new System.Drawing.Point(153, 330);
             this.txtDrawPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtDrawPoints.Minimum = new decimal(new int[] {
@@ -335,6 +346,7 @@
             // 
             // txtWinPoints
             // 
+            this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWinPoints.Location = new System.Drawing.Point(153, 300);
             this.txtWinPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtWinPoints.Minimum = new decimal(new int[] {
@@ -354,6 +366,7 @@
             // 
             // txtDoubleLimit
             // 
+            this.txtDoubleLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDoubleLimit.Location = new System.Drawing.Point(303, 390);
             this.txtDoubleLimit.Margin = new System.Windows.Forms.Padding(4);
             this.txtDoubleLimit.Minimum = new decimal(new int[] {
@@ -373,6 +386,7 @@
             // 
             // label9
             // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(175, 392);
             this.label9.Name = "label9";
@@ -382,6 +396,7 @@
             // 
             // chkDoubleOut
             // 
+            this.chkDoubleOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkDoubleOut.AutoSize = true;
             this.chkDoubleOut.Location = new System.Drawing.Point(12, 390);
             this.chkDoubleOut.Name = "chkDoubleOut";
@@ -393,6 +408,8 @@
             // 
             // btnManage
             // 
+            this.btnManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnManage.Location = new System.Drawing.Point(11, 433);
             this.btnManage.Name = "btnManage";
             this.btnManage.Size = new System.Drawing.Size(430, 76);
@@ -403,6 +420,7 @@
             // 
             // label10
             // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(9, 267);
             this.label10.Name = "label10";
@@ -412,7 +430,7 @@
             // 
             // ddlElimType
             // 
-            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimType.FormattingEnabled = true;
             this.ddlElimType.Location = new System.Drawing.Point(153, 264);
@@ -423,7 +441,7 @@
             // 
             // ddlElimSize
             // 
-            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimSize.FormattingEnabled = true;
             this.ddlElimSize.Location = new System.Drawing.Point(153, 230);
@@ -434,6 +452,7 @@
             // 
             // label11
             // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(8, 233);
             this.label11.Name = "label11";

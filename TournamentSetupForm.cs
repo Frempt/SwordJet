@@ -182,6 +182,8 @@ namespace TournamentGenerator
             tournament.lossPoints = (int)txtLossPoints.Value;
             tournament.fightTimeMinutes = (int)txtFightTime.Value;
             tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
+            tournament.eliminationSize = int.Parse(ddlElimSize.SelectedText);
+            tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
 
             FileAccessHelper.SaveTournament(tournament, FilePath);
         }
@@ -196,7 +198,7 @@ namespace TournamentGenerator
             txtRounds.Value = tournament.numberOfRounds;
             txtTournamentName.Text = tournament.name;
             ddlElimType.SelectedItem = tournament.eliminationType;
-            ddlElimType.SelectedItem = tournament.eliminationSize;
+            ddlElimSize.SelectedItem = tournament.eliminationSize;
             txtWinPoints.Value = tournament.winPoints;
             txtDrawPoints.Value = tournament.drawPoints;
             txtLossPoints.Value = tournament.lossPoints;
@@ -220,7 +222,15 @@ namespace TournamentGenerator
                 txtPools.Enabled = false;
                 txtRounds.Enabled = false;
                 txtFightTime.Enabled = false;
+                txtName.Enabled = false;
                 chkDoubleOut.Enabled = false;
+                txtTournamentName.Enabled = false;
+
+                if(tournament.stage != Tournament.TournamentStage.POOLFIGHTS)
+                {
+                    ddlElimType.Enabled = false;
+                    ddlElimSize.Enabled = false;
+                }
             }
 
             loading = false;

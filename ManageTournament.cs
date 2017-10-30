@@ -29,10 +29,22 @@ namespace TournamentGenerator
         private void LoadFighters()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("Name");
-            table.Columns.Add("Pool");
-            table.Columns.Add("Score");
-            table.Columns.Add("Doubles");
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Pool", typeof(string));
+            table.Columns.Add("PoolScore", typeof(int));
+            table.Columns.Add("PoolDoubles", typeof(int));
+
+            foreach(Pool p in tournament.eliminations)
+            {
+                table.Columns.Add(p.name, typeof(string));
+            }
+
+            if(tournament.finals.Count > 0)
+            {
+                table.Columns.Add("Finals", typeof(string));
+            }
+
+            table.Columns.Add("ElimSort", typeof(int));
 
             foreach (Fighter fighter in tournament.fighters)
             {
@@ -47,17 +59,38 @@ namespace TournamentGenerator
                 }
                 row["Pool"] = poolname;
 
-                row["Score"] = tournament.GetFighterScore(fighter);
+                row["PoolScore"] = tournament.GetFighterScore(fighter);
 
-                row["Doubles"] = tournament.GetFighterDoubles(fighter);
+                row["PoolDoubles"] = tournament.GetFighterDoubles(fighter);
 
+                Dictionary<string,string> elimResults = tournament.GetFighterEliminationResults(fighter);
+                int elimSort = 0;
+
+                foreach(Pool p in tournament.eliminations)
+                {
+                    string r = elimResults[p.name];
+                    row[p.name] = r;
+                    elimSort += ((r == "WIN") ? 3 : ((r == "LOSS") ? 2 : 0));
+                }
+
+                if (tournament.finals.Count > 0)
+                {
+                    string r = tournament.GetFighterFinalsResult(fighter);
+                    row["Finals"] = r;
+                    elimSort += ((r == "WIN") ? 2 : ((r == "LOSS") ? 1 : 0));
+                }
+
+                row["ElimSort"] = elimSort;
                 table.Rows.Add(row);
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "Score DESC, Doubles ASC";
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC";
 
             dgvFighters.DataSource = dv;
+
+            //hide sorting column
+            dgvFighters.Columns["ElimSort"].Visible = false;
         }
 
         private void LoadTournament()
@@ -65,6 +98,8 @@ namespace TournamentGenerator
             tournament = FileAccessHelper.LoadTournament(FilePath);
 
             string advanceButtonText = "";
+
+            btnExtendPools.Enabled = false;
 
             switch (tournament.stage)
             {
@@ -74,6 +109,7 @@ namespace TournamentGenerator
 
                 case Tournament.TournamentStage.POOLFIGHTS:
                     advanceButtonText = "Begin Eliminations";
+                    btnExtendPools.Enabled = true;
                     break;
 
                 case Tournament.TournamentStage.ELIMINATIONS:
@@ -88,6 +124,10 @@ namespace TournamentGenerator
 
                 case Tournament.TournamentStage.FINALS:
                     advanceButtonText = "End Tournament";
+                    break;
+
+                case Tournament.TournamentStage.CLOSED:
+                    advanceButtonText = "---";
                     break;
             }
 
@@ -175,6 +215,7 @@ namespace TournamentGenerator
                         txtDoubles.Increment = 1;
                         txtDoubles.Value = fight.doubleCount;
                         txtDoubles.ValueChanged += control_ValueChanged;
+                        if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) txtDoubles.Enabled = false;
                         panel.Controls.Add(txtDoubles, 5, rowIndex);
                     }
 
@@ -222,11 +263,12 @@ namespace TournamentGenerator
 
                     panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
 
-                    RadioButton rbWinA = new RadioButton();
+                    CheckBox rbWinA = new CheckBox();
                     rbWinA.Text = "Win";
                     rbWinA.Tag = fight.fightID;
                     rbWinA.Name = "AResultRB";
                     rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    rbWinA.CheckedChanged += control_ValueChanged;
                     if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinA.Enabled = false;
                     panel.Controls.Add(rbWinA, 1, rowIndex);
 
@@ -234,16 +276,18 @@ namespace TournamentGenerator
 
                     panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
 
-                    RadioButton rbWinB = new RadioButton();
+                    CheckBox rbWinB = new CheckBox();
                     rbWinB.Text = "Win";
                     rbWinB.Tag = fight.fightID;
                     rbWinB.Name = "BResultRB";
-                    rbWinB.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    rbWinB.Checked = (fight.fighterBResult == Fight.FightResult.WIN);
+                    rbWinB.CheckedChanged += control_ValueChanged;
                     if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinB.Enabled = false;
-                    panel.Controls.Add(rbWinB, 1, rowIndex);
+                    panel.Controls.Add(rbWinB, 4, rowIndex);
                 }
 
                 page.Controls.Add(panel);
+                tbcFights.TabPages.Add(page);
             }
 
             if(tournament.finals.Count > 0)
@@ -279,11 +323,12 @@ namespace TournamentGenerator
 
                     panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
 
-                    RadioButton rbWinA = new RadioButton();
+                    CheckBox rbWinA = new CheckBox();
                     rbWinA.Text = "Win";
                     rbWinA.Tag = fight.fightID;
                     rbWinA.Name = "AResultRB";
                     rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    rbWinA.CheckedChanged += control_ValueChanged;
                     if (tournament.stage != Tournament.TournamentStage.FINALS) rbWinA.Enabled = false;
                     panel.Controls.Add(rbWinA, 1, rowIndex);
 
@@ -291,16 +336,23 @@ namespace TournamentGenerator
 
                     panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
 
-                    RadioButton rbWinB = new RadioButton();
+                    CheckBox rbWinB = new CheckBox();
                     rbWinB.Text = "Win";
                     rbWinB.Tag = fight.fightID;
                     rbWinB.Name = "BResultRB";
-                    rbWinB.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    rbWinB.Checked = (fight.fighterBResult == Fight.FightResult.WIN);
+                    rbWinB.CheckedChanged += control_ValueChanged;
                     if (tournament.stage != Tournament.TournamentStage.FINALS) rbWinB.Enabled = false;
-                    panel.Controls.Add(rbWinB, 1, rowIndex);
+                    panel.Controls.Add(rbWinB, 4, rowIndex);
+
+                    Label lbl = new Label();
+                    lbl.Text = (j == 0) ? "BRONZE" : "GOLD";
+                    lbl.Font = boldFont;
+                    panel.Controls.Add(lbl, 5, rowIndex);
                 }
 
                 page.Controls.Add(panel);
+                tbcFights.TabPages.Add(page);
             }
         }
 
@@ -323,24 +375,24 @@ namespace TournamentGenerator
             }
             else if (changedControl.Name == "AResultRB")
             {
-                RadioButton rbCtrl = (RadioButton)changedControl;
+                CheckBox rbCtrl = (CheckBox)changedControl;
 
                 fight.fighterAResult = (rbCtrl.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
 
                 Control[] ctrls = changedControl.Parent.Controls.Find("BResultRB", false);
-                RadioButton rbCtrl2 = (RadioButton)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID);
+                CheckBox rbCtrl2 = (CheckBox)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID).First();
                 rbCtrl2.Checked = (!rbCtrl.Checked);
 
                 fight.fighterBResult = (rbCtrl2.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
             }
             else if (changedControl.Name == "BResultRB")
             {
-                RadioButton rbCtrl = (RadioButton)changedControl;
+                CheckBox rbCtrl = (CheckBox)changedControl;
 
                 fight.fighterBResult = (rbCtrl.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
 
                 Control[] ctrls = changedControl.Parent.Controls.Find("AResultRB", false);
-                RadioButton rbCtrl2 = (RadioButton)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID);
+                CheckBox rbCtrl2 = (CheckBox)ctrls.Where(ct => (Guid)ct.Tag == fight.fightID).First();
                 rbCtrl2.Checked = (!rbCtrl.Checked);
 
                 fight.fighterAResult = (rbCtrl2.Checked ? Fight.FightResult.WIN : Fight.FightResult.LOSS);
@@ -358,14 +410,19 @@ namespace TournamentGenerator
 
         private void btnExtendPools_Click(object sender, EventArgs e)
         {
-            if (tournament.ExtendPools())
+            DialogResult result = MessageBox.Show("Are you sure you want to generate another round of pool fights? This cannot be removed once added.", "Are you sure?", MessageBoxButtons.YesNo);
+
+            if(result == DialogResult.Yes)
             {
-                FileAccessHelper.SaveTournament(tournament, FilePath);
-                LoadTournament();
-            }
-            else
-            {
-                MessageBox.Show("Insufficient fighters per pool to generate a new round.");
+                if (tournament.ExtendPools())
+                {
+                    FileAccessHelper.SaveTournament(tournament, FilePath);
+                    LoadTournament();
+                }
+                else
+                {
+                    MessageBox.Show("Insufficient fighters per pool to generate a new round.");
+                }
             }
         }
 
@@ -482,6 +539,9 @@ namespace TournamentGenerator
 
                 default: break;
             }
+
+            FileAccessHelper.SaveTournament(tournament, FilePath);
+            LoadTournament();
         }
     }
 }

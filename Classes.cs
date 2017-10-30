@@ -399,6 +399,30 @@ namespace TournamentGenerator
                 }
             }
 
+            foreach (Pool p in eliminations)
+            {
+                foreach (List<Fight> r in p.rounds)
+                {
+                    foreach (Fight f in r)
+                    {
+                        if (f.fightID == id) return f;
+                    }
+                }
+            }
+
+            foreach (List<Fight> r in tieBreakers.rounds)
+            {
+                foreach (Fight f in r)
+                {
+                    if (f.fightID == id) return f;
+                }
+            }
+
+            foreach (Fight f in finals)
+            {
+                if (f.fightID == id) return f;
+            }
+
             return null;
         }
 
@@ -484,21 +508,74 @@ namespace TournamentGenerator
             return doubles;
         }
 
-        public bool ExtendPools()
+        public Dictionary<string, string> GetFighterEliminationResults(Fighter fighter)
         {
-            int poolFighters = pools[0].fighters.Count;
+            Dictionary<string, string> retList = new Dictionary<string, string>();
 
-            //ensure pools can be extended
-            if ((poolFighters-1) <= (numberOfRounds + 1)) return false;
-
-            foreach(Pool p in pools)
+            foreach (Pool p in eliminations)
             {
-                p.GenerateRound();
+                string result = "-";
+
+                if (p.fighters.Contains(fighter.id))
+                {
+                    foreach (Fight f in p.rounds[0])
+                    {
+                        if (f.fighterA == fighter.id)
+                        {
+                            result = f.fighterAResult.ToString();
+                            break;
+                        }
+                        if (f.fighterB == fighter.id)
+                        {
+                            result = f.fighterBResult.ToString();
+                            break;
+                        }
+                    }
+                }
+
+                retList.Add(p.name, result);
             }
 
-            numberOfRounds++;
+            return retList;
+        }
 
-            return true;
+        public string GetFighterFinalsResult(Fighter fighter)
+        {
+            foreach (Fight f in finals)
+            {
+                if (f.fighterA == fighter.id)
+                {
+                    return f.fighterAResult.ToString();
+                }
+                if (f.fighterB == fighter.id)
+                {
+                    return f.fighterBResult.ToString();
+                }
+            }
+
+            return "-";
+        }
+
+        public bool ExtendPools()
+        {
+            if (stage == TournamentStage.POOLFIGHTS)
+            {
+                int poolFighters = pools[0].fighters.Count;
+
+                //ensure pools can be extended
+                if ((poolFighters - 1) <= (numberOfRounds + 1)) return false;
+
+                foreach (Pool p in pools)
+                {
+                    p.GenerateRound();
+                }
+
+                numberOfRounds++;
+
+                return true;
+            }
+
+            return false;
         }
 
         public Pool GeneratePool(string name, List<int> fighters)
@@ -572,9 +649,9 @@ namespace TournamentGenerator
             else
             {
                 DataTable table = new DataTable();
-                table.Columns.Add("ID");
-                table.Columns.Add("Score");
-                table.Columns.Add("Doubles");
+                table.Columns.Add("ID", typeof(int));
+                table.Columns.Add("Score", typeof(int));
+                table.Columns.Add("Doubles", typeof(int));
 
                 foreach (Fighter fighter in fighters)
                 {
@@ -614,15 +691,15 @@ namespace TournamentGenerator
 
                         j = i - 1;
 
-                        //work up list
-                        while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
-                        {
-                            tiedFighters.Add((int)dv[j]["ID"]);
-                            j--;
-                        }
-
                         if(tiedFighters.Count > 1)
                         {
+                            //work up list
+                            while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
+                            {
+                                tiedFighters.Add((int)dv[j]["ID"]);
+                                j--;
+                            }
+
                             tieBreakers.fighters = tiedFighters;
 
                             //ensure every permutation happens
@@ -630,6 +707,7 @@ namespace TournamentGenerator
                             {
                                 tieBreakers.GenerateRound();
                             }
+                            //todo stop elim generation until tie breakers are settled
                         }
                     }
 
@@ -663,7 +741,7 @@ namespace TournamentGenerator
             {
                 Fight fight = new Fight();
                 fight.fighterA = bracket.fighters[i];
-                fight.fighterB = bracket.fighters[bracket.fighters.Count - i];
+                fight.fighterB = bracket.fighters[bracket.fighters.Count - (i+1)];
 
                 fights.Add(fight);
             }

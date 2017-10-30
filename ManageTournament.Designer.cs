@@ -34,7 +34,12 @@
             this.btnExtendPools = new System.Windows.Forms.Button();
             this.btnExcel = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFighters)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbcFights
@@ -42,27 +47,28 @@
             this.tbcFights.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbcFights.Location = new System.Drawing.Point(12, 250);
+            this.tbcFights.Location = new System.Drawing.Point(3, 3);
             this.tbcFights.Name = "tbcFights";
             this.tbcFights.SelectedIndex = 0;
-            this.tbcFights.Size = new System.Drawing.Size(713, 265);
+            this.tbcFights.Size = new System.Drawing.Size(1078, 389);
             this.tbcFights.TabIndex = 0;
             // 
             // dgvFighters
             // 
-            this.dgvFighters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgvFighters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvFighters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvFighters.Location = new System.Drawing.Point(12, 12);
+            this.dgvFighters.Location = new System.Drawing.Point(3, 0);
             this.dgvFighters.Name = "dgvFighters";
             this.dgvFighters.RowTemplate.Height = 24;
-            this.dgvFighters.Size = new System.Drawing.Size(579, 232);
+            this.dgvFighters.Size = new System.Drawing.Size(944, 232);
             this.dgvFighters.TabIndex = 1;
             // 
             // btnExtendPools
             // 
             this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExtendPools.Location = new System.Drawing.Point(597, 53);
+            this.btnExtendPools.Location = new System.Drawing.Point(949, 41);
             this.btnExtendPools.Name = "btnExtendPools";
             this.btnExtendPools.Size = new System.Drawing.Size(129, 35);
             this.btnExtendPools.TabIndex = 2;
@@ -73,7 +79,7 @@
             // btnExcel
             // 
             this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcel.Location = new System.Drawing.Point(597, 12);
+            this.btnExcel.Location = new System.Drawing.Point(949, 0);
             this.btnExcel.Name = "btnExcel";
             this.btnExcel.Size = new System.Drawing.Size(129, 35);
             this.btnExcel.TabIndex = 3;
@@ -83,8 +89,8 @@
             // 
             // btnAdvance
             // 
-            this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdvance.Location = new System.Drawing.Point(597, 211);
+            this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdvance.Location = new System.Drawing.Point(949, 199);
             this.btnAdvance.Name = "btnAdvance";
             this.btnAdvance.Size = new System.Drawing.Size(129, 33);
             this.btnAdvance.TabIndex = 4;
@@ -92,21 +98,44 @@
             this.btnAdvance.UseVisualStyleBackColor = true;
             this.btnAdvance.Click += new System.EventHandler(this.btnAdvance_Click);
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnExcel);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAdvance);
+            this.splitContainer1.Panel1.Controls.Add(this.btnExtendPools);
+            this.splitContainer1.Panel1.Controls.Add(this.dgvFighters);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.tbcFights);
+            this.splitContainer1.Size = new System.Drawing.Size(1078, 503);
+            this.splitContainer1.SplitterDistance = 235;
+            this.splitContainer1.TabIndex = 5;
+            // 
             // ManageTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(737, 527);
-            this.Controls.Add(this.btnAdvance);
-            this.Controls.Add(this.btnExcel);
-            this.Controls.Add(this.btnExtendPools);
-            this.Controls.Add(this.dgvFighters);
-            this.Controls.Add(this.tbcFights);
+            this.ClientSize = new System.Drawing.Size(1102, 527);
+            this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ManageTournament";
             this.Text = "Manage Tournament";
             this.Load += new System.EventHandler(this.ManageTournament_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFighters)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -118,5 +147,6 @@
         private System.Windows.Forms.Button btnExtendPools;
         private System.Windows.Forms.Button btnExcel;
         private System.Windows.Forms.Button btnAdvance;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }

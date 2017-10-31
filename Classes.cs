@@ -38,6 +38,27 @@ namespace TournamentGenerator
                 list[size] = value;
             }
         }
+
+        /// <summary>
+        /// Return a list of every possible distinct value pairing from a given list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static List<T[]> GetDistinctPairs<T>(this IList<T> list)
+        {
+            List<T[]> pairs = new List<T[]>();
+
+            for(int i = 0; i < list.Count - 1; i++)
+            {
+                for(int j = (i + 1); j < list.Count; j++)
+                {
+                    pairs.Add(new T[]{ list[i], list[j]});
+                }
+            }
+
+            return pairs;
+        }
     }
 
     public static class FileAccessHelper
@@ -331,7 +352,7 @@ namespace TournamentGenerator
     [Serializable]
     public class Tournament
     {
-        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS = 1, ELIMINATIONS = 2, FINALS = 3, CLOSED = 4}
+        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED}
         public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
 
         public string name;
@@ -349,7 +370,7 @@ namespace TournamentGenerator
 
         public List<Fighter> fighters = new List<Fighter>();
         public List<Pool> pools = new List<Pool>();
-        public Pool tieBreakers = new Pool(); 
+        public Pool tieBreakers = null; 
         public List<Pool> eliminations = new List<Pool>();
         public List<Fight> finals = new List<Fight>();
 
@@ -508,6 +529,30 @@ namespace TournamentGenerator
             return doubles;
         }
 
+        public int GetFighterTieBreakerScore(Fighter fighter)
+        {
+            if (tieBreakers != null)
+            {
+                if(tieBreakers.fighters.Contains(fighter.id))
+                {
+                    int score = 0;
+
+                    foreach(List<Fight> r in tieBreakers.rounds)
+                    {
+                        foreach(Fight f in r)
+                        {
+                            if (f.fighterA == fighter.id) score += (f.fighterAResult == Fight.FightResult.WIN) ? 1 : 0;
+                            else if (f.fighterB == fighter.id && !f.oddFight) score += (f.fighterBResult == Fight.FightResult.WIN) ? 1 : 0;
+                        }
+                    }
+
+                    return score;
+                }
+            }
+
+            return 0;
+        }
+
         public Dictionary<string, string> GetFighterEliminationResults(Fighter fighter)
         {
             Dictionary<string, string> retList = new Dictionary<string, string>();
@@ -554,6 +599,61 @@ namespace TournamentGenerator
             }
 
             return "-";
+        }
+
+        public int GetFighterFinalRank(Fighter fighter)
+        {
+            if(stage == TournamentStage.CLOSED)
+            {
+                if(finals[1].fighterA == fighter.id)
+                {
+                    if (finals[1].fighterAResult == Fight.FightResult.WIN) return 1;
+                    else return 2;
+                }
+                else if (finals[1].fighterB == fighter.id)
+                {
+                    if (finals[1].fighterBResult == Fight.FightResult.WIN) return 1;
+                    else return 2;
+                }
+
+                if (finals[0].fighterA == fighter.id)
+                {
+                    if (finals[0].fighterAResult == Fight.FightResult.WIN) return 3;
+                    else return 4;
+                }
+                else if (finals[0].fighterB == fighter.id)
+                {
+                    if (finals[0].fighterBResult == Fight.FightResult.WIN) return 3;
+                    else return 4;
+                }
+
+                for(int i = eliminations.Count - 1; i > 0; i--)
+                {
+                    int bracketRank = 5 + -(i - (eliminations.Count - 1));
+                    foreach (Fight f in eliminations[i].rounds[0])
+                    {
+                        if (f.fighterA == fighter.id && f.fighterAResult == Fight.FightResult.LOSS) return bracketRank;
+                    }
+                }
+            }
+
+            return fighters.Count;
+        }
+
+        public bool IsLatestBracket(Pool p)
+        {
+            if (finals.Count > 0) return false;
+
+            if(eliminations.Count > 0)
+            {
+                if (eliminations.Last().name == p.name) return true;
+            }
+            else
+            {
+                if (tieBreakers != null && tieBreakers.name == p.name) return true;
+            }
+
+            return false;
         }
 
         public bool ExtendPools()
@@ -634,7 +734,7 @@ namespace TournamentGenerator
             return pools;
         }
 
-        public void GenerateNextEliminationBracket()
+        public bool GenerateNextEliminationBracket()
         {
             Pool bracket = new Pool();
 
@@ -652,6 +752,7 @@ namespace TournamentGenerator
                 table.Columns.Add("ID", typeof(int));
                 table.Columns.Add("Score", typeof(int));
                 table.Columns.Add("Doubles", typeof(int));
+                table.Columns.Add("TieBreaker", typeof(int));
 
                 foreach (Fighter fighter in fighters)
                 {
@@ -660,54 +761,64 @@ namespace TournamentGenerator
                     row["ID"] = fighter.id;
                     row["Score"] = GetFighterScore(fighter);
                     row["Doubles"] = GetFighterDoubles(fighter);
+                    row["TieBreaker"] = GetFighterTieBreakerScore(fighter);
 
                     table.Rows.Add(row);
                 }
 
                 DataView dv = table.DefaultView;
-                dv.Sort = "Score DESC, Doubles ASC";
+                dv.Sort = "Score DESC, Doubles ASC, TieBreaker DESC";
 
                 for (int i = 0; i < eliminationSize; i++)
                 {
                     if(i == eliminationSize - 1)
                     {
-                        //TODO handle tie-breakers
-                        //not sure what the best way to handle this is, particularly 3-way tie breakers
-                        //add a tie breaker pool?
-                        List<int> tiedFighters = new List<int>();
-                        tiedFighters.Add((int)dv[i]["ID"]);
-
-                        int j = i + 1;
-
-                        int lastPlaceScore = (int)dv[i]["Score"];
-                        int lastPlaceDoubles = (int)dv[i]["Doubles"];
-
-                        //work down list
-                        while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
+                        //handle tie-breakers
+                        if (tieBreakers == null)
                         {
-                            tiedFighters.Add((int)dv[j]["ID"]);
-                            j++;
-                        }
+                            List<int> tiedFighters = new List<int>();
+                            tiedFighters.Add((int)dv[i]["ID"]);
 
-                        j = i - 1;
+                            int j = i + 1;
 
-                        if(tiedFighters.Count > 1)
-                        {
-                            //work up list
+                            int lastPlaceScore = (int)dv[i]["Score"];
+                            int lastPlaceDoubles = (int)dv[i]["Doubles"];
+
+                            //work down list
                             while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
                             {
                                 tiedFighters.Add((int)dv[j]["ID"]);
-                                j--;
+                                j++;
                             }
 
-                            tieBreakers.fighters = tiedFighters;
+                            j = i - 1;
 
-                            //ensure every permutation happens
-                            for (int k = 0; k < tiedFighters.Count - 1; k++)
+                            if (tiedFighters.Count > 1)
                             {
-                                tieBreakers.GenerateRound();
+                                //work up list
+                                while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"])
+                                {
+                                    tiedFighters.Add((int)dv[j]["ID"]);
+                                    j--;
+                                }
+
+                                tieBreakers = new Pool();
+                                tieBreakers.name = "Tie Breakers";
+                                tieBreakers.fighters = tiedFighters;
+                                
+                                List<Fight> tieBreakerFights = new List<Fight>();
+
+                                //ensure every permutation happens
+                                List<int[]> pairs = tieBreakers.fighters.GetDistinctPairs();
+                                foreach(int[] pair in pairs)
+                                {
+                                    tieBreakerFights.Add(new Fight(pair[0], pair[1]));
+                                }
+
+                                tieBreakers.rounds.Add(tieBreakerFights);
+
+                                return false;
                             }
-                            //todo stop elim generation until tie breakers are settled
                         }
                     }
 
@@ -747,6 +858,8 @@ namespace TournamentGenerator
             }
             bracket.rounds.Add(fights);
             eliminations.Add(bracket);
+
+            return true;
         }
 
         public void GenerateFinals()
@@ -826,6 +939,23 @@ namespace TournamentGenerator
             roundFighters.AddRange(fighters);
             Helpers.Shuffle(roundFighters);
 
+            int? prevFighterA = null;
+            int? prevFighterB = null;
+
+            int k = rounds.Count;
+            if (k > 0)
+            {
+                prevFighterA = rounds[k - 1][rounds[k - 1].Count - 1].fighterA;
+                prevFighterB = rounds[k - 1][rounds[k - 1].Count - 1].fighterB;
+
+                while (roundFighters[0] == prevFighterA || roundFighters[0] == prevFighterB)
+                {
+                    int f = roundFighters[0];
+                    roundFighters.RemoveAt(0);
+                    roundFighters.Add(f);
+                }
+            }
+
             //don't increment l because we will be removing from the list while iterating anyway
             for (int l = 0; l < roundFighters.Count;)
             {
@@ -844,7 +974,11 @@ namespace TournamentGenerator
                         if (tries > ConfigValues.fightGenerationRetryLimit) return null;
                     }
                     //ensure the fight hasn't happened already, and the fighter isn't fighting themselves (that would be pretty dumb)
-                    while (HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) || opponent == l);
+                    //also try and make sure that the first fight of a round does not contain either of the fighters from the last fight of the previous round
+                    //not always possible; if we fail too many times on that condition, just allow it
+                    while (HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) || opponent == l || (prevFighterA != null && prevFighterB != null
+                                && (roundFighters[opponent] == prevFighterA || roundFighters[opponent] == prevFighterB)
+                                && round.Count == 0 && roundFighters.Count > 4 && tries < (ConfigValues.fightGenerationRetryLimit / 2)));
 
                     Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
                     round.Add(fight);

@@ -45,51 +45,12 @@ namespace TournamentGenerator
                 //recalculate the pool length message
                 CalculateMessage();
 
+                txtName.Focus();
+
                 //save changes
                 FileAccessHelper.SaveTournament(tournament, FilePath);
             }
         }
-
-        /*private void btnGenerate_Click(object sender, EventArgs e)
-        {
-            //calculate number of fighters per pool
-            int numFighters = tournament.fighters.Count;
-            int fightersPerPool = (numFighters / (int)txtPools.Value);
-
-            //only generate pools if there are more fighters in each pool than rounds - otherwise fights will be repeated
-            if (numFighters > 2 && fightersPerPool > Math.Max(3, txtRounds.Value))
-            {
-                //keep trying to generate pools until we succeed, or have tried too many times - randomness means it may not always work
-                //something, something, halting problem
-                List<Pool> pools = null;
-                int tries = 0;
-
-                do
-                {
-                    pools = tournament.GeneratePools();
-                    tries++;
-                }
-                while (pools == null && tries < ConfigValues.fightGenerationRetryLimit);
-
-                //ensure pools have generated successfully
-                if (pools != null)
-                {
-                    //save changes
-                    FileAccessHelper.SaveTournament(tournament, FilePath);
-
-                    //put the results into a spreadsheet for the user
-                    //GenerateSpreadsheet();
-                }
-                else
-                {
-                    MessageBox.Show("Too many fuck-ups, try again or modify parameters.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Insufficient fighters for number of pools/rounds.");
-            }
-        }*/
 
         //build the time message
         private void CalculateMessage()
@@ -182,7 +143,7 @@ namespace TournamentGenerator
             tournament.lossPoints = (int)txtLossPoints.Value;
             tournament.fightTimeMinutes = (int)txtFightTime.Value;
             tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
-            tournament.eliminationSize = int.Parse(ddlElimSize.SelectedText);
+            tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
             tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
 
             FileAccessHelper.SaveTournament(tournament, FilePath);
@@ -238,11 +199,8 @@ namespace TournamentGenerator
 
         private void btnManage_Click(object sender, EventArgs e)
         {
-            if(tournament.pools.Count > 0)
-            {
-                ManageTournament manager = new ManageTournament(FilePath);
-                manager.Show();
-            }
+            ManageTournament manager = new ManageTournament(FilePath);
+            manager.Show();
         }
     }
 }

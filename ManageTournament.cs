@@ -29,6 +29,12 @@ namespace TournamentGenerator
         private void LoadFighters()
         {
             DataTable table = new DataTable();
+
+            if (tournament.stage == Tournament.TournamentStage.CLOSED)
+            {
+                table.Columns.Add("FinishingRank", typeof(int));
+            }
+
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Pool", typeof(string));
             table.Columns.Add("PoolScore", typeof(int));
@@ -44,11 +50,18 @@ namespace TournamentGenerator
                 table.Columns.Add("Finals", typeof(string));
             }
 
+            table.Columns.Add("TieBreakerScore", typeof(int));
             table.Columns.Add("ElimSort", typeof(int));
 
             foreach (Fighter fighter in tournament.fighters)
             {
                 DataRow row = table.NewRow();
+
+                if (tournament.stage == Tournament.TournamentStage.CLOSED)
+                {
+                    int rank = tournament.GetFighterFinalRank(fighter);
+                    /*if (rank < tournament.fighters.Count)*/ row["FinishingRank"] = rank; 
+                }
 
                 row["Name"] = fighter.name;
 
@@ -62,6 +75,8 @@ namespace TournamentGenerator
                 row["PoolScore"] = tournament.GetFighterScore(fighter);
 
                 row["PoolDoubles"] = tournament.GetFighterDoubles(fighter);
+
+                row["TieBreakerScore"] = tournament.GetFighterTieBreakerScore(fighter);
 
                 Dictionary<string,string> elimResults = tournament.GetFighterEliminationResults(fighter);
                 int elimSort = 0;
@@ -85,12 +100,16 @@ namespace TournamentGenerator
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC";
-
+            dv.Sort = "ElimSort DESC, TieBreakerScore DESC, PoolScore DESC, PoolDoubles ASC";
+            if (tournament.stage == Tournament.TournamentStage.CLOSED)
+            {
+                dv.Sort = "FinishingRank ASC, " + dv.Sort;
+            }
             dgvFighters.DataSource = dv;
 
-            //hide sorting column
+            //hide sorting columns
             dgvFighters.Columns["ElimSort"].Visible = false;
+            dgvFighters.Columns["TieBreakerScore"].Visible = false;
         }
 
         private void LoadTournament()
@@ -112,6 +131,10 @@ namespace TournamentGenerator
                     btnExtendPools.Enabled = true;
                     break;
 
+                case Tournament.TournamentStage.TIEBREAKERS:
+                    advanceButtonText = "Begin Eliminations";
+                    break;
+
                 case Tournament.TournamentStage.ELIMINATIONS:
                     advanceButtonText = "Next Elimination Round";
 
@@ -128,6 +151,7 @@ namespace TournamentGenerator
 
                 case Tournament.TournamentStage.CLOSED:
                     advanceButtonText = "---";
+                    btnAdvance.Enabled = false;
                     break;
             }
 
@@ -183,7 +207,7 @@ namespace TournamentGenerator
 
                         int rowIndex = j + 1;
 
-                        panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
+                        panel.Controls.Add(new Label() { Text = fighterA.name, TextAlign = ContentAlignment.MiddleCenter }, 0, rowIndex);
 
                         ComboBox ddlResultA = new ComboBox();
                         ddlResultA.Tag = fight.fightID;
@@ -197,7 +221,14 @@ namespace TournamentGenerator
 
                         panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
 
-                        panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
+                        Color bgColour = panel.ForeColor;
+
+                        if (fight.oddFight)
+                        {
+                            bgColour = Color.DarkGray;
+                        }
+
+                        panel.Controls.Add(new Label() { Text = fighterB.name, ForeColor = bgColour, TextAlign = ContentAlignment.MiddleCenter }, 3, rowIndex);
 
                         ComboBox ddlResultB = new ComboBox();
                         ddlResultB.Tag = fight.fightID;
@@ -206,6 +237,7 @@ namespace TournamentGenerator
                         foreach (var item in Enum.GetValues(typeof(Fight.FightResult))) { ddlResultB.Items.Add(item); }
                         ddlResultB.SelectedItem = fight.fighterBResult;
                         ddlResultB.SelectedValueChanged += control_ValueChanged;
+                        ddlResultB.ForeColor = bgColour;
                         if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) ddlResultB.Enabled = false;
                         panel.Controls.Add(ddlResultB, 4, rowIndex);
 
@@ -217,6 +249,11 @@ namespace TournamentGenerator
                         txtDoubles.ValueChanged += control_ValueChanged;
                         if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) txtDoubles.Enabled = false;
                         panel.Controls.Add(txtDoubles, 5, rowIndex);
+
+                        if (fight.oddFight)
+                        {
+                            panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 6, rowIndex);
+                        }
                     }
 
                     childPage.Controls.Add(panel);
@@ -228,66 +265,14 @@ namespace TournamentGenerator
                 tbcFights.TabPages.Add(page);
             }
 
+            if (tournament.tieBreakers != null)
+            {
+                tbcFights.TabPages.Add(CreateEliminationTabPage(tournament.tieBreakers, "Tie Breaker"));
+            }
+
             for (int i = 0; i < tournament.eliminations.Count; i++)
             {
-                Pool bracket = tournament.eliminations[i];
-
-                TabPage page = new TabPage("ELIM - " + bracket.name);
-                page.Width = tbcFights.Width;
-                page.Height = tbcFights.Height;
-
-                List<Fight> round = bracket.rounds[0];
-
-                TableLayoutPanel panel = new TableLayoutPanel();
-                panel.Width = page.Width;
-                panel.Height = page.Height;
-
-                Font boldFont = new Font(Font, FontStyle.Bold);
-
-                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
-                panel.Controls.Add(fighterALabel, 0, 0);
-                panel.SetColumnSpan(fighterALabel, 2);
-
-                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
-                panel.Controls.Add(fighterBLabel, 3, 0);
-                panel.SetColumnSpan(fighterBLabel, 2);
-
-                for (int j = 0; j < round.Count; j++)
-                {
-                    Fight fight = round[j];
-
-                    Fighter fighterA = tournament.GetFighterByID(fight.fighterA);
-                    Fighter fighterB = tournament.GetFighterByID(fight.fighterB);
-
-                    int rowIndex = j + 1;
-
-                    panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
-
-                    CheckBox rbWinA = new CheckBox();
-                    rbWinA.Text = "Win";
-                    rbWinA.Tag = fight.fightID;
-                    rbWinA.Name = "AResultRB";
-                    rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
-                    rbWinA.CheckedChanged += control_ValueChanged;
-                    if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinA.Enabled = false;
-                    panel.Controls.Add(rbWinA, 1, rowIndex);
-
-                    panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
-
-                    panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
-
-                    CheckBox rbWinB = new CheckBox();
-                    rbWinB.Text = "Win";
-                    rbWinB.Tag = fight.fightID;
-                    rbWinB.Name = "BResultRB";
-                    rbWinB.Checked = (fight.fighterBResult == Fight.FightResult.WIN);
-                    rbWinB.CheckedChanged += control_ValueChanged;
-                    if (tournament.stage != Tournament.TournamentStage.ELIMINATIONS || i != (tournament.eliminations.Count - 1)) rbWinB.Enabled = false;
-                    panel.Controls.Add(rbWinB, 4, rowIndex);
-                }
-
-                page.Controls.Add(panel);
-                tbcFights.TabPages.Add(page);
+                tbcFights.TabPages.Add(CreateEliminationTabPage(tournament.eliminations[i]));
             }
 
             if(tournament.finals.Count > 0)
@@ -354,6 +339,70 @@ namespace TournamentGenerator
                 page.Controls.Add(panel);
                 tbcFights.TabPages.Add(page);
             }
+        }
+
+        private TabPage CreateEliminationTabPage(Pool bracket, string pageNamePrefix = "ELIM", bool finals = false)
+        {
+            TabPage page = new TabPage(pageNamePrefix + " - " + bracket.name);
+            page.Width = tbcFights.Width;
+            page.Height = tbcFights.Height;
+
+            TableLayoutPanel panel = new TableLayoutPanel();
+            panel.Width = page.Width;
+            panel.Height = page.Height;
+
+            Font boldFont = new Font(Font, FontStyle.Bold);
+
+            foreach (List<Fight> r in bracket.rounds)
+            {
+                List<Fight> round = bracket.rounds[0];
+
+                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterALabel, 0, 0);
+                panel.SetColumnSpan(fighterALabel, 2);
+
+                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                panel.Controls.Add(fighterBLabel, 3, 0);
+                panel.SetColumnSpan(fighterBLabel, 2);
+
+                for (int j = 0; j < round.Count; j++)
+                {
+                    Fight fight = round[j];
+
+                    Fighter fighterA = tournament.GetFighterByID(fight.fighterA);
+                    Fighter fighterB = tournament.GetFighterByID(fight.fighterB);
+
+                    int rowIndex = j + 1;
+
+                    panel.Controls.Add(new Label() { Text = fighterA.name }, 0, rowIndex);
+
+                    CheckBox rbWinA = new CheckBox();
+                    rbWinA.Text = "Win";
+                    rbWinA.Tag = fight.fightID;
+                    rbWinA.Name = "AResultRB";
+                    rbWinA.Checked = (fight.fighterAResult == Fight.FightResult.WIN);
+                    rbWinA.CheckedChanged += control_ValueChanged;
+                    if (tournament.stage == Tournament.TournamentStage.CLOSED || !(tournament.IsLatestBracket(bracket))) rbWinA.Enabled = false;
+                    panel.Controls.Add(rbWinA, 1, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
+
+                    panel.Controls.Add(new Label() { Text = fighterB.name }, 3, rowIndex);
+
+                    CheckBox rbWinB = new CheckBox();
+                    rbWinB.Text = "Win";
+                    rbWinB.Tag = fight.fightID;
+                    rbWinB.Name = "BResultRB";
+                    rbWinB.Checked = (fight.fighterBResult == Fight.FightResult.WIN);
+                    rbWinB.CheckedChanged += control_ValueChanged;
+                    if (tournament.stage == Tournament.TournamentStage.CLOSED || !(tournament.IsLatestBracket(bracket))) rbWinB.Enabled = false;
+                    panel.Controls.Add(rbWinB, 4, rowIndex);
+                }
+            }
+
+            page.Controls.Add(panel);
+
+            return page;
         }
 
         private void control_ValueChanged(object sender, EventArgs e)
@@ -485,8 +534,40 @@ namespace TournamentGenerator
 
                         if (result == DialogResult.Yes)
                         {
-                            tournament.GenerateNextEliminationBracket();
-                            tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
+                            if (tournament.GenerateNextEliminationBracket())
+                            {
+                                tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
+                            }
+                            else
+                            {
+                                tournament.stage = Tournament.TournamentStage.TIEBREAKERS;
+                                MessageBox.Show("There are fighters tied for qualification. A tie breaker pool has been generated to settle the tie.");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fights are not all complete!");
+                    }
+                    break;
+
+                case Tournament.TournamentStage.TIEBREAKERS:
+                    if (tournament.IsComplete())
+                    {
+                        //warn user that pool results cannot be changed once eliminations are generated
+                        result = MessageBox.Show("Once elimination brackets are created, the pool results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            if (tournament.GenerateNextEliminationBracket())
+                            {
+                                tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
+                            }
+                            else
+                            {
+                                tournament.stage = Tournament.TournamentStage.TIEBREAKERS;
+                                MessageBox.Show("There are fighters tied for qualification. A tie breaker pool has been generated to settle the tie.");
+                            }
                         }
                     }
                     else

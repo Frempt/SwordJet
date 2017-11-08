@@ -1,6 +1,6 @@
 ﻿namespace TournamentGenerator
 {
-    partial class RMASTournamentManager
+    partial class TournamentManager
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RMASTournamentManager));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentManager));
             this.btnNew = new System.Windows.Forms.Button();
             this.btnExisting = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -73,7 +73,7 @@
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
-            // RMASTournamentManager
+            // TournamentManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -82,8 +82,8 @@
             this.Controls.Add(this.btnExisting);
             this.Controls.Add(this.btnNew);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "RMASTournamentManager";
-            this.Text = "RMAS Tournament Manager";
+            this.Name = "TournamentManager";
+            this.Text = "SwordJet - Tournament Manager";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

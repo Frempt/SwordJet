@@ -512,117 +512,15 @@ namespace TournamentGenerator
         {
             DialogResult result;
 
-            switch (tournament.stage)
+            result = MessageBox.Show("Once the tournament is advanced, details for this stage will be locked. Do you wish to advance to the next stage?", "Are you sure?", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
             {
-                case Tournament.TournamentStage.REGISTRATION:
+                MessageBox.Show(tournament.AdvanceTournament());
 
-                    //warn user that fighters cannot be changed once pools are created
-                    result = MessageBox.Show("Once pools are created, the tournament details will be locked. Do you wish to advance to the pool fights?", "Are you sure?", MessageBoxButtons.YesNo);
-
-                    if (result == DialogResult.Yes)
-                    {
-                        tournament.GeneratePools();
-                        tournament.stage = Tournament.TournamentStage.POOLFIGHTS;
-                    }
-                    break;
-
-                case Tournament.TournamentStage.POOLFIGHTS:
-                    if (tournament.IsComplete())
-                    {
-                        //warn user that pool results cannot be changed once eliminations are generated
-                        result = MessageBox.Show("Once elimination brackets are created, the pool results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            if (tournament.GenerateNextEliminationBracket())
-                            {
-                                tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
-                            }
-                            else
-                            {
-                                tournament.stage = Tournament.TournamentStage.TIEBREAKERS;
-                                MessageBox.Show("There are fighters tied for qualification. A tie breaker pool has been generated to settle the tie.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Fights are not all complete!");
-                    }
-                    break;
-
-                case Tournament.TournamentStage.TIEBREAKERS:
-                    if (tournament.IsComplete())
-                    {
-                        //warn user that pool results cannot be changed once eliminations are generated
-                        result = MessageBox.Show("Once elimination brackets are created, the pool results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            if (tournament.GenerateNextEliminationBracket())
-                            {
-                                tournament.stage = Tournament.TournamentStage.ELIMINATIONS;
-                            }
-                            else
-                            {
-                                tournament.stage = Tournament.TournamentStage.TIEBREAKERS;
-                                MessageBox.Show("There are fighters tied for qualification. A tie breaker pool has been generated to settle the tie.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Fights are not all complete!");
-                    }
-                    break;
-
-                case Tournament.TournamentStage.ELIMINATIONS:
-                    if (tournament.IsComplete())
-                    {
-                        //warn user that elimination bracket results cannot be changed once the next round is generated
-                        result = MessageBox.Show("Once eliminations are progressed, the previous round's results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            //check if we are moving to the finals
-                            if (tournament.eliminations.Last().fighters.Count == 4)
-                            {
-                                tournament.stage = Tournament.TournamentStage.FINALS;
-                                tournament.GenerateFinals();
-                            }
-                            else
-                            {
-                                tournament.GenerateNextEliminationBracket();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Fights are not all complete!");
-                    }
-                    break;
-
-                case Tournament.TournamentStage.FINALS:
-                    if (tournament.IsComplete())
-                    {
-                        result = MessageBox.Show("Once tournament is closed, the fight results will be locked. Do you wish to advance to the elimination fights?", "Are you sure?", MessageBoxButtons.YesNo);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            tournament.stage = Tournament.TournamentStage.CLOSED;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Fights are not all complete!");
-                    }
-                    break;
-
-                default: break;
+                FileAccessHelper.SaveTournament(tournament, FilePath);
+                LoadTournament();
             }
-
-            FileAccessHelper.SaveTournament(tournament, FilePath);
-            LoadTournament();
         }
     }
 }

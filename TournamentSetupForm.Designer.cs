@@ -60,6 +60,12 @@
             this.ddlElimSize = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.ddlPoolType = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ddlClub = new System.Windows.Forms.ComboBox();
+            this.ddlNationality = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -74,7 +80,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(225, 9);
+            this.button1.Location = new System.Drawing.Point(225, 116);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(184, 28);
@@ -86,39 +92,41 @@
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.ddlNationality);
+            this.panel1.Controls.Add(this.label14);
+            this.panel1.Controls.Add(this.ddlClub);
+            this.panel1.Controls.Add(this.label13);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtName);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(466, 12);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(413, 41);
+            this.panel1.Size = new System.Drawing.Size(413, 148);
             this.panel1.TabIndex = 2;
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 15);
+            this.label1.Location = new System.Drawing.Point(4, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 17);
+            this.label1.Size = new System.Drawing.Size(50, 17);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Name";
+            this.label1.Text = "Name*";
             // 
             // txtName
             // 
-            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtName.Location = new System.Drawing.Point(59, 11);
+            this.txtName.Location = new System.Drawing.Point(81, 6);
             this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(132, 22);
+            this.txtName.Size = new System.Drawing.Size(328, 22);
             this.txtName.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(21, 52);
+            this.label2.Location = new System.Drawing.Point(9, 75);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(113, 17);
@@ -128,7 +136,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(21, 91);
+            this.label3.Location = new System.Drawing.Point(9, 105);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 17);
@@ -138,7 +146,7 @@
             // txtPools
             // 
             this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPools.Location = new System.Drawing.Point(165, 49);
+            this.txtPools.Location = new System.Drawing.Point(153, 73);
             this.txtPools.Margin = new System.Windows.Forms.Padding(4);
             this.txtPools.Minimum = new decimal(new int[] {
             1,
@@ -158,7 +166,7 @@
             // txtRounds
             // 
             this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRounds.Location = new System.Drawing.Point(165, 88);
+            this.txtRounds.Location = new System.Drawing.Point(153, 103);
             this.txtRounds.Margin = new System.Windows.Forms.Padding(4);
             this.txtRounds.Minimum = new decimal(new int[] {
             1,
@@ -181,10 +189,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFighters.FormattingEnabled = true;
             this.lstFighters.ItemHeight = 16;
-            this.lstFighters.Location = new System.Drawing.Point(466, 57);
+            this.lstFighters.Location = new System.Drawing.Point(466, 169);
             this.lstFighters.Margin = new System.Windows.Forms.Padding(4);
             this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(413, 436);
+            this.lstFighters.Size = new System.Drawing.Size(413, 324);
             this.lstFighters.TabIndex = 8;
             // 
             // btnDelete
@@ -204,16 +212,16 @@
             this.lblLengthMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLengthMessage.AutoEllipsis = true;
-            this.lblLengthMessage.Location = new System.Drawing.Point(8, 137);
+            this.lblLengthMessage.Location = new System.Drawing.Point(6, 163);
             this.lblLengthMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLengthMessage.Name = "lblLengthMessage";
-            this.lblLengthMessage.Size = new System.Drawing.Size(437, 82);
+            this.lblLengthMessage.Size = new System.Drawing.Size(437, 64);
             this.lblLengthMessage.TabIndex = 11;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 111);
+            this.label4.Location = new System.Drawing.Point(9, 131);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(132, 17);
@@ -223,7 +231,7 @@
             // txtFightTime
             // 
             this.txtFightTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFightTime.Location = new System.Drawing.Point(153, 111);
+            this.txtFightTime.Location = new System.Drawing.Point(153, 129);
             this.txtFightTime.Margin = new System.Windows.Forms.Padding(4);
             this.txtFightTime.Maximum = new decimal(new int[] {
             10,
@@ -464,12 +472,18 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.ddlPoolType);
+            this.panel2.Controls.Add(this.label12);
             this.panel2.Controls.Add(this.btnManage);
             this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.chkDoubleOut);
             this.panel2.Controls.Add(this.label11);
+            this.panel2.Controls.Add(this.txtRounds);
             this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.txtPools);
+            this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label9);
+            this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.txtDoubleLimit);
             this.panel2.Controls.Add(this.ddlElimSize);
@@ -487,6 +501,61 @@
             this.panel2.Size = new System.Drawing.Size(447, 515);
             this.panel2.TabIndex = 33;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(9, 45);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(72, 17);
+            this.label12.TabIndex = 33;
+            this.label12.Text = "Pool Type";
+            // 
+            // ddlPoolType
+            // 
+            this.ddlPoolType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlPoolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlPoolType.FormattingEnabled = true;
+            this.ddlPoolType.Location = new System.Drawing.Point(153, 42);
+            this.ddlPoolType.Name = "ddlPoolType";
+            this.ddlPoolType.Size = new System.Drawing.Size(288, 24);
+            this.ddlPoolType.TabIndex = 34;
+            this.ddlPoolType.SelectedIndexChanged += new System.EventHandler(this.ddlPoolType_SelectedIndexChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 42);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(36, 17);
+            this.label13.TabIndex = 4;
+            this.label13.Text = "Club";
+            // 
+            // ddlClub
+            // 
+            this.ddlClub.FormattingEnabled = true;
+            this.ddlClub.Location = new System.Drawing.Point(81, 39);
+            this.ddlClub.Name = "ddlClub";
+            this.ddlClub.Size = new System.Drawing.Size(328, 24);
+            this.ddlClub.TabIndex = 5;
+            // 
+            // ddlNationality
+            // 
+            this.ddlNationality.FormattingEnabled = true;
+            this.ddlNationality.Location = new System.Drawing.Point(81, 72);
+            this.ddlNationality.Name = "ddlNationality";
+            this.ddlNationality.Size = new System.Drawing.Size(328, 24);
+            this.ddlNationality.TabIndex = 7;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(1, 75);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(74, 17);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Nationality";
+            // 
             // TournamentSetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -496,10 +565,6 @@
             this.Controls.Add(this.lblFighterCount);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.lstFighters);
-            this.Controls.Add(this.txtRounds);
-            this.Controls.Add(this.txtPools);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -556,6 +621,12 @@
         private System.Windows.Forms.ComboBox ddlElimSize;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ComboBox ddlPoolType;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox ddlNationality;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox ddlClub;
+        private System.Windows.Forms.Label label13;
     }
 }
 

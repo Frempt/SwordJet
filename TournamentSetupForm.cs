@@ -20,6 +20,7 @@ namespace TournamentGenerator
             InitializeComponent();
 
             foreach (var item in Enum.GetValues(typeof(Tournament.EliminationType))) { ddlElimType.Items.Add(item); }
+            foreach (var item in Enum.GetValues(typeof(Tournament.PoolType))) { ddlPoolType.Items.Add(item); }
             foreach (var item in ConfigValues.eliminationSizes) { ddlElimSize.Items.Add(item); }
 
             FilePath = filePath;
@@ -33,6 +34,8 @@ namespace TournamentGenerator
             {
                 //add the new fighter to the list with the next ID, and refresh the listbox
                 Fighter fighter = new Fighter(tournament.GetNextFighterID(), txtName.Text);
+                fighter.club = ddlClub.Text;
+                fighter.country = ddlNationality.Text;
                 tournament.fighters.Add(fighter);
 
                 lstFighters.DataSource = null;
@@ -49,6 +52,8 @@ namespace TournamentGenerator
 
                 //save changes
                 FileAccessHelper.SaveTournament(tournament, FilePath);
+
+                LoadTournament();
             }
         }
 
@@ -143,10 +148,13 @@ namespace TournamentGenerator
             tournament.lossPoints = (int)txtLossPoints.Value;
             tournament.fightTimeMinutes = (int)txtFightTime.Value;
             tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
+            tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
             tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
             tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
 
             FileAccessHelper.SaveTournament(tournament, FilePath);
+
+            LoadTournament();
         }
 
         private void LoadTournament()
@@ -159,6 +167,7 @@ namespace TournamentGenerator
             txtRounds.Value = tournament.numberOfRounds;
             txtTournamentName.Text = tournament.name;
             ddlElimType.SelectedItem = tournament.eliminationType;
+            ddlPoolType.SelectedItem = tournament.poolType;
             ddlElimSize.SelectedItem = tournament.eliminationSize;
             txtWinPoints.Value = tournament.winPoints;
             txtDrawPoints.Value = tournament.drawPoints;
@@ -172,6 +181,18 @@ namespace TournamentGenerator
 
             CalculateMessage();
 
+            List<string> clubsDistinct = new List<string>();
+            foreach (Fighter f in tournament.fighters) if (!clubsDistinct.Contains(f.club)) clubsDistinct.Add(f.club);
+
+            ddlClub.DataSource = clubsDistinct;
+            ddlClub.Text = "";
+
+            List<string> nationsDistinct = new List<string>();
+            foreach (Fighter f in tournament.fighters) if (!nationsDistinct.Contains(f.country)) nationsDistinct.Add(f.country);
+
+            ddlNationality.DataSource = nationsDistinct;
+            ddlNationality.Text = "";
+
             if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
             {
                 button1.Enabled = false;
@@ -184,8 +205,11 @@ namespace TournamentGenerator
                 txtRounds.Enabled = false;
                 txtFightTime.Enabled = false;
                 txtName.Enabled = false;
+                ddlClub.Enabled = false;
+                ddlNationality.Enabled = false;
                 chkDoubleOut.Enabled = false;
                 txtTournamentName.Enabled = false;
+                ddlPoolType.Enabled = false;
 
                 if(tournament.stage != Tournament.TournamentStage.POOLFIGHTS)
                 {
@@ -201,6 +225,39 @@ namespace TournamentGenerator
         {
             ManageTournament manager = new ManageTournament(FilePath);
             manager.Show();
+        }
+
+        private void ddlPoolType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Tournament.PoolType poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
+
+            switch(poolType) 
+            {
+                case Tournament.PoolType.FIXEDROUNDS:
+                    txtPools.Enabled = true;
+                    txtRounds.Enabled = true;
+                    break;
+
+                case Tournament.PoolType.ROUNDTABLE:
+                    txtPools.Enabled = true;
+                    txtRounds.Enabled = false;
+                    break;
+
+                case Tournament.PoolType.SWISSPAIRS:
+                    txtPools.Enabled = false;
+                    txtRounds.Enabled = true;
+                    MessageBox.Show("Swiss pairs don't work yet :(");
+                    break;
+            }
+
+            if (!loading)
+            {
+                //recalulate pool length message
+                CalculateMessage();
+
+                //save changes
+                SaveTournament();
+            }
         }
     }
 }

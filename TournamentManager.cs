@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace TournamentGenerator
 {
-    public partial class RMASTournamentManager : Form
+    public partial class TournamentManager : Form
     {
-        public RMASTournamentManager()
+        public TournamentManager()
         {
             InitializeComponent();
 
@@ -33,7 +33,7 @@ namespace TournamentGenerator
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.AddExtension = true;
-            dialog.DefaultExt = ".rmas";
+            dialog.DefaultExt = ".sjt";
             dialog.FileName = "Tournament - " + DateTime.Today.ToString("dd MM yyyy");
             dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             DialogResult result = dialog.ShowDialog();
@@ -59,7 +59,7 @@ namespace TournamentGenerator
         private void btnExisting_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Tournament files|*.rmas";
+            dialog.Filter = "Tournament files|*.sjt";
             dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             DialogResult result = dialog.ShowDialog();
 

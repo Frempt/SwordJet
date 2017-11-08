@@ -49,11 +49,11 @@ namespace TournamentGenerator
         {
             List<T[]> pairs = new List<T[]>();
 
-            for(int i = 0; i < list.Count - 1; i++)
+            for (int i = 0; i < list.Count - 1; i++)
             {
-                for(int j = (i + 1); j < list.Count; j++)
+                for (int j = (i + 1); j < list.Count; j++)
                 {
-                    pairs.Add(new T[]{ list[i], list[j]});
+                    pairs.Add(new T[] { list[i], list[j] });
                 }
             }
 
@@ -98,7 +98,7 @@ namespace TournamentGenerator
 
             //create a entry of DocumentSummaryInformation
             DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
-            dsi.Company = "RMAS";
+            dsi.Company = "SwordJet";
             book.DocumentSummaryInformation = dsi;
 
             //create a entry of SummaryInformation
@@ -352,7 +352,8 @@ namespace TournamentGenerator
     [Serializable]
     public class Tournament
     {
-        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED}
+        public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED }
+        public enum PoolType { FIXEDROUNDS = 0, ROUNDTABLE = 1, SWISSPAIRS = 2 }
         public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
 
         public string name;
@@ -360,6 +361,7 @@ namespace TournamentGenerator
         public int numberOfPools;
         public int fightTimeMinutes;
         public TournamentStage stage = TournamentStage.REGISTRATION;
+        public PoolType poolType = PoolType.FIXEDROUNDS;
         public EliminationType eliminationType = EliminationType.RANDOMISED;
         public int eliminationSize;
         public bool matchedEliminations;
@@ -370,7 +372,7 @@ namespace TournamentGenerator
 
         public List<Fighter> fighters = new List<Fighter>();
         public List<Pool> pools = new List<Pool>();
-        public Pool tieBreakers = null; 
+        public Pool tieBreakers = null;
         public List<Pool> eliminations = new List<Pool>();
         public List<Fight> finals = new List<Fight>();
 
@@ -399,7 +401,7 @@ namespace TournamentGenerator
 
         public Fighter GetFighterByID(int id)
         {
-            foreach(Fighter f in fighters)
+            foreach (Fighter f in fighters)
             {
                 if (f.id == id) return f;
             }
@@ -431,11 +433,14 @@ namespace TournamentGenerator
                 }
             }
 
-            foreach (List<Fight> r in tieBreakers.rounds)
+            if (tieBreakers != null)
             {
-                foreach (Fight f in r)
+                foreach (List<Fight> r in tieBreakers.rounds)
                 {
-                    if (f.fightID == id) return f;
+                    foreach (Fight f in r)
+                    {
+                        if (f.fightID == id) return f;
+                    }
                 }
             }
 
@@ -451,17 +456,17 @@ namespace TournamentGenerator
         {
             int score = 0;
 
-            foreach(Pool pool in pools)
+            foreach (Pool pool in pools)
             {
-                if(pool.fighters.Contains(fighter.id))
+                if (pool.fighters.Contains(fighter.id))
                 {
-                    foreach(List<Fight> round in pool.rounds)
+                    foreach (List<Fight> round in pool.rounds)
                     {
-                        foreach(Fight fight in round)
+                        foreach (Fight fight in round)
                         {
                             Fight.FightResult result = Fight.FightResult.PENDING;
 
-                            if(fight.fighterA == fighter.id)
+                            if (fight.fighterA == fighter.id)
                             {
                                 result = fight.fighterAResult;
                             }
@@ -470,11 +475,11 @@ namespace TournamentGenerator
                                 result = fight.fighterBResult;
                             }
 
-                            if(result != Fight.FightResult.PENDING)
+                            if (result != Fight.FightResult.PENDING)
                             {
                                 int gainedScore = 0;
 
-                                switch(result)
+                                switch (result)
                                 {
                                     case Fight.FightResult.WIN: gainedScore = winPoints; break;
                                     case Fight.FightResult.LOSS: gainedScore = lossPoints; break;
@@ -533,13 +538,13 @@ namespace TournamentGenerator
         {
             if (tieBreakers != null)
             {
-                if(tieBreakers.fighters.Contains(fighter.id))
+                if (tieBreakers.fighters.Contains(fighter.id))
                 {
                     int score = 0;
 
-                    foreach(List<Fight> r in tieBreakers.rounds)
+                    foreach (List<Fight> r in tieBreakers.rounds)
                     {
-                        foreach(Fight f in r)
+                        foreach (Fight f in r)
                         {
                             if (f.fighterA == fighter.id) score += (f.fighterAResult == Fight.FightResult.WIN) ? 1 : 0;
                             else if (f.fighterB == fighter.id && !f.oddFight) score += (f.fighterBResult == Fight.FightResult.WIN) ? 1 : 0;
@@ -603,9 +608,9 @@ namespace TournamentGenerator
 
         public int GetFighterFinalRank(Fighter fighter)
         {
-            if(stage == TournamentStage.CLOSED)
+            if (stage == TournamentStage.CLOSED)
             {
-                if(finals[1].fighterA == fighter.id)
+                if (finals[1].fighterA == fighter.id)
                 {
                     if (finals[1].fighterAResult == Fight.FightResult.WIN) return 1;
                     else return 2;
@@ -627,7 +632,7 @@ namespace TournamentGenerator
                     else return 4;
                 }
 
-                for(int i = eliminations.Count - 1; i > 0; i--)
+                for (int i = eliminations.Count - 1; i > 0; i--)
                 {
                     int bracketRank = 5 + -(i - (eliminations.Count - 1));
                     foreach (Fight f in eliminations[i].rounds[0])
@@ -644,7 +649,7 @@ namespace TournamentGenerator
         {
             if (finals.Count > 0) return false;
 
-            if(eliminations.Count > 0)
+            if (eliminations.Count > 0)
             {
                 if (eliminations.Last().name == p.name) return true;
             }
@@ -684,7 +689,10 @@ namespace TournamentGenerator
             pool.name = name;
             pool.fighters = fighters;
 
-            for (int k = 0; k < numberOfRounds; k++)
+            int roundsThisPool = numberOfRounds;
+            if (poolType == PoolType.ROUNDTABLE) roundsThisPool = fighters.Count - 1;
+
+            for (int k = 0; k < roundsThisPool; k++)
             {
                 List<Fight> round = pool.GenerateRound();
 
@@ -695,6 +703,49 @@ namespace TournamentGenerator
         }
 
         public List<Pool> GeneratePools()
+        {
+            switch (poolType)
+            {
+                case PoolType.FIXEDROUNDS:
+                    return GenerateFixedPools();
+
+                case PoolType.ROUNDTABLE:
+                    return GenerateFixedPools();
+
+                case PoolType.SWISSPAIRS:
+                    return GenerateSwissPools();
+
+                default:
+                    return null;
+            }
+        }
+
+        public List<Pool> GenerateSwissPools()
+        {
+            List<Pool> newPools = new List<Pool>();
+
+            //todo generate next round of swiss pools
+            numberOfRounds = 1;
+            numberOfPools = 2;
+            if(pools.Count == 0)
+            {
+                newPools = GenerateFixedPools();
+            }
+            else
+            {
+
+
+                Pool topPool = new Pool();
+
+
+
+                Pool bottomPool = new Pool();
+            }
+
+            return newPools;
+        }
+
+        public List<Pool> GenerateFixedPools()
         {
             int fightersPerPool = fighters.Count / numberOfPools;
             pools = new List<Pool>();
@@ -725,10 +776,14 @@ namespace TournamentGenerator
                 //if there are any odd fighters, add them to the last pool
                 if (i == numberOfPools - 1 && fightersClone.Count > 0)
                 {
-                    poolFighters.Add(fightersClone[0].id);
+                    while (fightersClone.Count > 0)
+                    {
+                        poolFighters.Add(fightersClone[0].id);
+                        fightersClone.RemoveAt(0);
+                    }
                 }
 
-                pools.Add(GeneratePool(name,poolFighters));
+                pools.Add(GeneratePool(name, poolFighters));
             }
 
             return pools;
@@ -740,11 +795,11 @@ namespace TournamentGenerator
 
             if (eliminations.Count > 0)
             {
-                foreach(Fight f in eliminations.Last().rounds.Last())
+                foreach (Fight f in eliminations.Last().rounds.Last())
                 {
                     if (f.fighterAResult == Fight.FightResult.WIN) bracket.fighters.Add(f.fighterA);
                     else bracket.fighters.Add(f.fighterB);
-                }    
+                }
             }
             else
             {
@@ -771,7 +826,7 @@ namespace TournamentGenerator
 
                 for (int i = 0; i < eliminationSize; i++)
                 {
-                    if(i == eliminationSize - 1)
+                    if (i == eliminationSize - 1)
                     {
                         //handle tie-breakers
                         if (tieBreakers == null)
@@ -805,12 +860,12 @@ namespace TournamentGenerator
                                 tieBreakers = new Pool();
                                 tieBreakers.name = "Tie Breakers";
                                 tieBreakers.fighters = tiedFighters;
-                                
+
                                 List<Fight> tieBreakerFights = new List<Fight>();
 
                                 //ensure every permutation happens
                                 List<int[]> pairs = tieBreakers.fighters.GetDistinctPairs();
-                                foreach(int[] pair in pairs)
+                                foreach (int[] pair in pairs)
                                 {
                                     tieBreakerFights.Add(new Fight(pair[0], pair[1]));
                                 }
@@ -826,7 +881,7 @@ namespace TournamentGenerator
                 }
             }
 
-            switch(bracket.fighters.Count)
+            switch (bracket.fighters.Count)
             {
                 case 4:
                     bracket.name = "Semi Finals";
@@ -841,18 +896,18 @@ namespace TournamentGenerator
                     break;
             }
 
-            if(eliminationType == EliminationType.RANDOMISED)
+            if (eliminationType == EliminationType.RANDOMISED)
             {
                 bracket.fighters.Shuffle();
             }
 
             List<Fight> fights = new List<Fight>();
 
-            for(int i = 0; i < bracket.fighters.Count/2; i++)
+            for (int i = 0; i < bracket.fighters.Count / 2; i++)
             {
                 Fight fight = new Fight();
                 fight.fighterA = bracket.fighters[i];
-                fight.fighterB = bracket.fighters[bracket.fighters.Count - (i+1)];
+                fight.fighterB = bracket.fighters[bracket.fighters.Count - (i + 1)];
 
                 fights.Add(fight);
             }
@@ -864,7 +919,7 @@ namespace TournamentGenerator
 
         public void GenerateFinals()
         {
-            if(eliminations.Last().fighters.Count == 4)
+            if (eliminations.Last().fighters.Count == 4)
             {
                 Fight bronzeFight = new Fight();
                 Fight goldFight = new Fight();
@@ -892,24 +947,107 @@ namespace TournamentGenerator
                     goldFight.fighterB = fightB.fighterB;
                     bronzeFight.fighterB = fightB.fighterA;
                 }
-                
+
                 finals = new List<Fight>() { bronzeFight, goldFight };
             }
         }
 
+        public string AdvanceTournament()
+        {
+            if (IsComplete())
+            {
+                switch (stage)
+                {
+                    case TournamentStage.REGISTRATION:
+
+                        GeneratePools();
+
+                        if (pools == null)
+                        {
+                            return "Error while generating pool fights - are there enough fighters per pool?";
+                        }
+                        else
+                        {
+                            stage = TournamentStage.POOLFIGHTS;
+                            return "Pool Fights generated.";
+                        }
+
+                    case TournamentStage.POOLFIGHTS:
+
+                        if (poolType == PoolType.SWISSPAIRS && pools.Count < (numberOfRounds * 2))
+                        {
+                            //todo generate next Swiss round
+                            //is it a superficial winner/loser pool split, or is it calculated on overall score? unsure how well this will work without being paired with fight management
+                            return "Next round generated";
+                        }
+                        else if (GenerateNextEliminationBracket())
+                        {
+                            stage = TournamentStage.ELIMINATIONS;
+                            return "Eliminations generated";
+                        }
+                        else
+                        {
+                            stage = TournamentStage.TIEBREAKERS;
+                            return "There are fighters tied for qualification. A tie breaker pool has been generated to settle the tie.";
+                        }
+
+                    case TournamentStage.TIEBREAKERS:
+
+                        if (GenerateNextEliminationBracket())
+                        {
+                            stage = TournamentStage.ELIMINATIONS;
+                            return "Eliminations generated";
+                        }
+                        else
+                        {
+                            return "";
+                        }
+
+                    case TournamentStage.ELIMINATIONS:
+
+                        //check if we are moving to the finals
+                        if (eliminations.Last().fighters.Count == 4)
+                        {
+                            stage = Tournament.TournamentStage.FINALS;
+                            GenerateFinals();
+                            return "Finals generated";
+                        }
+                        else
+                        {
+                            GenerateNextEliminationBracket();
+                            return "Next elimination bracket generated";
+                        }
+
+                    case TournamentStage.FINALS:
+
+
+                        stage = Tournament.TournamentStage.CLOSED;
+                        return "Tournament closed";
+
+                    default: break;
+                }
+            }
+            else
+            {
+                return "Fights are not all complete!";
+            }
+
+            return "";
+        }
+
         public bool IsComplete()
         {
-            foreach(Pool pool in pools)
+            foreach (Pool pool in pools)
             {
                 if (!pool.IsComplete()) return false;
             }
 
-            foreach(Pool pool in eliminations)
+            foreach (Pool pool in eliminations)
             {
                 if (!pool.IsComplete()) return false;
             }
 
-            foreach(Fight fight in finals)
+            foreach (Fight fight in finals)
             {
                 if (!fight.IsComplete()) return false;
             }
@@ -1026,9 +1164,9 @@ namespace TournamentGenerator
 
         public bool IsComplete()
         {
-            foreach(List<Fight> round in rounds)
+            foreach (List<Fight> round in rounds)
             {
-                foreach(Fight fight in round)
+                foreach (Fight fight in round)
                 {
                     if (!fight.IsComplete()) return false;
                 }

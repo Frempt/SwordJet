@@ -81,18 +81,19 @@ namespace TournamentGenerator
                 Dictionary<string,string> elimResults = tournament.GetFighterEliminationResults(fighter);
                 int elimSort = 0;
 
-                foreach(Pool p in tournament.eliminations)
+                for(int i = 0; i < tournament.eliminations.Count; i++)
                 {
+                    Pool p = tournament.eliminations[i];
                     string r = elimResults[p.name];
                     row[p.name] = r;
-                    elimSort += ((r == "WIN") ? 3 : ((r == "LOSS") ? 2 : 0));
+                    elimSort += ((r == "WIN") ? 2 * (i + 1) : ((r == "LOSS") ? 1 * (i + 1) : 0));
                 }
 
                 if (tournament.finals.Count > 0)
                 {
                     string r = tournament.GetFighterFinalsResult(fighter);
                     row["Finals"] = r;
-                    elimSort += ((r == "WIN") ? 2 : ((r == "LOSS") ? 1 : 0));
+                    elimSort += ((r == "WIN") ? 2 * tournament.eliminations.Count : ((r == "LOSS") ? 1 * tournament.eliminations.Count : 0));
                 }
 
                 row["ElimSort"] = elimSort;
@@ -100,7 +101,7 @@ namespace TournamentGenerator
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, TieBreakerScore DESC, PoolScore DESC, PoolDoubles ASC";
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, TieBreakerScore DESC";
             if (tournament.stage == Tournament.TournamentStage.CLOSED)
             {
                 dv.Sort = "FinishingRank ASC, " + dv.Sort;
@@ -204,6 +205,10 @@ namespace TournamentGenerator
 
                         Fighter fighterA = tournament.GetFighterByID(fight.fighterA);
                         Fighter fighterB = tournament.GetFighterByID(fight.fighterB);
+                        if(fighterB == null)
+                        {
+                            fighterB = new Fighter(int.MaxValue, "Bye");
+                        }
 
                         int rowIndex = j + 1;
 
@@ -253,6 +258,15 @@ namespace TournamentGenerator
                         if (fight.oddFight)
                         {
                             panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 6, rowIndex);
+
+                            if(tournament.poolType == Tournament.PoolType.SWISSPAIRS)
+                            {
+                                ddlResultA.SelectedItem = Fight.FightResult.WIN;
+                                ddlResultB.SelectedItem = Fight.FightResult.LOSS;
+                                ddlResultA.Enabled = false;
+                                ddlResultB.Enabled = false;
+                                txtDoubles.Enabled = false;
+                            }
                         }
                     }
 
@@ -521,6 +535,12 @@ namespace TournamentGenerator
                 FileAccessHelper.SaveTournament(tournament, FilePath);
                 LoadTournament();
             }
+        }
+
+        private void btnRatingsExport_Click(object sender, EventArgs e)
+        {
+            //todo add this feature
+            MessageBox.Show("TODO: Add this feature :/");
         }
     }
 }

@@ -238,7 +238,7 @@ namespace TournamentGenerator
                     txtRounds.Enabled = true;
                     break;
 
-                case Tournament.PoolType.ROUNDTABLE:
+                case Tournament.PoolType.ROUNDROBIN:
                     txtPools.Enabled = true;
                     txtRounds.Enabled = false;
                     break;

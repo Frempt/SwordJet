@@ -353,7 +353,7 @@ namespace TournamentGenerator
     public class Tournament
     {
         public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED }
-        public enum PoolType { FIXEDROUNDS = 0, ROUNDTABLE = 1, SWISSPAIRS = 2 }
+        public enum PoolType { FIXEDROUNDS = 0, ROUNDROBIN = 1, SWISSPAIRS = 2 }
         public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
 
         public string name;
@@ -450,6 +450,16 @@ namespace TournamentGenerator
             }
 
             return null;
+        }
+
+        public bool HasFightHappenedAlready(Fight f)
+        {
+            foreach(Pool p in pools)
+            {
+                if (p.HasFightHappenedAlready(f)) return true;
+            }
+
+            return false;
         }
 
         public int GetFighterScore(Fighter fighter)
@@ -632,7 +642,7 @@ namespace TournamentGenerator
                     else return 4;
                 }
 
-                for (int i = eliminations.Count - 1; i > 0; i--)
+                for (int i = eliminations.Count - 1; i > -1; i--)
                 {
                     int bracketRank = 5 + -(i - (eliminations.Count - 1));
                     foreach (Fight f in eliminations[i].rounds[0])
@@ -690,7 +700,7 @@ namespace TournamentGenerator
             pool.fighters = fighters;
 
             int roundsThisPool = numberOfRounds;
-            if (poolType == PoolType.ROUNDTABLE) roundsThisPool = fighters.Count - 1;
+            if (poolType == PoolType.ROUNDROBIN) roundsThisPool = fighters.Count - 1;
 
             for (int k = 0; k < roundsThisPool; k++)
             {
@@ -709,7 +719,7 @@ namespace TournamentGenerator
                 case PoolType.FIXEDROUNDS:
                     return GenerateFixedPools();
 
-                case PoolType.ROUNDTABLE:
+                case PoolType.ROUNDROBIN:
                     return GenerateFixedPools();
 
                 case PoolType.SWISSPAIRS:
@@ -722,27 +732,56 @@ namespace TournamentGenerator
 
         public List<Pool> GenerateSwissPools()
         {
-            List<Pool> newPools = new List<Pool>();
+            DataTable fighterTable = new DataTable();
+            fighterTable.Columns.Add("ID", typeof(int));
+            fighterTable.Columns.Add("Score", typeof(int));
+            fighterTable.Columns.Add("Doubles", typeof(int));
+            fighterTable.Columns.Add("Random", typeof(int));
 
-            //todo generate next round of swiss pools
-            numberOfRounds = 1;
-            numberOfPools = 2;
-            if(pools.Count == 0)
+            foreach (Fighter f in fighters)
             {
-                newPools = GenerateFixedPools();
-            }
-            else
-            {
+                DataRow fRow = fighterTable.NewRow();
 
+                fRow["ID"] = f.id;
+                fRow["Score"] = GetFighterScore(f);
+                fRow["Doubles"] = GetFighterDoubles(f);
+                fRow["Random"] = Helpers.rng.Next(0, fighters.Count * 2);
 
-                Pool topPool = new Pool();
-
-
-
-                Pool bottomPool = new Pool();
+                fighterTable.Rows.Add(fRow);
             }
 
-            return newPools;
+            DataView vw = new DataView(fighterTable);
+            vw.Sort = "Score DESC, Doubles ASC, Random ASC";
+
+            List<int> topFighters = new List<int>();
+            List<int> bottomFighters = new List<int>();
+
+            for(int i = 0; i < vw.Count; i++)
+            {
+                if(i > vw.Count/2)
+                {
+                    bottomFighters.Add((int)vw[i]["ID"]);
+                }
+                else
+                {
+                    topFighters.Add((int)vw[i]["ID"]);
+                }
+            }
+
+            Pool topPool = new Pool();
+            topPool.fighters = topFighters;
+            topPool.name = "Top Pool " + (pools.Count / 2) + 1;
+            topPool.GenerateSwissRound(this);
+
+            Pool bottomPool = new Pool();
+            bottomPool.fighters = bottomFighters;
+            bottomPool.name = "Bottom Pool " + (pools.Count / 2) + 1;
+            bottomPool.GenerateSwissRound(this);
+
+            pools.Add(topPool);
+            pools.Add(bottomPool);
+
+            return pools;
         }
 
         public List<Pool> GenerateFixedPools()
@@ -896,7 +935,8 @@ namespace TournamentGenerator
                     break;
             }
 
-            if (eliminationType == EliminationType.RANDOMISED)
+            //if we want a random bracket, shuffle on the first round of elims
+            if (eliminationType == EliminationType.RANDOMISED && eliminations.Count == 0)
             {
                 bracket.fighters.Shuffle();
             }
@@ -976,8 +1016,7 @@ namespace TournamentGenerator
 
                         if (poolType == PoolType.SWISSPAIRS && pools.Count < (numberOfRounds * 2))
                         {
-                            //todo generate next Swiss round
-                            //is it a superficial winner/loser pool split, or is it calculated on overall score? unsure how well this will work without being paired with fight management
+                            GenerateSwissPools();
                             return "Next round generated";
                         }
                         else if (GenerateNextEliminationBracket())
@@ -1066,6 +1105,54 @@ namespace TournamentGenerator
         public Pool()
         {
 
+        }
+
+        public List<Fight> GenerateSwissRound(Tournament tournament)
+        {
+            List<Fight> round = new List<Fight>();
+
+            //clone the pool fighter list so we don't remove from the master list
+            List<int> roundFighters = new List<int>();
+            roundFighters.AddRange(fighters);
+
+            
+
+            for (int l = 0; l < roundFighters.Count;)
+            {
+                int opponent = l;
+
+                //if there is more than one fighter in this round, generate a normal fight
+                if (roundFighters.Count > 1)
+                {
+                    int tries = 0;
+                    do
+                    {
+                        opponent++;
+                        tries++;
+
+                        //start again if we fuck up too much
+                        if (tries > ConfigValues.fightGenerationRetryLimit) return null;
+                    }
+                    //ensure the fight hasn't happened already
+                    while (tournament.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])));
+
+                    Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
+                    round.Add(fight);
+                    roundFighters.Remove(fight.fighterA);
+                    roundFighters.Remove(fight.fighterB);
+                }
+                //odd fight if only one fighter left - add a "Bye" fight
+                else
+                {
+                    Fight fight = new Fight(roundFighters[l], int.MaxValue);
+                    fight.oddFight = true;
+                    round.Add(fight);
+                    roundFighters.Remove(fight.fighterA);
+                }
+            }
+
+            rounds.Add(round);
+            return round;
         }
 
         public List<Fight> GenerateRound()

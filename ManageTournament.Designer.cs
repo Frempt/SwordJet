@@ -35,6 +35,7 @@
             this.btnExcel = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnRatingsExport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFighters)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -62,15 +63,15 @@
             this.dgvFighters.Location = new System.Drawing.Point(3, 0);
             this.dgvFighters.Name = "dgvFighters";
             this.dgvFighters.RowTemplate.Height = 24;
-            this.dgvFighters.Size = new System.Drawing.Size(944, 232);
+            this.dgvFighters.Size = new System.Drawing.Size(915, 232);
             this.dgvFighters.TabIndex = 1;
             // 
             // btnExtendPools
             // 
             this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExtendPools.Location = new System.Drawing.Point(949, 41);
+            this.btnExtendPools.Location = new System.Drawing.Point(924, 82);
             this.btnExtendPools.Name = "btnExtendPools";
-            this.btnExtendPools.Size = new System.Drawing.Size(129, 35);
+            this.btnExtendPools.Size = new System.Drawing.Size(154, 35);
             this.btnExtendPools.TabIndex = 2;
             this.btnExtendPools.Text = "Extend Pools";
             this.btnExtendPools.UseVisualStyleBackColor = true;
@@ -79,9 +80,9 @@
             // btnExcel
             // 
             this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcel.Location = new System.Drawing.Point(949, 0);
+            this.btnExcel.Location = new System.Drawing.Point(924, 0);
             this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(129, 35);
+            this.btnExcel.Size = new System.Drawing.Size(154, 35);
             this.btnExcel.TabIndex = 3;
             this.btnExcel.Text = "Export to Excel";
             this.btnExcel.UseVisualStyleBackColor = true;
@@ -90,9 +91,9 @@
             // btnAdvance
             // 
             this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdvance.Location = new System.Drawing.Point(949, 199);
+            this.btnAdvance.Location = new System.Drawing.Point(924, 199);
             this.btnAdvance.Name = "btnAdvance";
-            this.btnAdvance.Size = new System.Drawing.Size(129, 33);
+            this.btnAdvance.Size = new System.Drawing.Size(154, 33);
             this.btnAdvance.TabIndex = 4;
             this.btnAdvance.Text = "Advance";
             this.btnAdvance.UseVisualStyleBackColor = true;
@@ -109,6 +110,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnRatingsExport);
             this.splitContainer1.Panel1.Controls.Add(this.btnExcel);
             this.splitContainer1.Panel1.Controls.Add(this.btnAdvance);
             this.splitContainer1.Panel1.Controls.Add(this.btnExtendPools);
@@ -120,6 +122,17 @@
             this.splitContainer1.Size = new System.Drawing.Size(1078, 503);
             this.splitContainer1.SplitterDistance = 235;
             this.splitContainer1.TabIndex = 5;
+            // 
+            // btnRatingsExport
+            // 
+            this.btnRatingsExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRatingsExport.Location = new System.Drawing.Point(924, 41);
+            this.btnRatingsExport.Name = "btnRatingsExport";
+            this.btnRatingsExport.Size = new System.Drawing.Size(154, 35);
+            this.btnRatingsExport.TabIndex = 5;
+            this.btnRatingsExport.Text = "HEMA Ratings Export";
+            this.btnRatingsExport.UseVisualStyleBackColor = true;
+            this.btnRatingsExport.Click += new System.EventHandler(this.btnRatingsExport_Click);
             // 
             // ManageTournament
             // 
@@ -148,5 +161,6 @@
         private System.Windows.Forms.Button btnExcel;
         private System.Windows.Forms.Button btnAdvance;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button btnRatingsExport;
     }
 }

@@ -246,7 +246,6 @@ namespace TournamentGenerator
                 case Tournament.PoolType.SWISSPAIRS:
                     txtPools.Enabled = false;
                     txtRounds.Enabled = true;
-                    MessageBox.Show("Swiss pairs don't work yet :(");
                     break;
             }
 

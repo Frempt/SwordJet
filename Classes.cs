@@ -642,12 +642,14 @@ namespace TournamentGenerator
                     else return 4;
                 }
 
+                //todo refactor - doesn't work properly past rank 4
                 for (int i = eliminations.Count - 1; i > -1; i--)
                 {
-                    int bracketRank = 5 + -(i - (eliminations.Count - 1));
+                    int bracketRank = 4 + -(i - (eliminations.Count - 1));
                     foreach (Fight f in eliminations[i].rounds[0])
                     {
                         if (f.fighterA == fighter.id && f.fighterAResult == Fight.FightResult.LOSS) return bracketRank;
+                        if (f.fighterB == fighter.id && f.fighterBResult == Fight.FightResult.LOSS) return bracketRank;
                     }
                 }
             }
@@ -770,12 +772,12 @@ namespace TournamentGenerator
 
             Pool topPool = new Pool();
             topPool.fighters = topFighters;
-            topPool.name = "Top Pool " + (pools.Count / 2) + 1;
+            topPool.name = "Top Pool " + ((pools.Count / 2) + 1).ToString();
             topPool.GenerateSwissRound(this);
 
             Pool bottomPool = new Pool();
             bottomPool.fighters = bottomFighters;
-            bottomPool.name = "Bottom Pool " + (pools.Count / 2) + 1;
+            bottomPool.name = "Bottom Pool " + ((pools.Count / 2) + 1).ToString();
             bottomPool.GenerateSwissRound(this);
 
             pools.Add(topPool);

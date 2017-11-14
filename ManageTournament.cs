@@ -128,7 +128,14 @@ namespace TournamentGenerator
                     break;
 
                 case Tournament.TournamentStage.POOLFIGHTS:
-                    advanceButtonText = "Begin Eliminations";
+                    if (tournament.poolType == Tournament.PoolType.SWISSPAIRS && (tournament.pools.Count / 2) < tournament.numberOfRounds)
+                    {
+                        advanceButtonText = "Next round";
+                    }
+                    else
+                    {
+                        advanceButtonText = "Begin Eliminations";
+                    }
                     btnExtendPools.Enabled = true;
                     break;
 

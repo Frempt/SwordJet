@@ -50,3 +50,6 @@ C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\tournamentg
 C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\tournamentgenerator\TournamentGenerator\obj\Debug\TournamentGenerator.exe.manifest
 C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\tournamentgenerator\TournamentGenerator\obj\Debug\TournamentGenerator.application
 C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\tournamentgenerator\TournamentGenerator\obj\Debug\TournamentGenerator.TournamentManager.resources
+C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\TournamentGenerator\bin\Debug\TournamentGenerator.exe.config
+C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.exe
+C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.pdb

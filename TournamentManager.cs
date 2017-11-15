@@ -27,6 +27,8 @@ namespace TournamentGenerator
                 elimSizes.Add(int.Parse(str));
             }
             ConfigValues.eliminationSizes = elimSizes;
+
+            Country.LoadCountries(ConfigurationManager.AppSettings["countryCSVFile"]);
         }
 
         private void btnNew_Click(object sender, EventArgs e)

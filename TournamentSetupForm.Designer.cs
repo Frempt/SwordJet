@@ -31,18 +31,22 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentSetupForm));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.ddlNationality = new System.Windows.Forms.ComboBox();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.lblFighterCount = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.ddlClub = new System.Windows.Forms.ComboBox();
+            this.lstFighters = new System.Windows.Forms.ListBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtPools = new System.Windows.Forms.NumericUpDown();
             this.txtRounds = new System.Windows.Forms.NumericUpDown();
-            this.lstFighters = new System.Windows.Forms.ListBox();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.lblLengthMessage = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtFightTime = new System.Windows.Forms.NumericUpDown();
-            this.lblFighterCount = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.txtTournamentName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -60,12 +64,8 @@
             this.ddlElimSize = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label12 = new System.Windows.Forms.Label();
             this.ddlPoolType = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.ddlClub = new System.Windows.Forms.ComboBox();
-            this.ddlNationality = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -79,8 +79,8 @@
             // 
             // button1
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(225, 116);
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(222, 115);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(184, 28);
@@ -91,10 +91,15 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.ddlNationality);
+            this.panel1.Controls.Add(this.btnDelete);
+            this.panel1.Controls.Add(this.lblFighterCount);
             this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.ddlClub);
+            this.panel1.Controls.Add(this.lstFighters);
             this.panel1.Controls.Add(this.label13);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtName);
@@ -102,8 +107,83 @@
             this.panel1.Location = new System.Drawing.Point(466, 12);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(413, 148);
+            this.panel1.Size = new System.Drawing.Size(413, 515);
             this.panel1.TabIndex = 2;
+            // 
+            // ddlNationality
+            // 
+            this.ddlNationality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlNationality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlNationality.FormattingEnabled = true;
+            this.ddlNationality.Location = new System.Drawing.Point(81, 72);
+            this.ddlNationality.Name = "ddlNationality";
+            this.ddlNationality.Size = new System.Drawing.Size(328, 24);
+            this.ddlNationality.TabIndex = 7;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDelete.Location = new System.Drawing.Point(218, 483);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(188, 28);
+            this.btnDelete.TabIndex = 10;
+            this.btnDelete.Text = "Delete Selected Fighter";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // lblFighterCount
+            // 
+            this.lblFighterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblFighterCount.AutoSize = true;
+            this.lblFighterCount.Location = new System.Drawing.Point(4, 489);
+            this.lblFighterCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFighterCount.Name = "lblFighterCount";
+            this.lblFighterCount.Size = new System.Drawing.Size(145, 17);
+            this.lblFighterCount.TabIndex = 14;
+            this.lblFighterCount.Text = "Number of Fighters: 0";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(1, 75);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(74, 17);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Nationality";
+            // 
+            // ddlClub
+            // 
+            this.ddlClub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlClub.FormattingEnabled = true;
+            this.ddlClub.Location = new System.Drawing.Point(81, 39);
+            this.ddlClub.Name = "ddlClub";
+            this.ddlClub.Size = new System.Drawing.Size(328, 24);
+            this.ddlClub.TabIndex = 5;
+            // 
+            // lstFighters
+            // 
+            this.lstFighters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstFighters.FormattingEnabled = true;
+            this.lstFighters.ItemHeight = 16;
+            this.lstFighters.Location = new System.Drawing.Point(4, 151);
+            this.lstFighters.Margin = new System.Windows.Forms.Padding(4);
+            this.lstFighters.Name = "lstFighters";
+            this.lstFighters.Size = new System.Drawing.Size(405, 324);
+            this.lstFighters.TabIndex = 8;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 42);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(36, 17);
+            this.label13.TabIndex = 4;
+            this.label13.Text = "Club";
             // 
             // label1
             // 
@@ -117,6 +197,8 @@
             // 
             // txtName
             // 
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(81, 6);
             this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Name = "txtName";
@@ -145,7 +227,8 @@
             // 
             // txtPools
             // 
-            this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPools.Location = new System.Drawing.Point(153, 73);
             this.txtPools.Margin = new System.Windows.Forms.Padding(4);
             this.txtPools.Minimum = new decimal(new int[] {
@@ -165,7 +248,8 @@
             // 
             // txtRounds
             // 
-            this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRounds.Location = new System.Drawing.Point(153, 103);
             this.txtRounds.Margin = new System.Windows.Forms.Padding(4);
             this.txtRounds.Minimum = new decimal(new int[] {
@@ -183,33 +267,10 @@
             0});
             this.txtRounds.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
             // 
-            // lstFighters
-            // 
-            this.lstFighters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstFighters.FormattingEnabled = true;
-            this.lstFighters.ItemHeight = 16;
-            this.lstFighters.Location = new System.Drawing.Point(466, 169);
-            this.lstFighters.Margin = new System.Windows.Forms.Padding(4);
-            this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(413, 324);
-            this.lstFighters.TabIndex = 8;
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(691, 498);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(188, 28);
-            this.btnDelete.TabIndex = 10;
-            this.btnDelete.Text = "Delete Selected Fighter";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
             // lblLengthMessage
             // 
-            this.lblLengthMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblLengthMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLengthMessage.AutoEllipsis = true;
             this.lblLengthMessage.Location = new System.Drawing.Point(6, 163);
@@ -230,7 +291,8 @@
             // 
             // txtFightTime
             // 
-            this.txtFightTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFightTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFightTime.Location = new System.Drawing.Point(153, 129);
             this.txtFightTime.Margin = new System.Windows.Forms.Padding(4);
             this.txtFightTime.Maximum = new decimal(new int[] {
@@ -253,21 +315,10 @@
             0});
             this.txtFightTime.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
             // 
-            // lblFighterCount
-            // 
-            this.lblFighterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFighterCount.AutoSize = true;
-            this.lblFighterCount.Location = new System.Drawing.Point(470, 504);
-            this.lblFighterCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblFighterCount.Name = "lblFighterCount";
-            this.lblFighterCount.Size = new System.Drawing.Size(145, 17);
-            this.lblFighterCount.TabIndex = 14;
-            this.lblFighterCount.Text = "Number of Fighters: 0";
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 11);
+            this.label5.Location = new System.Drawing.Point(9, 14);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(126, 17);
             this.label5.TabIndex = 15;
@@ -275,8 +326,9 @@
             // 
             // txtTournamentName
             // 
-            this.txtTournamentName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTournamentName.Location = new System.Drawing.Point(165, 20);
+            this.txtTournamentName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTournamentName.Location = new System.Drawing.Point(153, 11);
             this.txtTournamentName.Name = "txtTournamentName";
             this.txtTournamentName.Size = new System.Drawing.Size(292, 22);
             this.txtTournamentName.TabIndex = 16;
@@ -314,7 +366,8 @@
             // 
             // txtLossPoints
             // 
-            this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLossPoints.Location = new System.Drawing.Point(153, 360);
             this.txtLossPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtLossPoints.Minimum = new decimal(new int[] {
@@ -334,7 +387,8 @@
             // 
             // txtDrawPoints
             // 
-            this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDrawPoints.Location = new System.Drawing.Point(153, 330);
             this.txtDrawPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtDrawPoints.Minimum = new decimal(new int[] {
@@ -354,7 +408,8 @@
             // 
             // txtWinPoints
             // 
-            this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWinPoints.Location = new System.Drawing.Point(153, 300);
             this.txtWinPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtWinPoints.Minimum = new decimal(new int[] {
@@ -438,7 +493,8 @@
             // 
             // ddlElimType
             // 
-            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimType.FormattingEnabled = true;
             this.ddlElimType.Location = new System.Drawing.Point(153, 264);
@@ -449,7 +505,8 @@
             // 
             // ddlElimSize
             // 
-            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimSize.FormattingEnabled = true;
             this.ddlElimSize.Location = new System.Drawing.Point(153, 230);
@@ -472,6 +529,7 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.txtTournamentName);
             this.panel2.Controls.Add(this.ddlPoolType);
             this.panel2.Controls.Add(this.label12);
             this.panel2.Controls.Add(this.btnManage);
@@ -501,6 +559,18 @@
             this.panel2.Size = new System.Drawing.Size(447, 515);
             this.panel2.TabIndex = 33;
             // 
+            // ddlPoolType
+            // 
+            this.ddlPoolType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlPoolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlPoolType.FormattingEnabled = true;
+            this.ddlPoolType.Location = new System.Drawing.Point(153, 42);
+            this.ddlPoolType.Name = "ddlPoolType";
+            this.ddlPoolType.Size = new System.Drawing.Size(288, 24);
+            this.ddlPoolType.TabIndex = 34;
+            this.ddlPoolType.SelectedIndexChanged += new System.EventHandler(this.ddlPoolType_SelectedIndexChanged);
+            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -511,66 +581,15 @@
             this.label12.TabIndex = 33;
             this.label12.Text = "Pool Type";
             // 
-            // ddlPoolType
-            // 
-            this.ddlPoolType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ddlPoolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlPoolType.FormattingEnabled = true;
-            this.ddlPoolType.Location = new System.Drawing.Point(153, 42);
-            this.ddlPoolType.Name = "ddlPoolType";
-            this.ddlPoolType.Size = new System.Drawing.Size(288, 24);
-            this.ddlPoolType.TabIndex = 34;
-            this.ddlPoolType.SelectedIndexChanged += new System.EventHandler(this.ddlPoolType_SelectedIndexChanged);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(4, 42);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(36, 17);
-            this.label13.TabIndex = 4;
-            this.label13.Text = "Club";
-            // 
-            // ddlClub
-            // 
-            this.ddlClub.FormattingEnabled = true;
-            this.ddlClub.Location = new System.Drawing.Point(81, 39);
-            this.ddlClub.Name = "ddlClub";
-            this.ddlClub.Size = new System.Drawing.Size(328, 24);
-            this.ddlClub.TabIndex = 5;
-            // 
-            // ddlNationality
-            // 
-            this.ddlNationality.FormattingEnabled = true;
-            this.ddlNationality.Location = new System.Drawing.Point(81, 72);
-            this.ddlNationality.Name = "ddlNationality";
-            this.ddlNationality.Size = new System.Drawing.Size(328, 24);
-            this.ddlNationality.TabIndex = 7;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(1, 75);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(74, 17);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "Nationality";
-            // 
             // TournamentSetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(885, 539);
-            this.Controls.Add(this.txtTournamentName);
-            this.Controls.Add(this.lblFighterCount);
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.lstFighters);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximizeBox = false;
             this.Name = "TournamentSetupForm";
             this.Text = "Tournament Setup";
             this.panel1.ResumeLayout(false);
@@ -585,7 +604,6 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

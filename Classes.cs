@@ -4,9 +4,11 @@ using System.Linq;
 using System.IO;
 using System.Data;
 using System.Xml.Serialization;
+using Microsoft.VisualBasic;
 using NPOI.HSSF.UserModel;
 using NPOI.HPSF;
 using NPOI.SS.UserModel;
+using Microsoft.VisualBasic.FileIO;
 
 namespace TournamentGenerator
 {
@@ -58,6 +60,40 @@ namespace TournamentGenerator
             }
 
             return pairs;
+        }
+    }
+
+    public class Country
+    {
+        public static List<Country> Countries = new List<Country>();
+
+        public string name;
+        public string code;
+
+        public static void LoadCountries(string csvFile)
+        {
+            Countries.Clear();
+
+            using (TextFieldParser parser = new TextFieldParser(csvFile))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+                while (!parser.EndOfData)
+                {
+                    string[] fields = parser.ReadFields();
+
+                    Country c = new Country();
+                    c.name = fields[0];
+                    c.code = fields[1];
+
+                    Countries.Add(c);
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return name;
         }
     }
 
@@ -452,6 +488,24 @@ namespace TournamentGenerator
             return null;
         }
 
+        public List<Fight> GetPoolFightsByFighter(int fighterId)
+        {
+            List<Fight> fights = new List<Fight>();
+
+            foreach(Pool p in pools)
+            {
+                foreach(List<Fight> round in p.rounds)
+                {
+                    foreach(Fight f in round)
+                    {
+                        if (f.fighterA == fighterId || f.fighterB == fighterId) fights.Add(f);
+                    }
+                }
+            }
+
+            return fights;
+        }
+
         public bool HasFightHappenedAlready(Fight f)
         {
             foreach(Pool p in pools)
@@ -642,7 +696,6 @@ namespace TournamentGenerator
                     else return 4;
                 }
 
-                //todo refactor - doesn't work properly past rank 4
                 for (int i = eliminations.Count - 1; i > -1; i--)
                 {
                     int bracketRank = 4 + -(i - (eliminations.Count - 1));
@@ -758,9 +811,22 @@ namespace TournamentGenerator
             List<int> topFighters = new List<int>();
             List<int> bottomFighters = new List<int>();
 
-            for(int i = 0; i < vw.Count; i++)
+            int firstPoolSize = vw.Count / 2;
+            if (firstPoolSize % 2 == 1 && vw.Count % 2 == 0)
             {
-                if(i > vw.Count/2)
+                if (pools.Count / 2 < numberOfRounds / 2)
+                {
+                    firstPoolSize++;
+                }
+                else
+                {
+                    firstPoolSize--;
+                }
+            }
+
+            for (int i = 0; i < vw.Count; i++)
+            {
+                if (i > vw.Count / 2)
                 {
                     bottomFighters.Add((int)vw[i]["ID"]);
                 }
@@ -1049,7 +1115,7 @@ namespace TournamentGenerator
                         //check if we are moving to the finals
                         if (eliminations.Last().fighters.Count == 4)
                         {
-                            stage = Tournament.TournamentStage.FINALS;
+                            stage = TournamentStage.FINALS;
                             GenerateFinals();
                             return "Finals generated";
                         }
@@ -1109,7 +1175,7 @@ namespace TournamentGenerator
 
         }
 
-        public List<Fight> GenerateSwissRound(Tournament tournament)
+        public List<Fight> GenerateSwissRound(Tournament tournament, bool topToBottom = true)
         {
             List<Fight> round = new List<Fight>();
 
@@ -1117,39 +1183,73 @@ namespace TournamentGenerator
             List<int> roundFighters = new List<int>();
             roundFighters.AddRange(fighters);
 
-            
-
-            for (int l = 0; l < roundFighters.Count;)
+            //if there are an odd number of fighters in this pool
+            if(roundFighters.Count % 2 == 1)
             {
-                int opponent = l;
+                int oddFightIndex = roundFighters.Count - 1;
 
-                //if there is more than one fighter in this round, generate a normal fight
-                if (roundFighters.Count > 1)
+                for(int i = roundFighters.Count - 1; i > -1; i--)
                 {
-                    int tries = 0;
-                    do
+                    List<Fight> fighterFights = tournament.GetPoolFightsByFighter(roundFighters[i]);
+
+                    foreach(Fight f in fighterFights)
                     {
-                        opponent++;
-                        tries++;
-
-                        //start again if we fuck up too much
-                        if (tries > ConfigValues.fightGenerationRetryLimit) return null;
+                        if (f.oddFight) break;
                     }
-                    //ensure the fight hasn't happened already
-                    while (tournament.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])));
 
-                    Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
-                    round.Add(fight);
-                    roundFighters.Remove(fight.fighterA);
-                    roundFighters.Remove(fight.fighterB);
+                    oddFightIndex = i;
+                    break;
                 }
-                //odd fight if only one fighter left - add a "Bye" fight
-                else
+
+                Fight fight = new Fight(oddFightIndex, int.MaxValue);
+                fight.oddFight = true;
+                round.Add(fight);
+                roundFighters.Remove(fight.fighterA);
+            }
+
+            int offset = 0;
+
+            while (round.Count == 0)
+            {
+                for (int l = 0; l < roundFighters.Count;)
                 {
-                    Fight fight = new Fight(roundFighters[l], int.MaxValue);
-                    fight.oddFight = true;
-                    round.Add(fight);
-                    roundFighters.Remove(fight.fighterA);
+                    int opponent = l;
+
+                    //if there is more than one fighter in this round, generate a normal fight
+                    if (roundFighters.Count > 1)
+                    {
+                        int tries = 0;
+                        do
+                        {
+                            opponent += (1 + offset);
+
+                            if (opponent >= roundFighters.Count) opponent -= roundFighters.Count;
+
+                            tries++;
+
+                            //start again if we fuck up too much
+                            if (tries > ConfigValues.fightGenerationRetryLimit)
+                            {
+                                round.Clear();
+                                offset++;
+                            }
+                        }
+                        //ensure the fight hasn't happened already
+                        while (tournament.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])));
+
+                        Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
+                        round.Add(fight);
+                        roundFighters.Remove(fight.fighterA);
+                        roundFighters.Remove(fight.fighterB);
+                    }
+                    //odd fight if only one fighter left - add a "Bye" fight
+                    else
+                    {
+                        Fight fight = new Fight(roundFighters[l], int.MaxValue);
+                        fight.oddFight = true;
+                        round.Add(fight);
+                        roundFighters.Remove(fight.fighterA);
+                    }
                 }
             }
 

@@ -60,7 +60,7 @@ namespace TournamentGenerator
                 if (tournament.stage == Tournament.TournamentStage.CLOSED)
                 {
                     int rank = tournament.GetFighterFinalRank(fighter);
-                    /*if (rank < tournament.fighters.Count)*/ row["FinishingRank"] = rank; 
+                    row["FinishingRank"] = rank; 
                 }
 
                 row["Name"] = fighter.name;

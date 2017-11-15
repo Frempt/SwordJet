@@ -54,24 +54,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TournamentGenerator.exe" size="506232">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TournamentGenerator.exe" size="507768">
       <assemblyIdentity name="TournamentGenerator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>T7zG2G4qXVkQMorUSv6Ymn6F4Jc=</dsig:DigestValue>
+        <dsig:DigestValue>uhLmJQ8mLLk6aGaZGGyMRgoZiRE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="TournamentGenerator.exe.config" size="422">
+  <file name="TournamentGenerator.exe.config" size="477">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>8pwTjMgG5PjGkGJiS3f8Vlk/dfk=</dsig:DigestValue>
+      <dsig:DigestValue>mokeucJou7aWeaJvUchvi5iznVo=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

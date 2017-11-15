@@ -25,6 +25,8 @@ namespace TournamentGenerator
 
             FilePath = filePath;
             LoadTournament();
+
+            ddlNationality.DataSource = Country.Countries;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -35,7 +37,7 @@ namespace TournamentGenerator
                 //add the new fighter to the list with the next ID, and refresh the listbox
                 Fighter fighter = new Fighter(tournament.GetNextFighterID(), txtName.Text);
                 fighter.club = ddlClub.Text;
-                fighter.country = ddlNationality.Text;
+                fighter.country = ((Country)ddlNationality.SelectedItem).code;
                 tournament.fighters.Add(fighter);
 
                 lstFighters.DataSource = null;
@@ -187,11 +189,7 @@ namespace TournamentGenerator
             ddlClub.DataSource = clubsDistinct;
             ddlClub.Text = "";
 
-            List<string> nationsDistinct = new List<string>();
-            foreach (Fighter f in tournament.fighters) if (!nationsDistinct.Contains(f.country)) nationsDistinct.Add(f.country);
-
-            ddlNationality.DataSource = nationsDistinct;
-            ddlNationality.Text = "";
+            
 
             if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
             {

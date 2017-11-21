@@ -812,7 +812,7 @@ namespace TournamentGenerator
             List<int> bottomFighters = new List<int>();
 
             int firstPoolSize = vw.Count / 2;
-            if (firstPoolSize % 2 == 1 && vw.Count % 2 == 0)
+            if (firstPoolSize % 2 == 1)
             {
                 if (pools.Count / 2 < numberOfRounds / 2)
                 {
@@ -826,7 +826,7 @@ namespace TournamentGenerator
 
             for (int i = 0; i < vw.Count; i++)
             {
-                if (i > vw.Count / 2)
+                if (i > firstPoolSize)
                 {
                     bottomFighters.Add((int)vw[i]["ID"]);
                 }
@@ -1175,80 +1175,81 @@ namespace TournamentGenerator
 
         }
 
-        public List<Fight> GenerateSwissRound(Tournament tournament, bool topToBottom = true)
+        public List<Fight> GenerateSwissRound(Tournament tournament)
         {
             List<Fight> round = new List<Fight>();
 
-            //clone the pool fighter list so we don't remove from the master list
-            List<int> roundFighters = new List<int>();
-            roundFighters.AddRange(fighters);
-
-            //if there are an odd number of fighters in this pool
-            if(roundFighters.Count % 2 == 1)
-            {
-                int oddFightIndex = roundFighters.Count - 1;
-
-                for(int i = roundFighters.Count - 1; i > -1; i--)
-                {
-                    List<Fight> fighterFights = tournament.GetPoolFightsByFighter(roundFighters[i]);
-
-                    foreach(Fight f in fighterFights)
-                    {
-                        if (f.oddFight) break;
-                    }
-
-                    oddFightIndex = i;
-                    break;
-                }
-
-                Fight fight = new Fight(oddFightIndex, int.MaxValue);
-                fight.oddFight = true;
-                round.Add(fight);
-                roundFighters.Remove(fight.fighterA);
-            }
-
-            int offset = 0;
-
             while (round.Count == 0)
             {
+                //clone the pool fighter list so we don't remove from the master list
+                List<int> roundFighters = new List<int>();
+                roundFighters.AddRange(fighters);
+
+                //if there are an odd number of fighters in this pool
+                if (roundFighters.Count % 2 == 1)
+                {
+                    int oddFightIndex = roundFighters.Count - 1;
+
+                    for (int i = roundFighters.Count - 1; i > -1; i--)
+                    {
+                        List<Fight> fighterFights = tournament.GetPoolFightsByFighter(roundFighters[i]);
+
+                        bool hasHadOddFight = false;
+
+                        foreach (Fight f in fighterFights)
+                        {
+                            if (f.oddFight)
+                            {
+                                hasHadOddFight = true;
+                                break;
+                            }
+                        }
+
+                        if (!hasHadOddFight)
+                        {
+                            oddFightIndex = i;
+                            break;
+                        }
+                    }
+
+                    Fight fight = new Fight(roundFighters[oddFightIndex], int.MaxValue);
+                    fight.oddFight = true;
+                    round.Add(fight);
+                    roundFighters.Remove(fight.fighterA);
+                }
+
+                int offset = 0;
+
                 for (int l = 0; l < roundFighters.Count;)
                 {
                     int opponent = l;
 
-                    //if there is more than one fighter in this round, generate a normal fight
-                    if (roundFighters.Count > 1)
+                    int tries = 0;
+                    do
                     {
-                        int tries = 0;
-                        do
+                        opponent += (1 + offset);
+
+                        if (opponent >= roundFighters.Count) opponent -= roundFighters.Count;
+
+                        tries++;
+
+                        //start again if we fuck up too much
+                        if (tries > ConfigValues.fightGenerationRetryLimit || opponent >= roundFighters.Count)
                         {
-                            opponent += (1 + offset);
-
-                            if (opponent >= roundFighters.Count) opponent -= roundFighters.Count;
-
-                            tries++;
-
-                            //start again if we fuck up too much
-                            if (tries > ConfigValues.fightGenerationRetryLimit)
-                            {
-                                round.Clear();
-                                offset++;
-                            }
+                            round.Clear();
+                            offset++;
+                            break;
                         }
-                        //ensure the fight hasn't happened already
-                        while (tournament.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])));
+                    }
+                    //ensure the fight hasn't happened already
+                    while (tournament.HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) && opponent != l);
 
+                    if (opponent < roundFighters.Count && opponent != l)
+                    {
                         Fight fight = new Fight(roundFighters[l], roundFighters[opponent]);
                         round.Add(fight);
                         roundFighters.Remove(fight.fighterA);
                         roundFighters.Remove(fight.fighterB);
-                    }
-                    //odd fight if only one fighter left - add a "Bye" fight
-                    else
-                    {
-                        Fight fight = new Fight(roundFighters[l], int.MaxValue);
-                        fight.oddFight = true;
-                        round.Add(fight);
-                        roundFighters.Remove(fight.fighterA);
                     }
                 }
             }

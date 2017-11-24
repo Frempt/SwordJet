@@ -39,8 +39,9 @@ namespace TournamentGenerator
             table.Columns.Add("Pool", typeof(string));
             table.Columns.Add("PoolScore", typeof(int));
             table.Columns.Add("PoolDoubles", typeof(int));
+            table.Columns.Add("PoolBuchholz", typeof(int));
 
-            foreach(Pool p in tournament.eliminations)
+            foreach (Pool p in tournament.eliminations)
             {
                 table.Columns.Add(p.name, typeof(string));
             }
@@ -76,6 +77,8 @@ namespace TournamentGenerator
 
                 row["PoolDoubles"] = tournament.GetFighterDoubles(fighter);
 
+                row["PoolBuchholz"] = tournament.GetFighterBuchholzScore(fighter);
+
                 row["TieBreakerScore"] = tournament.GetFighterTieBreakerScore(fighter);
 
                 Dictionary<string,string> elimResults = tournament.GetFighterEliminationResults(fighter);
@@ -101,7 +104,7 @@ namespace TournamentGenerator
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, TieBreakerScore DESC";
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolBuchholz DESC, TieBreakerScore DESC";
             if (tournament.stage == Tournament.TournamentStage.CLOSED)
             {
                 dv.Sort = "FinishingRank ASC, " + dv.Sort;

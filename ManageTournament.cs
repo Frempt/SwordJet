@@ -28,88 +28,8 @@ namespace TournamentGenerator
 
         private void LoadFighters()
         {
-            DataTable table = new DataTable();
-
-            if (tournament.stage == Tournament.TournamentStage.CLOSED)
-            {
-                table.Columns.Add("FinishingRank", typeof(int));
-            }
-
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Pool", typeof(string));
-            table.Columns.Add("PoolScore", typeof(int));
-            table.Columns.Add("PoolDoubles", typeof(int));
-            table.Columns.Add("PoolBuchholz", typeof(int));
-
-            foreach (Pool p in tournament.eliminations)
-            {
-                table.Columns.Add(p.name, typeof(string));
-            }
-
-            if(tournament.finals.Count > 0)
-            {
-                table.Columns.Add("Finals", typeof(string));
-            }
-
-            table.Columns.Add("TieBreakerScore", typeof(int));
-            table.Columns.Add("ElimSort", typeof(int));
-
-            foreach (Fighter fighter in tournament.fighters)
-            {
-                DataRow row = table.NewRow();
-
-                if (tournament.stage == Tournament.TournamentStage.CLOSED)
-                {
-                    int rank = tournament.GetFighterFinalRank(fighter);
-                    row["FinishingRank"] = rank; 
-                }
-
-                row["Name"] = fighter.name;
-
-                string poolname = "";
-                foreach (Pool p in tournament.pools)
-                {
-                    if (p.fighters.Contains(fighter.id)) poolname = p.name;
-                }
-                row["Pool"] = poolname;
-
-                row["PoolScore"] = tournament.GetFighterScore(fighter);
-
-                row["PoolDoubles"] = tournament.GetFighterDoubles(fighter);
-
-                row["PoolBuchholz"] = tournament.GetFighterBuchholzScore(fighter);
-
-                row["TieBreakerScore"] = tournament.GetFighterTieBreakerScore(fighter);
-
-                Dictionary<string,string> elimResults = tournament.GetFighterEliminationResults(fighter);
-                int elimSort = 0;
-
-                for(int i = 0; i < tournament.eliminations.Count; i++)
-                {
-                    Pool p = tournament.eliminations[i];
-                    string r = elimResults[p.name];
-                    row[p.name] = r;
-                    elimSort += ((r == "WIN") ? 2 * (i + 1) : ((r == "LOSS") ? 1 * (i + 1) : 0));
-                }
-
-                if (tournament.finals.Count > 0)
-                {
-                    string r = tournament.GetFighterFinalsResult(fighter);
-                    row["Finals"] = r;
-                    elimSort += ((r == "WIN") ? 2 * tournament.eliminations.Count : ((r == "LOSS") ? 1 * tournament.eliminations.Count : 0));
-                }
-
-                row["ElimSort"] = elimSort;
-                table.Rows.Add(row);
-            }
-
-            DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolBuchholz DESC, TieBreakerScore DESC";
-            if (tournament.stage == Tournament.TournamentStage.CLOSED)
-            {
-                dv.Sort = "FinishingRank ASC, " + dv.Sort;
-            }
-            dgvFighters.DataSource = dv;
+            //get the tournament fighters in a DataView for binding
+            dgvFighters.DataSource = tournament.GetFightersDataView();
 
             //hide sorting columns
             dgvFighters.Columns["ElimSort"].Visible = false;
@@ -120,56 +40,60 @@ namespace TournamentGenerator
         {
             tournament = FileAccessHelper.LoadTournament(FilePath);
 
-            string advanceButtonText = "";
-
             btnExtendPools.Enabled = false;
 
+            //setup UI elements depending on the tournament stage
             switch (tournament.stage)
             {
                 case Tournament.TournamentStage.REGISTRATION:
-                    advanceButtonText = "Begin Pools";
+                    btnAdvance.Text = "Begin Pools";
                     break;
 
                 case Tournament.TournamentStage.POOLFIGHTS:
+                    //if this is swiss pairs and we haven't completed all of the pool rounds, advance button is "Next Round"
                     if (tournament.poolType == Tournament.PoolType.SWISSPAIRS && (tournament.pools.Count / 2) < tournament.numberOfRounds)
                     {
-                        advanceButtonText = "Next round";
+                        btnAdvance.Text = "Next round";
                     }
                     else
                     {
-                        advanceButtonText = "Begin Eliminations";
+                        btnAdvance.Text = "Begin Eliminations";
                     }
-                    btnExtendPools.Enabled = true;
+
+                    //only allow the pools to be extended if this is a fixed rounds tournament
+                    //we can't extend round robin, swiss pairs could be extended but would require additional calculations
+                    if(tournament.poolType == Tournament.PoolType.FIXEDROUNDS) btnExtendPools.Enabled = true;
                     break;
 
                 case Tournament.TournamentStage.TIEBREAKERS:
-                    advanceButtonText = "Begin Eliminations";
+                    btnAdvance.Text = "Begin Eliminations";
                     break;
 
                 case Tournament.TournamentStage.ELIMINATIONS:
-                    advanceButtonText = "Next Elimination Round";
+                    btnAdvance.Text = "Next Elimination Round";
 
+                    //if there's only 4 fighters, next elimination round is the finals
                     if (tournament.eliminations.Last().fighters.Count == 4)
                     {
-                        advanceButtonText = "Begin Finals";
+                        btnAdvance.Text = "Begin Finals";
                     }
 
                     break;
 
                 case Tournament.TournamentStage.FINALS:
-                    advanceButtonText = "End Tournament";
+                    btnAdvance.Text = "End Tournament";
                     break;
 
                 case Tournament.TournamentStage.CLOSED:
-                    advanceButtonText = "---";
+                    btnAdvance.Text = "---";
                     btnAdvance.Enabled = false;
                     break;
             }
 
-            btnAdvance.Text = advanceButtonText;
-
+            //populate fighter table
             LoadFighters();
 
+            //clear the tab control so we can start fresh
             tbcFights.TabPages.Clear();
 
             foreach (Pool pool in tournament.pools)

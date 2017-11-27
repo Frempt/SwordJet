@@ -175,7 +175,7 @@ namespace TournamentGenerator
             txtDrawPoints.Value = tournament.drawPoints;
             txtLossPoints.Value = tournament.lossPoints;
             txtFightTime.Value = tournament.fightTimeMinutes;
-            chkDoubleOut.Checked = (tournament.doubleThreshold == null);
+            chkDoubleOut.Checked = (tournament.doubleThreshold != null);
             if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
 
             lstFighters.DataSource = tournament.fighters;

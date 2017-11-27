@@ -522,6 +522,93 @@ namespace TournamentGenerator
             return null;
         }
 
+        public DataView GetFightersDataView()
+        {
+            DataTable table = new DataTable();
+
+            if (stage == TournamentStage.CLOSED)
+            {
+                table.Columns.Add("FinishingRank", typeof(int));
+            }
+
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Pool", typeof(string));
+            table.Columns.Add("PoolScore", typeof(int));
+            table.Columns.Add("PoolDoubles", typeof(int));
+            table.Columns.Add("PoolBuchholz", typeof(int));
+
+            foreach (Pool p in eliminations)
+            {
+                table.Columns.Add(p.name, typeof(string));
+            }
+
+            if (finals.Count > 0)
+            {
+                table.Columns.Add("Finals", typeof(string));
+            }
+
+            table.Columns.Add("TieBreakerScore", typeof(int));
+            table.Columns.Add("ElimSort", typeof(int));
+
+            foreach (Fighter fighter in fighters)
+            {
+                DataRow row = table.NewRow();
+
+                if (stage == Tournament.TournamentStage.CLOSED)
+                {
+                    int rank = GetFighterFinalRank(fighter);
+                    row["FinishingRank"] = rank;
+                }
+
+                row["Name"] = fighter.name;
+
+                string poolname = "";
+                foreach (Pool p in pools)
+                {
+                    if (p.fighters.Contains(fighter.id)) poolname = p.name;
+                }
+                row["Pool"] = poolname;
+
+                row["PoolScore"] = GetFighterScore(fighter);
+
+                row["PoolDoubles"] = GetFighterDoubles(fighter);
+
+                row["PoolBuchholz"] = GetFighterBuchholzScore(fighter);
+
+                row["TieBreakerScore"] = GetFighterTieBreakerScore(fighter);
+
+                Dictionary<string, string> elimResults = GetFighterEliminationResults(fighter);
+                int elimSort = 0;
+
+                for (int i = 0; i < eliminations.Count; i++)
+                {
+                    Pool p = eliminations[i];
+                    string r = elimResults[p.name];
+                    row[p.name] = r;
+                    elimSort += ((r == "WIN") ? 2 * (i + 1) : ((r == "LOSS") ? 1 * (i + 1) : 0));
+                }
+
+                if (finals.Count > 0)
+                {
+                    string r = GetFighterFinalsResult(fighter);
+                    row["Finals"] = r;
+                    elimSort += ((r == "WIN") ? 2 * eliminations.Count : ((r == "LOSS") ? 1 * eliminations.Count : 0));
+                }
+
+                row["ElimSort"] = elimSort;
+                table.Rows.Add(row);
+            }
+
+            DataView dv = table.DefaultView;
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolBuchholz DESC, TieBreakerScore DESC";
+            if (stage == TournamentStage.CLOSED)
+            {
+                dv.Sort = "FinishingRank ASC, " + dv.Sort;
+            }
+
+            return dv;
+        }
+
         public int GetFighterScore(Fighter fighter)
         {
             int score = 0;

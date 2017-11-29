@@ -256,5 +256,15 @@ namespace TournamentGenerator
                 SaveTournament();
             }
         }
+
+        private void TournamentSetupForm_Activated(object sender, EventArgs e)
+        {
+            LoadTournament();
+        }
+
+        private void txtName_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            button1.PerformClick();
+        }
     }
 }

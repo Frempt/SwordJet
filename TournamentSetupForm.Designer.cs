@@ -204,6 +204,7 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(328, 22);
             this.txtName.TabIndex = 2;
+            this.txtName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtName_KeyPress);
             // 
             // label2
             // 
@@ -592,6 +593,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TournamentSetupForm";
             this.Text = "Tournament Setup";
+            this.Activated += new System.EventHandler(this.TournamentSetupForm_Activated);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).EndInit();

@@ -27,6 +27,7 @@ namespace TournamentGenerator
             LoadTournament();
 
             ddlNationality.DataSource = Country.Countries;
+            ddlNationality.SelectedItem = Country.Countries.Where(c => c.code == "GB").First();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -264,7 +265,10 @@ namespace TournamentGenerator
 
         private void txtName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            button1.PerformClick();
+            if (e.KeyChar == Convert.ToChar(Keys.Return))
+            {
+                button1.PerformClick();
+            }
         }
     }
 }

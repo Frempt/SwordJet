@@ -24,6 +24,69 @@ namespace TournamentGenerator
         private void ManageTournament_Load(object sender, EventArgs e)
         {
             LoadTournament();
+
+            SelectLastPage();
+        }
+
+        private void SelectLastPage()
+        {
+            bool done = false;
+            foreach (TabPage pg in tbcFights.TabPages)
+            {
+                if(pg.Controls[0].GetType() == typeof(TabControl))
+                {
+                    TabControl subTabs = (TabControl)pg.Controls[0];
+                    foreach(TabPage child in subTabs.TabPages)
+                    {
+                        if (!IsPageComplete(child))
+                        {
+                            tbcFights.SelectedTab = pg;
+                            subTabs.SelectedTab = child;
+                            done = true;
+                            break;
+                        }
+
+                        tbcFights.SelectedTab = pg;
+                        subTabs.SelectedTab = child;
+                    }
+                }
+                else
+                {
+                    if (!IsPageComplete(pg))
+                    {
+                        tbcFights.SelectedTab = pg;
+                        break;
+                    }
+                    tbcFights.SelectedTab = pg;
+                }
+
+                if (done) break;
+            }
+        }
+
+        private bool IsPageComplete(TabPage page)
+        {
+            TableLayoutPanel pnl = (TableLayoutPanel)page.Controls[0];
+
+            foreach(Control c in pnl.Controls)
+            {
+                if(c.GetType() == typeof(ComboBox))
+                {
+                    if ((Fight.FightResult)(((ComboBox)c).SelectedItem) == Fight.FightResult.PENDING) return false;
+                }
+                else if(c.GetType() == typeof(CheckBox))
+                {
+                    string pairedCtrlName = "AResultRB";
+                    if (c.Name.StartsWith("A")) pairedCtrlName = "BResultRB";
+
+                    Control[] ctrls = c.Parent.Controls.Find(pairedCtrlName, false);
+                    CheckBox rbCtrl2 = (CheckBox)ctrls.Where(ct => ct.Tag.ToString() == c.Tag.ToString()).First();
+
+                    if(!((CheckBox)c).Checked && !rbCtrl2.Checked) return false;
+                }
+            }
+
+            return true;
         }
 
         private void LoadFighters()
@@ -93,6 +156,10 @@ namespace TournamentGenerator
             //populate fighter table
             LoadFighters();
 
+            List<object> frTemp = new List<object>();
+            foreach(var item in Enum.GetValues(typeof(Fight.FightResult))) { frTemp.Add(item); }
+            object[] fightResults = frTemp.ToArray();
+
             //clear the tab control so we can start fresh
             tbcFights.TabPages.Clear();
 
@@ -152,7 +219,7 @@ namespace TournamentGenerator
                         ddlResultA.Tag = fight.fightID;
                         ddlResultA.Name = "AResult";
                         ddlResultA.DropDownStyle = ComboBoxStyle.DropDownList;
-                        foreach (var item in Enum.GetValues(typeof(Fight.FightResult))) { ddlResultA.Items.Add(item); }
+                        ddlResultA.Items.AddRange(fightResults);
                         ddlResultA.SelectedItem = fight.fighterAResult;
                         ddlResultA.SelectedValueChanged += control_ValueChanged;
                         if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) ddlResultA.Enabled = false;
@@ -160,23 +227,22 @@ namespace TournamentGenerator
 
                         panel.Controls.Add(new Label() { Text = " V " }, 2, rowIndex);
 
-                        Color bgColour = panel.ForeColor;
+                        Color textColour = panel.ForeColor;
 
                         if (fight.oddFight)
                         {
-                            bgColour = Color.DarkGray;
+                            textColour = Color.DarkGray;
                         }
 
-                        panel.Controls.Add(new Label() { Text = fighterB.name, ForeColor = bgColour, TextAlign = ContentAlignment.MiddleCenter }, 3, rowIndex);
+                        panel.Controls.Add(new Label() { Text = fighterB.name, ForeColor = textColour, TextAlign = ContentAlignment.MiddleCenter }, 3, rowIndex);
 
                         ComboBox ddlResultB = new ComboBox();
                         ddlResultB.Tag = fight.fightID;
                         ddlResultB.Name = "BResult";
                         ddlResultB.DropDownStyle = ComboBoxStyle.DropDownList;
-                        foreach (var item in Enum.GetValues(typeof(Fight.FightResult))) { ddlResultB.Items.Add(item); }
+                        ddlResultB.Items.AddRange(fightResults);
                         ddlResultB.SelectedItem = fight.fighterBResult;
                         ddlResultB.SelectedValueChanged += control_ValueChanged;
-                        ddlResultB.ForeColor = bgColour;
                         if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) ddlResultB.Enabled = false;
                         panel.Controls.Add(ddlResultB, 4, rowIndex);
 
@@ -203,13 +269,13 @@ namespace TournamentGenerator
                             }
                         }
                     }
-
+                    
                     childPage.Controls.Add(panel);
                     childTabs.TabPages.Add(childPage);
                 }
 
                 page.Controls.Add(childTabs);
-
+           
                 tbcFights.TabPages.Add(page);
             }
 
@@ -363,12 +429,48 @@ namespace TournamentGenerator
                 Fight.FightResult result = (Fight.FightResult)((ComboBox)changedControl).SelectedItem;
 
                 fight.fighterAResult = result;
+
+                Control[] ctrlsB = changedControl.Parent.Controls.Find("BResult", false);
+                ComboBox ddlB = (ComboBox)ctrlsB.Where(ct => (Guid)ct.Tag == fight.fightID).First();
+
+                switch(result)
+                {
+                    case Fight.FightResult.DRAW:
+                        ddlB.SelectedItem = Fight.FightResult.DRAW;
+                        break;
+
+                    case Fight.FightResult.LOSS:
+                        ddlB.SelectedItem = Fight.FightResult.WIN;
+                        break;
+
+                    case Fight.FightResult.WIN:
+                        ddlB.SelectedItem = Fight.FightResult.LOSS;
+                        break;
+                }
             }
             else if (changedControl.Name == "BResult")
             {
                 Fight.FightResult result = (Fight.FightResult)((ComboBox)changedControl).SelectedItem;
 
                 fight.fighterBResult = result;
+
+                Control[] ctrlsA = changedControl.Parent.Controls.Find("AResult", false);
+                ComboBox ddlA = (ComboBox)ctrlsA.Where(ct => (Guid)ct.Tag == fight.fightID).First();
+
+                switch (result)
+                {
+                    case Fight.FightResult.DRAW:
+                        ddlA.SelectedItem = Fight.FightResult.DRAW;
+                        break;
+
+                    case Fight.FightResult.LOSS:
+                        ddlA.SelectedItem = Fight.FightResult.WIN;
+                        break;
+
+                    case Fight.FightResult.WIN:
+                        ddlA.SelectedItem = Fight.FightResult.LOSS;
+                        break;
+                }
             }
             else if (changedControl.Name == "AResultRB")
             {
@@ -397,6 +499,20 @@ namespace TournamentGenerator
             else if (changedControl.Name == "DBLCount")
             {
                 fight.doubleCount = (int)((NumericUpDown)changedControl).Value;
+
+                if(tournament.doubleThreshold != null && fight.doubleCount >= tournament.doubleThreshold)
+                {
+                    Control[] ctrlsA = changedControl.Parent.Controls.Find("AResult", false);
+                    Control[] ctrlsB = changedControl.Parent.Controls.Find("BResult", false);
+
+                    ComboBox ddlA = (ComboBox)ctrlsA.Where(ct => (Guid)ct.Tag == fight.fightID).First();
+                    ComboBox ddlB = (ComboBox)ctrlsB.Where(ct => (Guid)ct.Tag == fight.fightID).First();
+
+                    fight.fighterAResult = Fight.FightResult.DQ;
+                    ddlA.SelectedItem = Fight.FightResult.DQ;
+                    fight.fighterBResult = Fight.FightResult.DQ;
+                    ddlB.SelectedItem = Fight.FightResult.DQ;
+                }
             }
 
             //save changes
@@ -415,6 +531,7 @@ namespace TournamentGenerator
                 {
                     FileAccessHelper.SaveTournament(tournament, FilePath);
                     LoadTournament();
+                    SelectLastPage();
                 }
                 else
                 {
@@ -468,6 +585,7 @@ namespace TournamentGenerator
 
                 FileAccessHelper.SaveTournament(tournament, FilePath);
                 LoadTournament();
+                SelectLastPage();
             }
         }
 

@@ -184,13 +184,8 @@ namespace TournamentGenerator
 
             CalculateMessage();
 
-            List<string> clubsDistinct = new List<string>();
-            foreach (Fighter f in tournament.fighters) if (!clubsDistinct.Contains(f.club)) clubsDistinct.Add(f.club);
-
-            ddlClub.DataSource = clubsDistinct;
-            ddlClub.Text = "";
-
-            
+            ddlClub.DataSource = null;
+            ddlClub.DataSource = tournament.clubs;
 
             if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
             {
@@ -205,6 +200,7 @@ namespace TournamentGenerator
                 txtFightTime.Enabled = false;
                 txtName.Enabled = false;
                 ddlClub.Enabled = false;
+                btnClubEdit.Enabled = false;
                 ddlNationality.Enabled = false;
                 chkDoubleOut.Enabled = false;
                 txtTournamentName.Enabled = false;
@@ -269,6 +265,18 @@ namespace TournamentGenerator
             {
                 button1.PerformClick();
             }
+        }
+
+        private void btnClubEdit_Click(object sender, EventArgs e)
+        {
+            EditClubs dialog = new EditClubs(tournament.clubs);
+
+            DialogResult res = dialog.ShowDialog();
+
+            tournament.clubs.Clear();
+            tournament.clubs = dialog.clubList;
+            SaveTournament();
+            LoadTournament();
         }
     }
 }

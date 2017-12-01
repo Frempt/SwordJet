@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Data;
 using System.Xml.Serialization;
+using System.Text;
 using NPOI.HSSF.UserModel;
 using NPOI.HPSF;
 using NPOI.SS.UserModel;
@@ -111,6 +112,73 @@ namespace TournamentGenerator
             }
 
             return tournament;
+        }
+
+        public static void HEMARatingsExport(Tournament tournament, string folderPath)
+        {
+            List<string> clubs = new List<string>();
+            StringBuilder clubCsv = new StringBuilder();
+            StringBuilder fighterCsv = new StringBuilder();
+
+            fighterCsv.AppendLine(string.Join(",", new string[]{ "Name", "Club", "Nationality", "Gender", "HEMA Ratings ID" }));
+
+            foreach(Fighter f in tournament.fighters)
+            {
+                fighterCsv.AppendLine(string.Join(",", new string[] { "\"" + f.name + "\"", "\"" + f.club + "\"", f.country, "Unknown", "" }));
+
+                if(!clubs.Contains(f.club))
+                {
+                    clubCsv.AppendLine(string.Join(",", new string[] { "\"" + f.club + "\"", "\"" + f.country + "\"", "", "" }));
+                }
+            }
+
+            StringBuilder fightCsv = new StringBuilder();
+
+            fightCsv.AppendLine(string.Join(",", new string[] { "Fighter 1", "Fighter 2", "Fighter 1 Result", "Fighter 2 Result", "Round" }));
+
+            foreach(Pool p in tournament.pools)
+            {
+                foreach(List<Fight> r in p.rounds)
+                {
+                    foreach(Fight f in r)
+                    {
+                        Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                        Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                        if(fighterB != null) fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "\"POOL - " + p.name + "\"" }));
+                    }
+                }
+            }
+
+            if (tournament.tieBreakers != null)
+            {
+                foreach (Fight f in tournament.tieBreakers.rounds[0])
+                {
+                    Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                    Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                    fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "Tie Breaker" }));
+                }
+            }
+
+            foreach(Pool p in tournament.eliminations)
+            {
+                foreach (List<Fight> r in p.rounds)
+                {
+                    foreach (Fight f in r)
+                    {
+                        Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                        Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                        fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "ELIM - " + p.name }));
+                    }
+                }
+            }
+
+            string exportFolder = tournament.name + " - HEMA Ratings Export";
+
+            Directory.CreateDirectory(Path.Combine(folderPath, exportFolder));
+
+            File.WriteAllText(Path.Combine(folderPath, exportFolder, "clubs.csv"), clubCsv.ToString());
+            File.WriteAllText(Path.Combine(folderPath, exportFolder, "fighters.csv"), fighterCsv.ToString());
+            File.WriteAllText(Path.Combine(folderPath, exportFolder, "fights.csv"), fightCsv.ToString());
         }
 
         public static void GenerateSpreadsheet(Tournament tournament, string filePath)
@@ -442,6 +510,25 @@ namespace TournamentGenerator
         {
             id = fighterId;
             name = fighterName;
+        }
+
+        public override string ToString()
+        {
+            return name;
+        }
+    }
+
+    [Serializable]
+    public class Club
+    {
+        public string name;
+        public string country;
+        public string state;
+        public string city;
+
+        public Club()
+        {
+
         }
 
         public override string ToString()

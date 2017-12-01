@@ -591,8 +591,15 @@ namespace TournamentGenerator
 
         private void btnRatingsExport_Click(object sender, EventArgs e)
         {
-            //todo add this feature
-            MessageBox.Show("TODO: Add this feature :/");
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if(result == DialogResult.OK)
+            {
+                FileAccessHelper.HEMARatingsExport(tournament, dialog.SelectedPath);
+
+                System.Diagnostics.Process.Start(dialog.SelectedPath);
+            }
         }
     }
 }

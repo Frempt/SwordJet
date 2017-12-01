@@ -66,6 +66,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.ddlPoolType = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
+            this.btnClubEdit = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -94,6 +95,7 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.btnClubEdit);
             this.panel1.Controls.Add(this.ddlNationality);
             this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.lblFighterCount);
@@ -157,10 +159,11 @@
             // 
             this.ddlClub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ddlClub.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlClub.FormattingEnabled = true;
             this.ddlClub.Location = new System.Drawing.Point(81, 39);
             this.ddlClub.Name = "ddlClub";
-            this.ddlClub.Size = new System.Drawing.Size(328, 24);
+            this.ddlClub.Size = new System.Drawing.Size(292, 24);
             this.ddlClub.TabIndex = 5;
             // 
             // lstFighters
@@ -582,6 +585,16 @@
             this.label12.TabIndex = 33;
             this.label12.Text = "Pool Type";
             // 
+            // btnClubEdit
+            // 
+            this.btnClubEdit.Location = new System.Drawing.Point(379, 39);
+            this.btnClubEdit.Name = "btnClubEdit";
+            this.btnClubEdit.Size = new System.Drawing.Size(31, 23);
+            this.btnClubEdit.TabIndex = 15;
+            this.btnClubEdit.Text = "...";
+            this.btnClubEdit.UseVisualStyleBackColor = true;
+            this.btnClubEdit.Click += new System.EventHandler(this.btnClubEdit_Click);
+            // 
             // TournamentSetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -647,6 +660,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox ddlClub;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnClubEdit;
     }
 }
 

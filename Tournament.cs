@@ -26,6 +26,7 @@ namespace TournamentGenerator
         public int lossPoints;
         public int? doubleThreshold;
 
+        public List<Club> clubs = new List<Club>();
         public List<Fighter> fighters = new List<Fighter>();
         public List<Pool> pools = new List<Pool>();
         public Pool tieBreakers = null;

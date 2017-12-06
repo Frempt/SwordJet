@@ -114,18 +114,17 @@ namespace TournamentGenerator
 
                 case Tournament.TournamentStage.POOLFIGHTS:
                     //if this is swiss pairs and we haven't completed all of the pool rounds, advance button is "Next Round"
-                    if (tournament.poolType == Tournament.PoolType.SWISSPAIRS && (tournament.pools.Count / 2) < tournament.numberOfRounds)
-                    {
-                        btnAdvance.Text = "Next round";
-                    }
-                    else
-                    {
+                    //if (tournament.poolType == Tournament.PoolType.SWISSPAIRS && (tournament.pools.Count / 2) < tournament.numberOfRounds)
+                    //{
+                     //   btnAdvance.Text = "Next round";
+                    //}
+                    //else
+                    //{
                         btnAdvance.Text = "Begin Eliminations";
-                    }
-
-                    //only allow the pools to be extended if this is a fixed rounds tournament
-                    //we can't extend round robin, swiss pairs could be extended but would require additional calculations
-                    if(tournament.poolType == Tournament.PoolType.FIXEDROUNDS) btnExtendPools.Enabled = true;
+                    //}
+                    
+                    //we can't extend round robin
+                    if(tournament.poolType != Tournament.PoolType.ROUNDROBIN) btnExtendPools.Enabled = true;
                     break;
 
                 case Tournament.TournamentStage.TIEBREAKERS:

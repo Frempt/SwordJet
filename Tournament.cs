@@ -152,6 +152,7 @@ namespace TournamentGenerator
                 table.Columns.Add("FinishingRank", typeof(int));
             }
 
+            table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Pool", typeof(string));
             table.Columns.Add("PoolScore", typeof(int));
@@ -181,6 +182,8 @@ namespace TournamentGenerator
                     row["FinishingRank"] = rank;
                 }
 
+
+                row["ID"] = fighter.id;
                 row["Name"] = fighter.name;
 
                 string poolname = "";
@@ -491,19 +494,28 @@ namespace TournamentGenerator
         {
             if (stage == TournamentStage.POOLFIGHTS)
             {
-                int poolFighters = pools[0].fighters.Count;
-
-                //ensure pools can be extended
-                if ((poolFighters - 1) <= (numberOfRounds + 1)) return false;
-
-                foreach (Pool p in pools)
+                if (poolType == PoolType.FIXEDROUNDS)
                 {
-                    p.GenerateRound();
+                    int poolFighters = pools[0].fighters.Count;
+
+                    //ensure pools can be extended
+                    if ((poolFighters - 1) <= (numberOfRounds + 1)) return false;
+
+                    foreach (Pool p in pools)
+                    {
+                        p.GenerateRound();
+                    }
+
+                    numberOfRounds++;
+
+                    return true;
                 }
-
-                numberOfRounds++;
-
-                return true;
+                else if (poolType == PoolType.SWISSPAIRS)
+                {
+                    List<Pool> newPools = GenerateSwissPools();
+                    if (newPools != null) return true;
+                    else return false;
+                }
             }
 
             return false;
@@ -523,36 +535,39 @@ namespace TournamentGenerator
             }
             fightsFull.Shuffle();
 
+            List<Fight> round = new List<Fight>();
+
+            bool allowDouble = false;
+
             while (fightsFull.Count > 0)
             {
-                //todo split fights into rounds, try to ensure nobody fights twice back to back
-                List<Fight> round = new List<Fight>();
-
-                List<int> fightersClone = new List<int>();
-                fightersClone.AddRange(pool.fighters);
-                fightersClone.Shuffle();
-
-                for(int i = 0; i < fightersClone.Count - 1;)
+                for (int i = 0; i < fightsFull.Count;)
                 {
-                    foreach(Fight f in fightsFull)
+                    if (round.Count == 0)
                     {
-                        //ensure both fighters are still in fightersClone (have not fought this round)
-                        if((f.fighterA == fightersClone[i] || f.fighterB == fightersClone[i]) 
-                            && fightersClone.Contains(f.fighterA) && fightersClone.Contains(f.fighterB))
+                        round.Add(fightsFull[i]);
+                        fightsFull.RemoveAt(i);
+                    }
+                    else
+                    {
+                        if ((fightsFull[i].fighterA != round.Last().fighterA
+                           && fightsFull[i].fighterA != round.Last().fighterB
+                           && fightsFull[i].fighterB != round.Last().fighterA
+                           && fightsFull[i].fighterB != round.Last().fighterB)
+                           || allowDouble)
                         {
-                            round.Add(f);
-                            fightsFull.Remove(f);
-                            fightersClone.Remove(f.fighterA);
-                            fightersClone.Remove(f.fighterB);
-                            break;
+                            round.Add(fightsFull[i]);
+                            fightsFull.RemoveAt(i);
+                            allowDouble = false;
                         }
+                        else { i++; }
                     }
                 }
 
-                pool.rounds.Add(round);
+                allowDouble = true;
             }
 
-            pool.rounds.Add(fightsFull);
+            pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
 
             return pool;
         }
@@ -648,6 +663,8 @@ namespace TournamentGenerator
 
                 for (int i = 0; i < poolSwap; i++)
                 {
+                    if (i >= topFighters.Count || i >= bottomFighters.Count) return null;
+
                     int topFighterSwap = topFighters[topFighters.Count - (1 + i)];
                     int bottomFighterSwap = bottomFighters[i];
 
@@ -973,12 +990,12 @@ namespace TournamentGenerator
 
                     case TournamentStage.POOLFIGHTS:
 
-                        if (poolType == PoolType.SWISSPAIRS && pools.Count < (numberOfRounds * 2))
+                        /*if (poolType == PoolType.SWISSPAIRS && pools.Count < (numberOfRounds * 2))
                         {
                             GenerateSwissPools();
                             return "Next round generated";
                         }
-                        else if (GenerateNextEliminationBracket())
+                        else */if (GenerateNextEliminationBracket())
                         {
                             stage = TournamentStage.ELIMINATIONS;
                             return "Eliminations generated";

@@ -84,3 +84,4 @@ C:\Users\fremp\Documents\GitHub\TournamentGenerator\obj\Debug\TournamentGenerato
 C:\Users\fremp\Documents\GitHub\TournamentGenerator\obj\Debug\TournamentGenerator.exe
 C:\Users\fremp\Documents\GitHub\TournamentGenerator\obj\Debug\TournamentGenerator.pdb
 C:\Users\jomacgilp\Documents\TournamentGenerator\TournamentGenerator\TournamentGenerator\obj\Debug\TournamentGenerator.EditClubs.resources
+C:\Users\fremp\Documents\GitHub\TournamentGenerator\obj\Debug\TournamentGenerator.EditClubs.resources

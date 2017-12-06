@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentSetupForm));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnClubEdit = new System.Windows.Forms.Button();
             this.ddlNationality = new System.Windows.Forms.ComboBox();
             this.btnDelete = new System.Windows.Forms.Button();
             this.lblFighterCount = new System.Windows.Forms.Label();
@@ -66,7 +67,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.ddlPoolType = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.btnClubEdit = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -111,6 +111,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(413, 515);
             this.panel1.TabIndex = 2;
+            // 
+            // btnClubEdit
+            // 
+            this.btnClubEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClubEdit.Location = new System.Drawing.Point(379, 39);
+            this.btnClubEdit.Name = "btnClubEdit";
+            this.btnClubEdit.Size = new System.Drawing.Size(31, 23);
+            this.btnClubEdit.TabIndex = 15;
+            this.btnClubEdit.Text = "...";
+            this.btnClubEdit.UseVisualStyleBackColor = true;
+            this.btnClubEdit.Click += new System.EventHandler(this.btnClubEdit_Click);
             // 
             // ddlNationality
             // 
@@ -584,16 +595,6 @@
             this.label12.Size = new System.Drawing.Size(72, 17);
             this.label12.TabIndex = 33;
             this.label12.Text = "Pool Type";
-            // 
-            // btnClubEdit
-            // 
-            this.btnClubEdit.Location = new System.Drawing.Point(379, 39);
-            this.btnClubEdit.Name = "btnClubEdit";
-            this.btnClubEdit.Size = new System.Drawing.Size(31, 23);
-            this.btnClubEdit.TabIndex = 15;
-            this.btnClubEdit.Text = "...";
-            this.btnClubEdit.UseVisualStyleBackColor = true;
-            this.btnClubEdit.Click += new System.EventHandler(this.btnClubEdit_Click);
             // 
             // TournamentSetupForm
             // 

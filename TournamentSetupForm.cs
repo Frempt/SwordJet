@@ -28,6 +28,8 @@ namespace TournamentGenerator
 
             ddlNationality.DataSource = Country.Countries;
             ddlNationality.SelectedItem = Country.Countries.Where(c => c.code == "GB").First();
+
+            ddlClub.DataSource = tournament.clubs;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -184,9 +186,6 @@ namespace TournamentGenerator
 
             CalculateMessage();
 
-            ddlClub.DataSource = null;
-            ddlClub.DataSource = tournament.clubs;
-
             if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
             {
                 button1.Enabled = false;
@@ -240,7 +239,7 @@ namespace TournamentGenerator
 
                 case Tournament.PoolType.SWISSPAIRS:
                     txtPools.Enabled = false;
-                    txtRounds.Enabled = true;
+                    txtRounds.Enabled = false;
                     break;
             }
 
@@ -276,7 +275,9 @@ namespace TournamentGenerator
             tournament.clubs.Clear();
             tournament.clubs = dialog.clubList;
             SaveTournament();
-            LoadTournament();
+
+            ddlClub.DataSource = null;
+            ddlClub.DataSource = tournament.clubs;
         }
     }
 }

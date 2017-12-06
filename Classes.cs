@@ -42,6 +42,38 @@ namespace TournamentGenerator
         }
 
         /// <summary>
+        /// Split a list into smaller lists
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">The list to split</param>
+        /// <param name="size">The maximum size of each sub-list</param>
+        /// <returns></returns>
+        public static List<List<T>> Split<T> (this IList<T> list, int size)
+        {
+            if (size <= 0) return null;
+
+            List<List<T>> splitList = new List<List<T>>();
+
+            List<T> clone = new List<T>();
+            clone.AddRange(list);
+
+            while (clone.Count > 0)
+            {
+                List<T> batch = new List<T>();
+                for (int i = 0; i < size; i++)
+                {
+                    batch.Add(clone[0]);
+                    clone.RemoveAt(0);
+                    if (clone.Count == 0) break;
+                }
+
+                splitList.Add(batch);
+            }
+
+            return splitList;
+        }
+
+        /// <summary>
         /// Return a list of every possible distinct value pairing from a given list
         /// </summary>
         /// <typeparam name="T"></typeparam>

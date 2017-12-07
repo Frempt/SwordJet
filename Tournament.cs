@@ -157,7 +157,7 @@ namespace TournamentGenerator
             table.Columns.Add("Pool", typeof(string));
             table.Columns.Add("PoolScore", typeof(int));
             table.Columns.Add("PoolDoubles", typeof(int));
-            table.Columns.Add("PoolBuchholz", typeof(int));
+            table.Columns.Add("PoolBuchholz", typeof(double));
 
             foreach (Pool p in eliminations)
             {
@@ -315,9 +315,10 @@ namespace TournamentGenerator
             return doubles;
         }
 
-        public int GetFighterBuchholzScore(Fighter fighter)
+        public double GetFighterBuchholzScore(Fighter fighter)
         {
             int buchholz = 0;
+            int fightCount = 0;
 
             foreach (Pool pool in pools)
             {
@@ -350,16 +351,17 @@ namespace TournamentGenerator
                                     int opponentDoubles = GetFighterDoubles(opponent);
 
                                     buchholz += (opponentScore - opponentDoubles);
+                                    fightCount++;
 
                                     break;
-                                }
+                                } 
                             }
                         }
                     }
                 }
             }
 
-            return buchholz;
+            return (fightCount == 0) ? 0 : Math.Round((double)(buchholz / fightCount),2);
         }
 
         public int GetFighterTieBreakerScore(Fighter fighter)
@@ -559,15 +561,17 @@ namespace TournamentGenerator
                             round.Add(fightsFull[i]);
                             fightsFull.RemoveAt(i);
                             allowDouble = false;
+                            break;
                         }
                         else { i++; }
                     }
-                }
 
-                allowDouble = true;
+                    if (i >= fightsFull.Count) allowDouble = true;
+                }
             }
 
-            pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
+            pool.rounds.Add(round);
+            //pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
 
             return pool;
         }
@@ -802,7 +806,7 @@ namespace TournamentGenerator
                 table.Columns.Add("Score", typeof(int));
                 table.Columns.Add("Doubles", typeof(int));
                 table.Columns.Add("TieBreaker", typeof(int));
-                table.Columns.Add("Buchholz", typeof(int));
+                table.Columns.Add("Buchholz", typeof(double));
 
                 foreach (Fighter fighter in fighters)
                 {

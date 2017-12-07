@@ -7,7 +7,7 @@ namespace TournamentGenerator
 {
     public partial class TournamentManager : Form
     {
-        public TournamentManager()
+        public TournamentManager(string filepath = "")
         {
             InitializeComponent();
 
@@ -29,6 +29,12 @@ namespace TournamentGenerator
             ConfigValues.eliminationSizes = elimSizes;
 
             Country.LoadCountries(ConfigurationManager.AppSettings["countryCSVFile"]);
+
+            if (filepath != "")
+            {
+                Logging.WriteToLog("DebugLog", filepath);
+                LoadExisting(filepath);
+            }
         }
 
         private void btnNew_Click(object sender, EventArgs e)
@@ -68,24 +74,29 @@ namespace TournamentGenerator
             if (result == DialogResult.OK)
             {
                 string path = dialog.FileName;
-                try
-                {
-                    Tournament tournament = FileAccessHelper.LoadTournament(path);
+                LoadExisting(path);
+            }
+        }
 
-                    if(tournament != null)
-                    { 
-                        TournamentSetupForm tournForm = new TournamentSetupForm(path);
-                        tournForm.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show("File not found!");
-                    }
-                }
-                catch (Exception ex)
+        private void LoadExisting(string filePath)
+        {
+            try
+            {
+                Tournament tournament = FileAccessHelper.LoadTournament(filePath);
+
+                if (tournament != null)
                 {
-                    MessageBox.Show(ex.ToString());
+                    TournamentSetupForm tournForm = new TournamentSetupForm(filePath);
+                    tournForm.Show();
                 }
+                else
+                {
+                    MessageBox.Show("File not found!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

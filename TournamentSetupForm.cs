@@ -37,26 +37,34 @@ namespace TournamentGenerator
             //ensure a name has been entered
             if (txtName.Text != "")
             {
-                //add the new fighter to the list with the next ID, and refresh the listbox
-                Fighter fighter = new Fighter(tournament.GetNextFighterID(), txtName.Text);
-                fighter.club = ddlClub.Text;
-                fighter.country = ((Country)ddlNationality.SelectedItem).code;
-                tournament.fighters.Add(fighter);
+                try
+                {
+                    //add the new fighter to the list with the next ID, and refresh the listbox
+                    Fighter fighter = new Fighter(tournament.GetNextFighterID(), txtName.Text);
+                    fighter.club = ddlClub.Text;
+                    fighter.country = ((Country)ddlNationality.SelectedItem).code;
+                    tournament.fighters.Add(fighter);
 
-                lstFighters.DataSource = null;
-                lstFighters.DataSource = tournament.fighters;
+                    lstFighters.DataSource = null;
+                    lstFighters.DataSource = tournament.fighters;
 
-                lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
+                    lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
 
-                txtName.Text = "";
+                    txtName.Text = "";
 
-                //recalculate the pool length message
-                CalculateMessage();
+                    //recalculate the pool length message
+                    CalculateMessage();
 
-                txtName.Focus();
+                    txtName.Focus();
 
-                //save changes
-                FileAccessHelper.SaveTournament(tournament, FilePath);
+                    //save changes
+                    FileAccessHelper.SaveTournament(tournament, FilePath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error adding fighter to tournament - " + ex.Message);
+                    Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
+                }
 
                 LoadTournament();
             }
@@ -145,19 +153,27 @@ namespace TournamentGenerator
 
         private void SaveTournament()
         {
-            tournament.numberOfPools = (int)txtPools.Value;
-            tournament.numberOfRounds = (int)txtRounds.Value;
-            tournament.name = txtTournamentName.Text;
-            tournament.winPoints = (int)txtWinPoints.Value;
-            tournament.drawPoints = (int)txtDrawPoints.Value;
-            tournament.lossPoints = (int)txtLossPoints.Value;
-            tournament.fightTimeMinutes = (int)txtFightTime.Value;
-            tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
-            tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
-            tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
-            tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
+            try
+            {
+                tournament.numberOfPools = (int)txtPools.Value;
+                tournament.numberOfRounds = (int)txtRounds.Value;
+                tournament.name = txtTournamentName.Text;
+                tournament.winPoints = (int)txtWinPoints.Value;
+                tournament.drawPoints = (int)txtDrawPoints.Value;
+                tournament.lossPoints = (int)txtLossPoints.Value;
+                tournament.fightTimeMinutes = (int)txtFightTime.Value;
+                tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
+                tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
+                tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
+                tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
 
-            FileAccessHelper.SaveTournament(tournament, FilePath);
+                FileAccessHelper.SaveTournament(tournament, FilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving tournament - " + ex.Message);
+                Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
+            }
 
             LoadTournament();
         }
@@ -166,53 +182,61 @@ namespace TournamentGenerator
         {
             loading = true;
 
-            tournament = FileAccessHelper.LoadTournament(FilePath);
-
-            txtPools.Value = tournament.numberOfPools;
-            txtRounds.Value = tournament.numberOfRounds;
-            txtTournamentName.Text = tournament.name;
-            ddlElimType.SelectedItem = tournament.eliminationType;
-            ddlPoolType.SelectedItem = tournament.poolType;
-            ddlElimSize.SelectedItem = tournament.eliminationSize;
-            txtWinPoints.Value = tournament.winPoints;
-            txtDrawPoints.Value = tournament.drawPoints;
-            txtLossPoints.Value = tournament.lossPoints;
-            txtFightTime.Value = tournament.fightTimeMinutes;
-            chkDoubleOut.Checked = (tournament.doubleThreshold != null);
-            if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
-
-            lstFighters.DataSource = tournament.fighters;
-            lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
-
-            CalculateMessage();
-
-            if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
+            try
             {
-                button1.Enabled = false;
-                btnDelete.Enabled = false;
-                txtDoubleLimit.Enabled = false;
-                txtDrawPoints.Enabled = false;
-                txtWinPoints.Enabled = false;
-                txtLossPoints.Enabled = false;
-                txtPools.Enabled = false;
-                txtRounds.Enabled = false;
-                txtFightTime.Enabled = false;
-                txtName.Enabled = false;
-                ddlClub.Enabled = false;
-                btnClubEdit.Enabled = false;
-                ddlNationality.Enabled = false;
-                chkDoubleOut.Enabled = false;
-                txtTournamentName.Enabled = false;
-                ddlPoolType.Enabled = false;
+                tournament = FileAccessHelper.LoadTournament(FilePath);
 
-                if(tournament.stage != Tournament.TournamentStage.POOLFIGHTS)
+                txtPools.Value = tournament.numberOfPools;
+                txtRounds.Value = tournament.numberOfRounds;
+                txtTournamentName.Text = tournament.name;
+                ddlElimType.SelectedItem = tournament.eliminationType;
+                ddlPoolType.SelectedItem = tournament.poolType;
+                ddlElimSize.SelectedItem = tournament.eliminationSize;
+                txtWinPoints.Value = tournament.winPoints;
+                txtDrawPoints.Value = tournament.drawPoints;
+                txtLossPoints.Value = tournament.lossPoints;
+                txtFightTime.Value = tournament.fightTimeMinutes;
+                chkDoubleOut.Checked = (tournament.doubleThreshold != null);
+                if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
+
+                lstFighters.DataSource = tournament.fighters;
+                lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
+
+                CalculateMessage();
+
+                if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
                 {
-                    ddlElimType.Enabled = false;
-                    ddlElimSize.Enabled = false;
-                }
-            }
+                    button1.Enabled = false;
+                    btnDelete.Enabled = false;
+                    txtDoubleLimit.Enabled = false;
+                    txtDrawPoints.Enabled = false;
+                    txtWinPoints.Enabled = false;
+                    txtLossPoints.Enabled = false;
+                    txtPools.Enabled = false;
+                    txtRounds.Enabled = false;
+                    txtFightTime.Enabled = false;
+                    txtName.Enabled = false;
+                    ddlClub.Enabled = false;
+                    btnClubEdit.Enabled = false;
+                    ddlNationality.Enabled = false;
+                    chkDoubleOut.Enabled = false;
+                    txtTournamentName.Enabled = false;
+                    ddlPoolType.Enabled = false;
 
-            loading = false;
+                    if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS)
+                    {
+                        ddlElimType.Enabled = false;
+                        ddlElimSize.Enabled = false;
+                    }
+                }
+
+                loading = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading tournament - " + ex.Message);
+                Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
+            }
         }
 
         private void btnManage_Click(object sender, EventArgs e)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     [Serializable]
     public class Pool

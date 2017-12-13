@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Generic;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     public partial class TournamentManager : Form
     {

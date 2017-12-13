@@ -63,7 +63,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TournamentGenerator.Program</StartupObject>
+    <StartupObject>SwordJet.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -90,6 +90,12 @@
     <Compile Include="EditClubs.Designer.cs">
       <DependentUpon>EditClubs.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageFight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageFight.Designer.cs">
+      <DependentUpon>ManageFight.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageTournament.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EditClubs.resx">
       <DependentUpon>EditClubs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageFight.resx">
+      <DependentUpon>ManageFight.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManageTournament.resx">
       <DependentUpon>ManageTournament.cs</DependentUpon>

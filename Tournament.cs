@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     [Serializable]
     public class Tournament
@@ -158,6 +158,7 @@ namespace TournamentGenerator
             table.Columns.Add("PoolScore", typeof(int));
             table.Columns.Add("PoolDoubles", typeof(int));
             table.Columns.Add("PoolBuchholz", typeof(double));
+            table.Columns.Add("HitScore", typeof(int));
 
             foreach (Pool p in eliminations)
             {
@@ -199,6 +200,8 @@ namespace TournamentGenerator
 
                 row["PoolBuchholz"] = GetFighterBuchholzScore(fighter);
 
+                row["HitScore"] = GetFighterHitScore(fighter);
+
                 row["TieBreakerScore"] = GetFighterTieBreakerScore(fighter);
 
                 Dictionary<string, string> elimResults = GetFighterEliminationResults(fighter);
@@ -224,7 +227,7 @@ namespace TournamentGenerator
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolBuchholz DESC, TieBreakerScore DESC";
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, HitScore DESC, PoolBuchholz DESC, TieBreakerScore DESC";
             if (stage == TournamentStage.CLOSED)
             {
                 dv.Sort = "FinishingRank ASC, " + dv.Sort;
@@ -315,6 +318,40 @@ namespace TournamentGenerator
             return doubles;
         }
 
+        public int GetFighterHitScore(Fighter fighter)
+        {
+            int given = 0;
+            int received = 0;
+
+            foreach (Pool pool in pools)
+            {
+                if (pool.fighters.Contains(fighter.id))
+                {
+                    foreach (List<Fight> round in pool.rounds)
+                    {
+                        foreach (Fight fight in round)
+                        {
+                            foreach (Exchange exch in fight.exchanges)
+                            {
+                                if (fight.fighterA == fighter.id)
+                                {
+                                    given += exch.fighterAScore;
+                                    received += exch.fighterBScore;
+                                }
+                                else if (fight.fighterB == fighter.id && !fight.oddFight)
+                                {
+                                    given += exch.fighterBScore;
+                                    received += exch.fighterAScore;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return given - received;
+        }
+
         public double GetFighterBuchholzScore(Fighter fighter)
         {
             int buchholz = 0;
@@ -350,7 +387,7 @@ namespace TournamentGenerator
                                     int opponentScore = GetFighterScore(opponent);
                                     int opponentDoubles = GetFighterDoubles(opponent);
 
-                                    buchholz += (opponentScore - opponentDoubles);
+                                    buchholz += Math.Max(0,(opponentScore - opponentDoubles));
                                     fightCount++;
 
                                     break;
@@ -805,6 +842,7 @@ namespace TournamentGenerator
                 table.Columns.Add("ID", typeof(int));
                 table.Columns.Add("Score", typeof(int));
                 table.Columns.Add("Doubles", typeof(int));
+                table.Columns.Add("HitScore", typeof(int));
                 table.Columns.Add("TieBreaker", typeof(int));
                 table.Columns.Add("Buchholz", typeof(double));
 
@@ -815,6 +853,7 @@ namespace TournamentGenerator
                     row["ID"] = fighter.id;
                     row["Score"] = GetFighterScore(fighter);
                     row["Doubles"] = GetFighterDoubles(fighter);
+                    row["HitScore"] = GetFighterHitScore(fighter);
                     row["TieBreaker"] = GetFighterTieBreakerScore(fighter);
                     row["Buchholz"] = GetFighterBuchholzScore(fighter);
 
@@ -822,7 +861,7 @@ namespace TournamentGenerator
                 }
 
                 DataView dv = table.DefaultView;
-                dv.Sort = "Score DESC, Doubles ASC, Buchholz DESC, TieBreaker DESC";
+                dv.Sort = "Score DESC, Doubles ASC, HitScore DESC, Buchholz DESC, TieBreaker DESC";
 
                 for (int i = 0; i < eliminationSize; i++)
                 {
@@ -838,10 +877,13 @@ namespace TournamentGenerator
 
                             int lastPlaceScore = (int)dv[i]["Score"];
                             int lastPlaceDoubles = (int)dv[i]["Doubles"];
-                            int lastPlaceBuchholz = (int)dv[i]["Buchholz"];
+                            int lastPlaceHitScore = (int)dv[i]["HitScore"];
+                            double lastPlaceBuchholz = (double)dv[i]["Buchholz"];
 
                             //work down list
-                            while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"] && lastPlaceBuchholz == (int)dv[j]["Buchholz"])
+                            while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                                && lastPlaceHitScore == (int)dv[j]["HitScore"]
+                                && lastPlaceBuchholz == (double)dv[j]["Buchholz"])
                             {
                                 tiedFighters.Add((int)dv[j]["ID"]);
                                 j++;
@@ -852,7 +894,9 @@ namespace TournamentGenerator
                             if (tiedFighters.Count > 1)
                             {
                                 //work up list
-                                while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"] && lastPlaceBuchholz == (int)dv[j]["Buchholz"])
+                                while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                                    && lastPlaceHitScore == (int)dv[j]["HitScore"]
+                                    && lastPlaceBuchholz == (double)dv[j]["Buchholz"])
                                 {
                                     tiedFighters.Add((int)dv[j]["ID"]);
                                     j--;
@@ -886,6 +930,7 @@ namespace TournamentGenerator
                                         }
                                     }
 
+                                    f.allowDraw = false;
                                     tieBreakerFights.Add(f);
                                 }
 
@@ -928,6 +973,7 @@ namespace TournamentGenerator
                 Fight fight = new Fight();
                 fight.fighterA = bracket.fighters[i];
                 fight.fighterB = bracket.fighters[bracket.fighters.Count - (i + 1)];
+                fight.allowDraw = false;
 
                 fights.Add(fight);
             }
@@ -968,6 +1014,8 @@ namespace TournamentGenerator
                     bronzeFight.fighterB = fightB.fighterA;
                 }
 
+                bronzeFight.allowDraw = false;
+                goldFight.allowDraw = false;
                 finals = new List<Fight>() { bronzeFight, goldFight };
             }
         }

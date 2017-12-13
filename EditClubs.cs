@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     public partial class EditClubs : Form
     {

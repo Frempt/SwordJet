@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Configuration;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     public partial class TournamentSetupForm : Form
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     public partial class ManageTournament : Form
     {
@@ -277,6 +277,14 @@ namespace TournamentGenerator
                                     txtDoubles.Enabled = false;
                                 }
                             }
+
+                            Button manageButton = new Button();
+                            manageButton.Text = "Manage Fight";
+                            manageButton.Tag = fight.fightID;
+                            manageButton.Click += btnManageFight_Click;
+                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+
+                            panel.Controls.Add(manageButton, 7, rowIndex);
                         }
 
                         childPage.Controls.Add(panel);
@@ -357,6 +365,14 @@ namespace TournamentGenerator
                         lbl.Text = (j == 0) ? "BRONZE" : "GOLD";
                         lbl.Font = boldFont;
                         panel.Controls.Add(lbl, 5, rowIndex);
+
+                        Button manageButton = new Button();
+                        manageButton.Text = "Manage Fight";
+                        manageButton.Tag = fight.fightID;
+                        manageButton.Click += btnManageFight_Click;
+                        if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+
+                        panel.Controls.Add(manageButton, 6, rowIndex);
                     }
 
                     page.Controls.Add(panel);
@@ -426,6 +442,14 @@ namespace TournamentGenerator
                     rbWinB.CheckedChanged += control_ValueChanged;
                     if (tournament.stage == Tournament.TournamentStage.CLOSED || !(tournament.IsLatestBracket(bracket))) rbWinB.Enabled = false;
                     panel.Controls.Add(rbWinB, 4, rowIndex);
+
+                    Button manageButton = new Button();
+                    manageButton.Text = "Manage Fight";
+                    manageButton.Tag = fight.fightID;
+                    manageButton.Click += btnManageFight_Click;
+                    if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+
+                    panel.Controls.Add(manageButton, 5, rowIndex);
                 }
             }
 
@@ -542,6 +566,32 @@ namespace TournamentGenerator
             }
 
             LoadFighters();
+        }
+
+        private void btnManageFight_Click(object sender, EventArgs e)
+        {
+            Fight f = tournament.GetFightByID((Guid)((Button)sender).Tag);
+
+            ManageFight dialog = new ManageFight(f, tournament, f.allowDraw);
+            dialog.FormClosed += Dialog_FormClosed;
+            dialog.ShowDialog();
+        }
+
+        private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ManageFight dialog = (ManageFight)sender;
+
+            if (dialog.ended)
+            {
+                Fight f = tournament.GetFightByID(dialog.fight.fightID);
+                f.exchanges = dialog.fight.exchanges;
+                f.SetResults();
+
+                FileAccessHelper.SaveTournament(tournament, FilePath);
+                LoadTournament();
+
+                SelectLastPage();
+            }
         }
 
         private void btnExtendPools_Click(object sender, EventArgs e)

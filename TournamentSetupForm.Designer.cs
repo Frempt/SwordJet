@@ -1,4 +1,4 @@
-﻿namespace TournamentGenerator
+﻿namespace SwordJet
 {
     partial class TournamentSetupForm
     {

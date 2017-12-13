@@ -10,7 +10,7 @@ using NPOI.HPSF;
 using NPOI.SS.UserModel;
 using Microsoft.VisualBasic.FileIO;
 
-namespace TournamentGenerator
+namespace SwordJet
 {
     public static class ConfigValues
     {
@@ -484,6 +484,9 @@ namespace TournamentGenerator
         public FightResult fighterAResult;
         public FightResult fighterBResult;
         public bool oddFight = false;
+        public bool allowDraw = true;
+
+        public List<Exchange> exchanges = new List<Exchange>();
 
         public Fight()
         {
@@ -514,9 +517,69 @@ namespace TournamentGenerator
             return false;
         }
 
+        public void SetResults(int? doubleThreshold = null)
+        {
+            int aScore = 0;
+            int bScore = 0;
+            doubleCount = 0;
+
+            foreach(Exchange ex in exchanges)
+            {
+                aScore += ex.fighterAScore;
+                bScore += ex.fighterBScore;
+                if (ex.dbl) doubleCount++;
+            }
+
+            if(doubleThreshold != null && allowDraw && doubleCount > doubleThreshold)
+            {
+                fighterAResult = FightResult.DQ;
+                fighterBResult = FightResult.DQ;
+            }
+            else if(aScore > bScore)
+            {
+                fighterAResult = FightResult.WIN;
+                fighterBResult = FightResult.LOSS;
+            }
+            else if(bScore > aScore)
+            {
+                fighterBResult = FightResult.WIN;
+                fighterAResult = FightResult.LOSS;
+            }
+            else
+            {
+                fighterAResult = FightResult.DRAW;
+                fighterBResult = FightResult.DRAW;
+            }
+        }
+
         public bool IsComplete()
         {
             return (fighterAResult != FightResult.PENDING && fighterBResult != FightResult.PENDING);
+        }
+    }
+
+    [Serializable]
+    public class Exchange
+    {
+        public int fighterAScore = 0;
+        public int fighterBScore = 0;
+        public bool dbl = false;
+
+        public Exchange() { }
+
+        public Exchange(int aScore, int bScore, bool dblHit)
+        {
+            fighterAScore = aScore;
+            fighterBScore = bScore;
+            dbl = dblHit;
+        }
+
+        public override string ToString()
+        {
+            string display = "A Score: " + fighterAScore;
+            display += ", B Score: " + fighterBScore;
+            if (dbl) display += " - DOUBLE";
+            return display;
         }
     }
 

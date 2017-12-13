@@ -209,6 +209,9 @@ namespace SwordJet
 
                         panel.Controls.Add(new Label() { Text = "Doubles", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter }, 5, 0);
 
+                        panel.Controls.Add(new Label(), 6, 0);
+                        panel.Controls.Add(new Label(), 7, 0);
+
                         for (int j = 0; j < round.Count; j++)
                         {
                             Fight fight = round[j];
@@ -264,9 +267,17 @@ namespace SwordJet
                             if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) txtDoubles.Enabled = false;
                             panel.Controls.Add(txtDoubles, 5, rowIndex);
 
+                            Button manageButton = new Button();
+                            manageButton.Text = "Manage Fight";
+                            manageButton.Tag = fight.fightID;
+                            manageButton.Click += btnManageFight_Click;
+                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+
+                            panel.Controls.Add(manageButton, 6, rowIndex);
+
                             if (fight.oddFight)
                             {
-                                panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 6, rowIndex);
+                                panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 7, rowIndex);
 
                                 if (tournament.poolType == Tournament.PoolType.SWISSPAIRS)
                                 {
@@ -277,14 +288,6 @@ namespace SwordJet
                                     txtDoubles.Enabled = false;
                                 }
                             }
-
-                            Button manageButton = new Button();
-                            manageButton.Text = "Manage Fight";
-                            manageButton.Tag = fight.fightID;
-                            manageButton.Click += btnManageFight_Click;
-                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
-
-                            panel.Controls.Add(manageButton, 7, rowIndex);
                         }
 
                         childPage.Controls.Add(panel);

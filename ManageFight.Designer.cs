@@ -85,6 +85,7 @@
             // 
             // label1
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(37, 18);
             this.label1.Name = "label1";
@@ -104,6 +105,7 @@
             // 
             // lblFighterAName
             // 
+            this.lblFighterAName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFighterAName.AutoSize = true;
             this.lblFighterAName.Location = new System.Drawing.Point(12, 56);
             this.lblFighterAName.Name = "lblFighterAName";
@@ -121,6 +123,7 @@
             // 
             // txtFighterAScore
             // 
+            this.txtFighterAScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
             this.txtFighterAScore.Location = new System.Drawing.Point(15, 94);
             this.txtFighterAScore.Name = "txtFighterAScore";
             this.txtFighterAScore.Size = new System.Drawing.Size(87, 22);
@@ -189,6 +192,7 @@
             // 
             // btnEndFight
             // 
+            this.btnEndFight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEndFight.Location = new System.Drawing.Point(224, 58);
             this.btnEndFight.Name = "btnEndFight";
             this.btnEndFight.Size = new System.Drawing.Size(115, 39);
@@ -220,6 +224,7 @@
             // 
             // btnDeleteExchange
             // 
+            this.btnDeleteExchange.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDeleteExchange.Location = new System.Drawing.Point(4, 268);
             this.btnDeleteExchange.Name = "btnDeleteExchange";
             this.btnDeleteExchange.Size = new System.Drawing.Size(231, 35);

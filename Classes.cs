@@ -148,8 +148,15 @@ namespace SwordJet
 
         public static void HEMARatingsExport(Tournament tournament, string folderPath)
         {
-            List<string> clubs = new List<string>();
             StringBuilder clubCsv = new StringBuilder();
+
+            clubCsv.AppendLine(string.Join(",", new string[] { "Name", "Country", "City", "State" }));
+
+            foreach (Club club in tournament.clubs)
+            {
+                clubCsv.AppendLine(string.Join(",", new string[] { "\"" + club.name + "\"", "\"" + club.country + "\"", "\"" + club.city + "\"", "" }));
+            }
+
             StringBuilder fighterCsv = new StringBuilder();
 
             fighterCsv.AppendLine(string.Join(",", new string[]{ "Name", "Club", "Nationality", "Gender", "HEMA Ratings ID" }));
@@ -157,11 +164,6 @@ namespace SwordJet
             foreach(Fighter f in tournament.fighters)
             {
                 fighterCsv.AppendLine(string.Join(",", new string[] { "\"" + f.name + "\"", "\"" + f.club + "\"", f.country, "Unknown", "" }));
-
-                if(!clubs.Contains(f.club))
-                {
-                    clubCsv.AppendLine(string.Join(",", new string[] { "\"" + f.club + "\"", "\"" + f.country + "\"", "", "" }));
-                }
             }
 
             StringBuilder fightCsv = new StringBuilder();
@@ -176,7 +178,7 @@ namespace SwordJet
                     {
                         Fighter fighterA = tournament.GetFighterByID(f.fighterA);
                         Fighter fighterB = tournament.GetFighterByID(f.fighterB);
-                        if(fighterB != null) fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "\"POOL - " + p.name + "\"" }));
+                        if(fighterB != null) fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", (f.fighterAResult == Fight.FightResult.DQ ? "LOSS" : f.fighterAResult.ToString()), (f.fighterBResult == Fight.FightResult.DQ ? "LOSS" : f.fighterBResult.ToString()), "\"POOL - " + p.name + "\"" }));
                     }
                 }
             }
@@ -202,6 +204,14 @@ namespace SwordJet
                         fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "ELIM - " + p.name }));
                     }
                 }
+            }
+
+            for(int i = 0; i < 2; i++)
+            {
+                Fight f = tournament.finals[i];
+                Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "FINAL - " + (i == 0 ? "BRONZE" : "GOLD") }));
             }
 
             string exportFolder = tournament.name + " - HEMA Ratings Export";
@@ -530,7 +540,7 @@ namespace SwordJet
                 if (ex.dbl) doubleCount++;
             }
 
-            if(doubleThreshold != null && allowDraw && doubleCount > doubleThreshold)
+            if(doubleThreshold != null && allowDraw && doubleCount >= doubleThreshold)
             {
                 fighterAResult = FightResult.DQ;
                 fighterBResult = FightResult.DQ;

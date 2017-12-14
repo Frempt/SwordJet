@@ -680,7 +680,7 @@ namespace SwordJet
                 int firstPoolSize = vw.Count / 2;
                 if (firstPoolSize % 2 == 1)
                 {
-                    if (pools.Count / 2 < numberOfRounds / 2)
+                    if ((pools.Count / 2) % 2 == 1)//(pools.Count / 2 < numberOfRounds / 2)
                     {
                         firstPoolSize++;
                     }

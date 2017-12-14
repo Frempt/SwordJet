@@ -30,6 +30,9 @@ namespace SwordJet
             tournament = tournamentToManage;
             allowDraw = draw;
 
+            lblFighterAName.Text = tournament.GetFighterByID(fight.fighterA).name;
+            lblFighterBName.Text = tournament.GetFighterByID(fight.fighterB).name;
+
             //todo handle when fight has already been completed?
             //not sure if this should be allowed or not
 
@@ -111,7 +114,7 @@ namespace SwordJet
 
             lblCurrentResult.Text = resultText;
 
-            if(tournament.doubleThreshold != null && doubleCount > tournament.doubleThreshold && allowDraw)
+            if(tournament.doubleThreshold != null && doubleCount >= tournament.doubleThreshold && allowDraw)
             {
                 ended = true;
                 MessageBox.Show("Double Threshold reached - fighters disqualified");

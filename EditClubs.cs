@@ -29,7 +29,7 @@ namespace SwordJet
         {
             if (txtName.Text != "")
             {
-                clubList.Add(new Club() { name = txtName.Text, city = txtCity.Text, country = ddlCountry.SelectedItem.ToString(), state = txtState.Text });
+                clubList.Add(new Club() { name = txtName.Text, city = txtCity.Text, country = ((Country)ddlCountry.SelectedItem).code, state = txtState.Text });
                 lbClubs.DataSource = null;
                 lbClubs.DataSource = clubList;
 

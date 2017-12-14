@@ -267,14 +267,6 @@ namespace SwordJet
                             if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) txtDoubles.Enabled = false;
                             panel.Controls.Add(txtDoubles, 5, rowIndex);
 
-                            Button manageButton = new Button();
-                            manageButton.Text = "Manage Fight";
-                            manageButton.Tag = fight.fightID;
-                            manageButton.Click += btnManageFight_Click;
-                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
-
-                            panel.Controls.Add(manageButton, 6, rowIndex);
-
                             if (fight.oddFight)
                             {
                                 panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 7, rowIndex);
@@ -288,6 +280,14 @@ namespace SwordJet
                                     txtDoubles.Enabled = false;
                                 }
                             }
+
+                            Button manageButton = new Button();
+                            manageButton.Text = "Manage Fight";
+                            manageButton.Tag = fight.fightID;
+                            manageButton.Click += btnManageFight_Click;
+                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+
+                            panel.Controls.Add(manageButton, 6, rowIndex);
                         }
 
                         childPage.Controls.Add(panel);
@@ -577,7 +577,7 @@ namespace SwordJet
 
             ManageFight dialog = new ManageFight(f, tournament, f.allowDraw);
             dialog.FormClosed += Dialog_FormClosed;
-            dialog.ShowDialog();
+            if(!dialog.IsDisposed)dialog.ShowDialog();
         }
 
         private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
@@ -588,7 +588,7 @@ namespace SwordJet
             {
                 Fight f = tournament.GetFightByID(dialog.fight.fightID);
                 f.exchanges = dialog.fight.exchanges;
-                f.SetResults();
+                f.SetResults(tournament.doubleThreshold);
 
                 FileAccessHelper.SaveTournament(tournament, FilePath);
                 LoadTournament();

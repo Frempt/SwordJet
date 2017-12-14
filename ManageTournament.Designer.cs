@@ -68,8 +68,8 @@
             // 
             // btnExtendPools
             // 
-            this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExtendPools.Location = new System.Drawing.Point(888, 82);
+            this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExtendPools.Location = new System.Drawing.Point(888, 158);
             this.btnExtendPools.Name = "btnExtendPools";
             this.btnExtendPools.Size = new System.Drawing.Size(185, 35);
             this.btnExtendPools.TabIndex = 2;

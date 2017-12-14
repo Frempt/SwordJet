@@ -18,6 +18,7 @@ namespace SwordJet
 
         public bool ended = false;
 
+        private bool suddenDeath = false;
         private int aScore = 0;
         private int bScore = 0;
         private int doubleCount = 0;
@@ -116,9 +117,13 @@ namespace SwordJet
 
             if(tournament.doubleThreshold != null && doubleCount >= tournament.doubleThreshold && allowDraw)
             {
-                ended = true;
-                MessageBox.Show("Double Threshold reached - fighters disqualified");
-                Close();
+                lblCurrentResult.Text = "Double Threshold reached - fighters disqualified";
+                ShowConclusionMessage();
+            }
+
+            if(aScore >= tournament.scoreThreshold || bScore >= tournament.scoreThreshold || (suddenDeath && aScore != bScore))
+            {
+                ShowConclusionMessage();
             }
         }
 
@@ -160,17 +165,23 @@ namespace SwordJet
             }
         }
 
+        private void ShowConclusionMessage()
+        {
+            MessageBox.Show(lblCurrentResult.Text, (aScore > bScore ? "Winner: " + lblFighterAName.Text : (bScore > aScore) ? "Winner: " + lblFighterBName.Text : "Draw"));
+            ended = true;
+            Close();
+        }
+
         private void btnEndFight_Click(object sender, EventArgs e)
         {
             if(aScore > bScore || bScore > aScore || allowDraw)
             {
-                MessageBox.Show(lblCurrentResult.Text, "Final Result");
-                ended = true;
-                Close();
+                ShowConclusionMessage();
             }
             else
             {
                 MessageBox.Show("SUDDEN DEATH!");
+                suddenDeath = true;
             }
         }
     }

@@ -15,6 +15,7 @@ namespace SwordJet
         public string name;
         public int numberOfRounds;
         public int numberOfPools;
+        public int? scoreThreshold;
         public int fightTimeMinutes;
         public TournamentStage stage = TournamentStage.REGISTRATION;
         public PoolType poolType = PoolType.FIXEDROUNDS;
@@ -39,6 +40,7 @@ namespace SwordJet
             numberOfPools = 1;
             numberOfRounds = 1;
             fightTimeMinutes = 1;
+            scoreThreshold = null;
             eliminationSize = 8;
             matchedEliminations = false;
             winPoints = 3;
@@ -47,6 +49,7 @@ namespace SwordJet
             doubleThreshold = null;
         }
 
+        //return the next fighter ID to use when creating new fighters
         public int GetNextFighterID()
         {
             if (fighters.Count > 0)
@@ -56,6 +59,7 @@ namespace SwordJet
             return 1;
         }
 
+        //return a fighter with the given ID
         public Fighter GetFighterByID(int id)
         {
             foreach (Fighter f in fighters)
@@ -66,6 +70,7 @@ namespace SwordJet
             return null;
         }
 
+        //return a fight with the given ID
         public Fight GetFightByID(Guid id)
         {
             foreach (Pool p in pools)
@@ -109,6 +114,7 @@ namespace SwordJet
             return null;
         }
 
+        //get a list of all of the pool fights with the given fighter ID
         public List<Fight> GetPoolFightsByFighter(int fighterId)
         {
             List<Fight> fights = new List<Fight>();
@@ -127,11 +133,14 @@ namespace SwordJet
             return fights;
         }
 
+        //return true if two fighters have already fought in the pools
         public bool HasFightHappenedAlready(Fight f)
         {
             return (FindFight(f) != null);
         }
 
+        //get a pool fight which involves the same fighters as the given fight
+        //returns null if no match found
         public Fight FindFight(Fight f)
         {
             foreach (Pool p in pools)
@@ -143,10 +152,12 @@ namespace SwordJet
             return null;
         }
 
+        //get a sorted data view of all tournament fighters
         public DataView GetFightersDataView()
         {
             DataTable table = new DataTable();
 
+            //if the tournament is over, add a "finishing rank" column
             if (stage == TournamentStage.CLOSED)
             {
                 table.Columns.Add("FinishingRank", typeof(int));
@@ -158,13 +169,15 @@ namespace SwordJet
             table.Columns.Add("PoolScore", typeof(int));
             table.Columns.Add("PoolDoubles", typeof(int));
             table.Columns.Add("PoolBuchholz", typeof(double));
-            table.Columns.Add("HitScore", typeof(int));
+            table.Columns.Add("PoolHitScore", typeof(int));
 
+            //add a column for each round of eliminations
             foreach (Pool p in eliminations)
             {
                 table.Columns.Add(p.name, typeof(string));
             }
 
+            //if finals exist, add a column for finals
             if (finals.Count > 0)
             {
                 table.Columns.Add("Finals", typeof(string));
@@ -177,16 +190,18 @@ namespace SwordJet
             {
                 DataRow row = table.NewRow();
 
-                if (stage == Tournament.TournamentStage.CLOSED)
+                //if the tournament is finished, get the fighter's finishing rank
+                if (stage == TournamentStage.CLOSED)
                 {
                     int rank = GetFighterFinalRank(fighter);
                     row["FinishingRank"] = rank;
                 }
 
-
                 row["ID"] = fighter.id;
                 row["Name"] = fighter.name;
 
+                //get the fighter's pool name
+                //if swiss pairs, will return the last pool the fighter was in
                 string poolname = "";
                 foreach (Pool p in pools)
                 {
@@ -194,32 +209,34 @@ namespace SwordJet
                 }
                 row["Pool"] = poolname;
 
+                //get the fighters score details
                 row["PoolScore"] = GetFighterScore(fighter);
-
                 row["PoolDoubles"] = GetFighterDoubles(fighter);
-
                 row["PoolBuchholz"] = GetFighterBuchholzScore(fighter);
-
-                row["HitScore"] = GetFighterHitScore(fighter);
-
+                row["PoolHitScore"] = GetFighterHitScore(fighter);
                 row["TieBreakerScore"] = GetFighterTieBreakerScore(fighter);
 
+                //get a dictionary of the fighter's result in each round of eliminations
                 Dictionary<string, string> elimResults = GetFighterEliminationResults(fighter);
                 int elimSort = 0;
 
+                //calculate a sort factor based on the fighter's result in each round of eliminations
                 for (int i = 0; i < eliminations.Count; i++)
                 {
                     Pool p = eliminations[i];
                     string r = elimResults[p.name];
                     row[p.name] = r;
-                    elimSort += ((r == "WIN") ? 2 * (i + 1) : ((r == "LOSS") ? 1 * (i + 1) : 0));
+                    //a win is worth 2 * round number + 1, a loss is worth round number + 1, no result is worth 0
+                    elimSort += ((r == "WIN") ? 2 * (i + 1) : ((r == "LOSS") ? (i + 1) : 0));
                 }
 
+                //if there are finals, calculate a sort factor based on the fighters result
                 if (finals.Count > 0)
                 {
                     string r = GetFighterFinalsResult(fighter);
                     row["Finals"] = r;
-                    elimSort += ((r == "WIN") ? 2 * eliminations.Count : ((r == "LOSS") ? 1 * eliminations.Count : 0));
+                    //a win is worth number of elims * 2, a loss is worth number of eliminations
+                    elimSort += ((r == "WIN") ? 2 * eliminations.Count : ((r == "LOSS") ? eliminations.Count : 0));
                 }
 
                 row["ElimSort"] = elimSort;
@@ -227,7 +244,12 @@ namespace SwordJet
             }
 
             DataView dv = table.DefaultView;
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, HitScore DESC, PoolBuchholz DESC, TieBreakerScore DESC";
+
+            //sort the view
+            //TODO add config options for this to be customised
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolHitScore DESC, PoolBuchholz DESC, TieBreakerScore DESC";
+
+            //if tournament is finished, just sort by final rank
             if (stage == TournamentStage.CLOSED)
             {
                 dv.Sort = "FinishingRank ASC, " + dv.Sort;
@@ -236,6 +258,7 @@ namespace SwordJet
             return dv;
         }
 
+        //return the given fighter's pool score
         public int GetFighterScore(Fighter fighter)
         {
             int score = 0;
@@ -254,15 +277,17 @@ namespace SwordJet
                             {
                                 result = fight.fighterAResult;
                             }
-                            else if (fight.fighterB == fighter.id && !fight.oddFight)
+                            else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
                             {
                                 result = fight.fighterBResult;
                             }
 
+                            //only include fights where the fight complete
                             if (result != Fight.FightResult.PENDING)
                             {
                                 int gainedScore = 0;
 
+                                //select the approriate score based on the fighter's result
                                 switch (result)
                                 {
                                     case Fight.FightResult.WIN: gainedScore = winPoints; break;
@@ -282,6 +307,7 @@ namespace SwordJet
             return score;
         }
 
+        //return a given fighter's number of doubles from all of their pool fights
         public int GetFighterDoubles(Fighter fighter)
         {
             int doubles = 0;
@@ -300,11 +326,12 @@ namespace SwordJet
                             {
                                 result = fight.fighterAResult;
                             }
-                            else if (fight.fighterB == fighter.id && !fight.oddFight)
+                            else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
                             {
                                 result = fight.fighterBResult;
                             }
 
+                            //only include matches which are finished
                             if (result != Fight.FightResult.PENDING)
                             {
                                 doubles += fight.doubleCount;
@@ -318,6 +345,7 @@ namespace SwordJet
             return doubles;
         }
 
+        //return a given fighter's hit score (hits given - hits received) from their pool fights
         public int GetFighterHitScore(Fighter fighter)
         {
             int given = 0;
@@ -333,12 +361,13 @@ namespace SwordJet
                         {
                             foreach (Exchange exch in fight.exchanges)
                             {
+                                //add hits given/received from each exchange to the score
                                 if (fight.fighterA == fighter.id)
                                 {
                                     given += exch.fighterAScore;
                                     received += exch.fighterBScore;
                                 }
-                                else if (fight.fighterB == fighter.id && !fight.oddFight)
+                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
                                 {
                                     given += exch.fighterBScore;
                                     received += exch.fighterAScore;
@@ -352,6 +381,7 @@ namespace SwordJet
             return given - received;
         }
 
+        //return a given fighter's buchholz score - likely not needed for breaking ties anymore - only calculate if there is a tie?
         public double GetFighterBuchholzScore(Fighter fighter)
         {
             int buchholz = 0;
@@ -373,11 +403,12 @@ namespace SwordJet
                                 {
                                     result = fight.fighterAResult;
                                 }
-                                else if (fight.fighterB == fighter.id && !fight.oddFight)
+                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
                                 {
                                     result = fight.fighterBResult;
                                 }
 
+                                //only add score if fight is complete
                                 if (result != Fight.FightResult.PENDING)
                                 {
                                     Fighter opponent = null;
@@ -387,6 +418,7 @@ namespace SwordJet
                                     int opponentScore = GetFighterScore(opponent);
                                     int opponentDoubles = GetFighterDoubles(opponent);
 
+                                    //don't allow negative scores
                                     buchholz += Math.Max(0,(opponentScore - opponentDoubles));
                                     fightCount++;
 
@@ -398,9 +430,12 @@ namespace SwordJet
                 }
             }
 
+            //return the buchholz
             return (fightCount == 0) ? 0 : Math.Round((double)(buchholz / fightCount),2);
         }
 
+        //get the fighter's score in tie breaker round
+        //almost certainly won't be needed - ties very unlikely due to hit score and buchholz
         public int GetFighterTieBreakerScore(Fighter fighter)
         {
             if (tieBreakers != null)
@@ -413,6 +448,7 @@ namespace SwordJet
                     {
                         foreach (Fight f in r)
                         {
+                            //each win is worth 1 point
                             if (f.fighterA == fighter.id) score += (f.fighterAResult == Fight.FightResult.WIN) ? 1 : 0;
                             else if (f.fighterB == fighter.id && !f.oddFight) score += (f.fighterBResult == Fight.FightResult.WIN) ? 1 : 0;
                         }
@@ -425,6 +461,7 @@ namespace SwordJet
             return 0;
         }
 
+        //return the given fighter's elimination results
         public Dictionary<string, string> GetFighterEliminationResults(Fighter fighter)
         {
             Dictionary<string, string> retList = new Dictionary<string, string>();
@@ -456,6 +493,7 @@ namespace SwordJet
             return retList;
         }
 
+        //return the given fighter's finals result
         public string GetFighterFinalsResult(Fighter fighter)
         {
             foreach (Fight f in finals)
@@ -473,10 +511,12 @@ namespace SwordJet
             return "-";
         }
 
+        //return the fighter's final rank
         public int GetFighterFinalRank(Fighter fighter)
         {
             if (stage == TournamentStage.CLOSED)
             {
+                //winning the final "gold" fight is first place, losing it is second
                 if (finals[1].fighterA == fighter.id)
                 {
                     if (finals[1].fighterAResult == Fight.FightResult.WIN) return 1;
@@ -488,6 +528,7 @@ namespace SwordJet
                     else return 2;
                 }
 
+                //winning the final "bronze" fight is third place, losing it is fourth
                 if (finals[0].fighterA == fighter.id)
                 {
                     if (finals[0].fighterAResult == Fight.FightResult.WIN) return 3;
@@ -499,6 +540,7 @@ namespace SwordJet
                     else return 4;
                 }
 
+                //if the fighter was eliminated before the finals, their final rank is the rank of the bracket (e.g., a loss at quarter finals is fifth place)
                 for (int i = eliminations.Count - 1; i > -1; i--)
                 {
                     int bracketRank = 4 + -(i - (eliminations.Count - 1));
@@ -510,9 +552,11 @@ namespace SwordJet
                 }
             }
 
+            //if the fighter did not qualify, their final rank is shared last place
             return fighters.Count;
         }
 
+        //return true if the given pool is the latest round of eliminations
         public bool IsLatestBracket(Pool p)
         {
             if (finals.Count > 0) return false;
@@ -529,10 +573,14 @@ namespace SwordJet
             return false;
         }
 
+        //add another round of pool fights, if possible
+        //returns true if successful, false if not
         public bool ExtendPools()
         {
+            //only allow pools to be extended during pool fights, obviously
             if (stage == TournamentStage.POOLFIGHTS)
             {
+                //if it's a fixed rounds pool -
                 if (poolType == PoolType.FIXEDROUNDS)
                 {
                     int poolFighters = pools[0].fighters.Count;
@@ -540,17 +588,21 @@ namespace SwordJet
                     //ensure pools can be extended
                     if ((poolFighters - 1) <= (numberOfRounds + 1)) return false;
 
+                    //generate a round for each pool
                     foreach (Pool p in pools)
                     {
                         p.GenerateRound();
                     }
 
+                    //increment the total number of rounds
                     numberOfRounds++;
 
                     return true;
                 }
+                //if it's a swiss pairs pool -
                 else if (poolType == PoolType.SWISSPAIRS)
                 {
+                    //try to generate some new swiss pools
                     List<Pool> newPools = GenerateSwissPools();
                     if (newPools != null) return true;
                     else return false;
@@ -560,28 +612,36 @@ namespace SwordJet
             return false;
         }
 
+        //generate a "round robin" pool - everybody fights everybody
         public Pool GenerateRoundRobinPool(string name, List<int> fighters)
         {
             Pool pool = new Pool();
             pool.name = name;
             pool.fighters = fighters;
 
+            //get every possible distinct fight in the pool
             List<int[]> distinctPairs = pool.fighters.GetDistinctPairs();
             List<Fight> fightsFull = new List<Fight>();
             foreach(int[] pair in distinctPairs)
             {
                 fightsFull.Add(new Fight(pair[0], pair[1]));
             }
+
+            //randomise fight order
             fightsFull.Shuffle();
 
             List<Fight> round = new List<Fight>();
 
             bool allowDouble = false;
 
+            //try to logically order all of the fights
+            //avoid the same fighter fighting twice in a row if possible
+            //todo finish this properly
             while (fightsFull.Count > 0)
             {
                 for (int i = 0; i < fightsFull.Count;)
                 {
+                    //if this is the first fight, just add it without checking
                     if (round.Count == 0)
                     {
                         round.Add(fightsFull[i]);
@@ -589,6 +649,7 @@ namespace SwordJet
                     }
                     else
                     {
+                        //if neither of the fighters in this fight were fighting last, OR we are allowing fighters to fight twice in a row, add the fight
                         if ((fightsFull[i].fighterA != round.Last().fighterA
                            && fightsFull[i].fighterA != round.Last().fighterB
                            && fightsFull[i].fighterB != round.Last().fighterA
@@ -597,22 +658,29 @@ namespace SwordJet
                         {
                             round.Add(fightsFull[i]);
                             fightsFull.RemoveAt(i);
+
+                            //reset the flag for allowing two fights in a row, and go back to the start of the list
                             allowDouble = false;
                             break;
                         }
                         else { i++; }
                     }
 
+                    //if we haven't found a 
                     if (i >= fightsFull.Count) allowDouble = true;
                 }
             }
 
+            //add the fights to the pool as once big round
             pool.rounds.Add(round);
+
+            //could use this to break it into rounds instead, probably not necessary
             //pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
 
             return pool;
         }
 
+        //generate a "fixed" pool - everybody has the specified number of fights
         public Pool GenerateFixedPool(string name, List<int> fighters)
         {
             Pool pool = new Pool();
@@ -621,6 +689,7 @@ namespace SwordJet
 
             int roundsThisPool = numberOfRounds;
 
+            //generate the correct number of fights
             for (int k = 0; k < roundsThisPool; k++)
             {
                 List<Fight> round = pool.GenerateRound();
@@ -631,11 +700,13 @@ namespace SwordJet
             return pool;
         }
 
+        //generate the pools for this tournament
         public List<Pool> GeneratePools()
         {
             //try to ensure it's mathematically possible to generate this tournament before we start
             if ((fighters.Count / ((poolType == PoolType.SWISSPAIRS) ?  2 : numberOfPools)) < numberOfRounds) return null;
 
+            //generate the correct type of pools
             switch (poolType)
             {
                 case PoolType.FIXEDROUNDS:
@@ -652,23 +723,31 @@ namespace SwordJet
             }
         }
 
+        //generate "swiss pairings" pool (fighters divided into a top pool and bottom pool each round)
         public List<Pool> GenerateSwissPools()
         {
-            if (fighters.Count / 2 < numberOfRounds) return null;
+            //if (fighters.Count / 2 < numberOfRounds) return null;
 
+            //get all tournament fighters
             DataView vw = GetFightersDataView();
 
+            //add a random sort column
             vw.Table.Columns.Add("Random", typeof(int));
 
+            //populate random sort column
             foreach(DataRow row in vw.Table.Rows)
             {
                 row["Random"] = Helpers.rng.Next(0, 100);
             }
 
+            //sort by the random column
             vw.Sort += ", Random";
 
+            //number of fighters to swap between top and bottom pools
+            //will be incremented if we don't find enough distinct fights
             int poolSwap = 0;
 
+            //list of fights for the top and bottom pools
             List<Fight> topFights = null;
             List<Fight> bottomFights = null;
 
@@ -677,6 +756,7 @@ namespace SwordJet
                 List<int> topFighters = new List<int>();
                 List<int> bottomFighters = new List<int>();
 
+                //if we need an odd fight, switch it between the two pools each round
                 int firstPoolSize = vw.Count / 2;
                 if (firstPoolSize % 2 == 1)
                 {
@@ -690,6 +770,7 @@ namespace SwordJet
                     }
                 }
 
+                //add fighters to correct pools
                 for (int i = 0; i < vw.Count; i++)
                 {
                     if (i > firstPoolSize)
@@ -702,8 +783,10 @@ namespace SwordJet
                     }
                 }
 
+                //swap fighters between pools to try and find distinct fights for everybody
                 for (int i = 0; i < poolSwap; i++)
                 {
+                    //just give up, it's not happening...
                     if (i >= topFighters.Count || i >= bottomFighters.Count) return null;
 
                     int topFighterSwap = topFighters[topFighters.Count - (1 + i)];
@@ -715,11 +798,13 @@ namespace SwordJet
                     bottomFighters.Add(topFighterSwap);
                 }
 
+                //try to generate top pool
                 Pool topPool = new Pool();
                 topPool.fighters = topFighters;
                 topPool.name = "Top Pool " + ((pools.Count / 2) + 1).ToString();
                 topFights = topPool.GenerateSwissRound(this);
-
+                
+                //try to generate bottom pool
                 Pool bottomPool = new Pool();
                 bottomPool.fighters = bottomFighters;
                 bottomPool.name = "Bottom Pool " + ((pools.Count / 2) + 1).ToString();
@@ -881,9 +966,9 @@ namespace SwordJet
                             double lastPlaceBuchholz = (double)dv[i]["Buchholz"];
 
                             //work down list
-                            while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                            while ((j < fighters.Count) && (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
                                 && lastPlaceHitScore == (int)dv[j]["HitScore"]
-                                && lastPlaceBuchholz == (double)dv[j]["Buchholz"])
+                                && lastPlaceBuchholz == (double)dv[j]["Buchholz"]))
                             {
                                 tiedFighters.Add((int)dv[j]["ID"]);
                                 j++;
@@ -894,9 +979,9 @@ namespace SwordJet
                             if (tiedFighters.Count > 1)
                             {
                                 //work up list
-                                while (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                                while ((j >= 0) && (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
                                     && lastPlaceHitScore == (int)dv[j]["HitScore"]
-                                    && lastPlaceBuchholz == (double)dv[j]["Buchholz"])
+                                    && lastPlaceBuchholz == (double)dv[j]["Buchholz"]))
                                 {
                                     tiedFighters.Add((int)dv[j]["ID"]);
                                     j--;
@@ -1047,7 +1132,13 @@ namespace SwordJet
                             GenerateSwissPools();
                             return "Next round generated";
                         }
-                        else */if (GenerateNextEliminationBracket())
+                        else */
+                        if(fighters.Count < eliminationSize)
+                        {
+                            return "Not enough fighters for selected elimination size!";
+                        }
+
+                        if (GenerateNextEliminationBracket())
                         {
                             stage = TournamentStage.ELIMINATIONS;
                             return "Eliminations generated";

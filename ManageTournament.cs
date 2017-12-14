@@ -96,9 +96,11 @@ namespace SwordJet
                 //get the tournament fighters in a DataView for binding
                 dgvFighters.DataSource = tournament.GetFightersDataView();
 
-                //hide sorting columns
+                //hide sorting/unneeded columns
                 dgvFighters.Columns["ElimSort"].Visible = false;
                 dgvFighters.Columns["TieBreakerScore"].Visible = false;
+                dgvFighters.Columns["ID"].Visible = false;
+                dgvFighters.Columns["PoolBuchholz"].Visible = false;
             }
             catch (Exception ex)
             {
@@ -599,28 +601,35 @@ namespace SwordJet
 
         private void btnExtendPools_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to generate another round of pool fights? This cannot be removed once added.", "Are you sure?", MessageBoxButtons.YesNo);
-
-            if(result == DialogResult.Yes)
+            if (tournament.IsComplete())
             {
-                try
+                DialogResult result = MessageBox.Show("Are you sure you want to generate another round of pool fights? This cannot be removed once added.", "Are you sure?", MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
                 {
-                    if (tournament.ExtendPools())
+                    try
                     {
-                        FileAccessHelper.SaveTournament(tournament, FilePath);
-                        LoadTournament();
-                        SelectLastPage();
+                        if (tournament.ExtendPools())
+                        {
+                            FileAccessHelper.SaveTournament(tournament, FilePath);
+                            LoadTournament();
+                            SelectLastPage();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Insufficient fighters per pool to generate a new round.");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Insufficient fighters per pool to generate a new round.");
+                        MessageBox.Show("Error saving tournament - " + ex.Message);
+                        Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error saving tournament - " + ex.Message);
-                    Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
-                }
+            }
+            else
+            {
+                MessageBox.Show("Not all fights are complete!");
             }
         }
 

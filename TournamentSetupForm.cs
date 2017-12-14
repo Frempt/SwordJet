@@ -162,6 +162,7 @@ namespace SwordJet
                 tournament.drawPoints = (int)txtDrawPoints.Value;
                 tournament.lossPoints = (int)txtLossPoints.Value;
                 tournament.fightTimeMinutes = (int)txtFightTime.Value;
+                tournament.scoreThreshold = (chkScoreCap.Checked) ? (int?)txtScoreCap.Value : null;
                 tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
                 tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
                 tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
@@ -196,6 +197,8 @@ namespace SwordJet
                 txtDrawPoints.Value = tournament.drawPoints;
                 txtLossPoints.Value = tournament.lossPoints;
                 txtFightTime.Value = tournament.fightTimeMinutes;
+                chkScoreCap.Checked = (tournament.scoreThreshold != null);
+                if (tournament.scoreThreshold != null) txtScoreCap.Value = (int)tournament.scoreThreshold;
                 chkDoubleOut.Checked = (tournament.doubleThreshold != null);
                 if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
 
@@ -208,6 +211,7 @@ namespace SwordJet
                 {
                     button1.Enabled = false;
                     btnDelete.Enabled = false;
+                    txtScoreCap.Enabled = false;
                     txtDoubleLimit.Enabled = false;
                     txtDrawPoints.Enabled = false;
                     txtWinPoints.Enabled = false;
@@ -219,6 +223,7 @@ namespace SwordJet
                     ddlClub.Enabled = false;
                     btnClubEdit.Enabled = false;
                     ddlNationality.Enabled = false;
+                    chkScoreCap.Enabled = false;
                     chkDoubleOut.Enabled = false;
                     txtTournamentName.Enabled = false;
                     ddlPoolType.Enabled = false;

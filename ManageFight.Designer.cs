@@ -47,6 +47,8 @@
             this.lblCurrentResult = new System.Windows.Forms.Label();
             this.btnDeleteExchange = new System.Windows.Forms.Button();
             this.lbExchanges = new System.Windows.Forms.ListBox();
+            this.chkPenaltyB = new System.Windows.Forms.CheckBox();
+            this.chkPenaltyA = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.txtFighterAScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFighterBScore)).BeginInit();
             this.pnlNewExchange.SuspendLayout();
@@ -86,9 +88,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Red;
             this.label1.Location = new System.Drawing.Point(37, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 17);
+            this.label1.Size = new System.Drawing.Size(74, 17);
             this.label1.TabIndex = 2;
             this.label1.Text = "Fighter A";
             // 
@@ -96,9 +100,11 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.Blue;
             this.label2.Location = new System.Drawing.Point(244, 18);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 17);
+            this.label2.Size = new System.Drawing.Size(74, 17);
             this.label2.TabIndex = 3;
             this.label2.Text = "Fighter B";
             // 
@@ -162,6 +168,8 @@
             // 
             this.pnlNewExchange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlNewExchange.Controls.Add(this.chkPenaltyA);
+            this.pnlNewExchange.Controls.Add(this.chkPenaltyB);
             this.pnlNewExchange.Controls.Add(this.label1);
             this.pnlNewExchange.Controls.Add(this.lblFighterBName);
             this.pnlNewExchange.Controls.Add(this.chkDouble);
@@ -244,6 +252,26 @@
             this.lbExchanges.Size = new System.Drawing.Size(340, 212);
             this.lbExchanges.TabIndex = 0;
             // 
+            // chkPenaltyB
+            // 
+            this.chkPenaltyB.AutoSize = true;
+            this.chkPenaltyB.Location = new System.Drawing.Point(247, 121);
+            this.chkPenaltyB.Name = "chkPenaltyB";
+            this.chkPenaltyB.Size = new System.Drawing.Size(77, 21);
+            this.chkPenaltyB.TabIndex = 10;
+            this.chkPenaltyB.Text = "Penalty";
+            this.chkPenaltyB.UseVisualStyleBackColor = true;
+            // 
+            // chkPenaltyA
+            // 
+            this.chkPenaltyA.AutoSize = true;
+            this.chkPenaltyA.Location = new System.Drawing.Point(15, 121);
+            this.chkPenaltyA.Name = "chkPenaltyA";
+            this.chkPenaltyA.Size = new System.Drawing.Size(77, 21);
+            this.chkPenaltyA.TabIndex = 11;
+            this.chkPenaltyA.Text = "Penalty";
+            this.chkPenaltyA.UseVisualStyleBackColor = true;
+            // 
             // ManageFight
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -288,5 +316,7 @@
         private System.Windows.Forms.Button btnDeleteExchange;
         private System.Windows.Forms.Button btnEndFight;
         private System.Windows.Forms.Label lblCurrentResult;
+        private System.Windows.Forms.CheckBox chkPenaltyA;
+        private System.Windows.Forms.CheckBox chkPenaltyB;
     }
 }

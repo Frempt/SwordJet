@@ -65,11 +65,13 @@
             this.ddlElimSize = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.ddlPoolType = new System.Windows.Forms.ComboBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtPenaltyThreshold = new System.Windows.Forms.NumericUpDown();
             this.chkScoreCap = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
             this.txtScoreCap = new System.Windows.Forms.NumericUpDown();
+            this.ddlPoolType = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -79,6 +81,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtWinPoints)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtDoubleLimit)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtPenaltyThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtScoreCap)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,7 +116,7 @@
             this.panel1.Location = new System.Drawing.Point(466, 12);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(413, 556);
+            this.panel1.Size = new System.Drawing.Size(413, 572);
             this.panel1.TabIndex = 2;
             // 
             // btnClubEdit
@@ -141,7 +144,7 @@
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(218, 524);
+            this.btnDelete.Location = new System.Drawing.Point(218, 540);
             this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(188, 28);
@@ -154,7 +157,7 @@
             // 
             this.lblFighterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFighterCount.AutoSize = true;
-            this.lblFighterCount.Location = new System.Drawing.Point(4, 530);
+            this.lblFighterCount.Location = new System.Drawing.Point(4, 546);
             this.lblFighterCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFighterCount.Name = "lblFighterCount";
             this.lblFighterCount.Size = new System.Drawing.Size(145, 17);
@@ -191,7 +194,7 @@
             this.lstFighters.Location = new System.Drawing.Point(4, 151);
             this.lstFighters.Margin = new System.Windows.Forms.Padding(4);
             this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(405, 356);
+            this.lstFighters.Size = new System.Drawing.Size(405, 372);
             this.lstFighters.TabIndex = 8;
             // 
             // label13
@@ -295,7 +298,7 @@
             this.lblLengthMessage.Location = new System.Drawing.Point(6, 163);
             this.lblLengthMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLengthMessage.Name = "lblLengthMessage";
-            this.lblLengthMessage.Size = new System.Drawing.Size(437, 65);
+            this.lblLengthMessage.Size = new System.Drawing.Size(437, 81);
             this.lblLengthMessage.TabIndex = 11;
             // 
             // label4
@@ -357,7 +360,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 303);
+            this.label6.Location = new System.Drawing.Point(9, 319);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(75, 17);
             this.label6.TabIndex = 17;
@@ -367,7 +370,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 333);
+            this.label7.Location = new System.Drawing.Point(9, 349);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(83, 17);
             this.label7.TabIndex = 19;
@@ -377,7 +380,7 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 363);
+            this.label8.Location = new System.Drawing.Point(8, 379);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(81, 17);
             this.label8.TabIndex = 21;
@@ -387,7 +390,7 @@
             // 
             this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLossPoints.Location = new System.Drawing.Point(153, 361);
+            this.txtLossPoints.Location = new System.Drawing.Point(153, 377);
             this.txtLossPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtLossPoints.Minimum = new decimal(new int[] {
             1,
@@ -408,7 +411,7 @@
             // 
             this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDrawPoints.Location = new System.Drawing.Point(153, 331);
+            this.txtDrawPoints.Location = new System.Drawing.Point(153, 347);
             this.txtDrawPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtDrawPoints.Minimum = new decimal(new int[] {
             1,
@@ -429,7 +432,7 @@
             // 
             this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtWinPoints.Location = new System.Drawing.Point(153, 301);
+            this.txtWinPoints.Location = new System.Drawing.Point(153, 317);
             this.txtWinPoints.Margin = new System.Windows.Forms.Padding(4);
             this.txtWinPoints.Minimum = new decimal(new int[] {
             1,
@@ -449,7 +452,7 @@
             // txtDoubleLimit
             // 
             this.txtDoubleLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDoubleLimit.Location = new System.Drawing.Point(303, 431);
+            this.txtDoubleLimit.Location = new System.Drawing.Point(303, 433);
             this.txtDoubleLimit.Margin = new System.Windows.Forms.Padding(4);
             this.txtDoubleLimit.Minimum = new decimal(new int[] {
             1,
@@ -470,7 +473,7 @@
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(175, 433);
+            this.label9.Location = new System.Drawing.Point(175, 435);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(121, 17);
             this.label9.TabIndex = 25;
@@ -480,7 +483,7 @@
             // 
             this.chkDoubleOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkDoubleOut.AutoSize = true;
-            this.chkDoubleOut.Location = new System.Drawing.Point(12, 431);
+            this.chkDoubleOut.Location = new System.Drawing.Point(12, 433);
             this.chkDoubleOut.Name = "chkDoubleOut";
             this.chkDoubleOut.Size = new System.Drawing.Size(138, 21);
             this.chkDoubleOut.TabIndex = 27;
@@ -492,7 +495,7 @@
             // 
             this.btnManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManage.Location = new System.Drawing.Point(11, 474);
+            this.btnManage.Location = new System.Drawing.Point(11, 490);
             this.btnManage.Name = "btnManage";
             this.btnManage.Size = new System.Drawing.Size(430, 76);
             this.btnManage.TabIndex = 28;
@@ -504,7 +507,7 @@
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(9, 268);
+            this.label10.Location = new System.Drawing.Point(9, 284);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(119, 17);
             this.label10.TabIndex = 29;
@@ -516,7 +519,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimType.FormattingEnabled = true;
-            this.ddlElimType.Location = new System.Drawing.Point(153, 265);
+            this.ddlElimType.Location = new System.Drawing.Point(153, 281);
             this.ddlElimType.Name = "ddlElimType";
             this.ddlElimType.Size = new System.Drawing.Size(288, 24);
             this.ddlElimType.TabIndex = 30;
@@ -528,7 +531,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimSize.FormattingEnabled = true;
-            this.ddlElimSize.Location = new System.Drawing.Point(153, 231);
+            this.ddlElimSize.Location = new System.Drawing.Point(153, 247);
             this.ddlElimSize.Name = "ddlElimSize";
             this.ddlElimSize.Size = new System.Drawing.Size(288, 24);
             this.ddlElimSize.TabIndex = 32;
@@ -538,7 +541,7 @@
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(8, 234);
+            this.label11.Location = new System.Drawing.Point(8, 250);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(114, 17);
             this.label11.TabIndex = 31;
@@ -548,6 +551,8 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.Controls.Add(this.label16);
+            this.panel2.Controls.Add(this.txtPenaltyThreshold);
             this.panel2.Controls.Add(this.chkScoreCap);
             this.panel2.Controls.Add(this.label15);
             this.panel2.Controls.Add(this.txtScoreCap);
@@ -578,8 +583,70 @@
             this.panel2.Controls.Add(this.label6);
             this.panel2.Location = new System.Drawing.Point(12, 12);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(447, 556);
+            this.panel2.Size = new System.Drawing.Size(447, 572);
             this.panel2.TabIndex = 33;
+            // 
+            // label16
+            // 
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(175, 463);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(123, 17);
+            this.label16.TabIndex = 38;
+            this.label16.Text = "Penalty Threshold";
+            // 
+            // txtPenaltyThreshold
+            // 
+            this.txtPenaltyThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPenaltyThreshold.Location = new System.Drawing.Point(303, 461);
+            this.txtPenaltyThreshold.Margin = new System.Windows.Forms.Padding(4);
+            this.txtPenaltyThreshold.Name = "txtPenaltyThreshold";
+            this.txtPenaltyThreshold.Size = new System.Drawing.Size(138, 22);
+            this.txtPenaltyThreshold.TabIndex = 39;
+            this.txtPenaltyThreshold.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
+            // 
+            // chkScoreCap
+            // 
+            this.chkScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkScoreCap.AutoSize = true;
+            this.chkScoreCap.Location = new System.Drawing.Point(12, 406);
+            this.chkScoreCap.Name = "chkScoreCap";
+            this.chkScoreCap.Size = new System.Drawing.Size(143, 21);
+            this.chkScoreCap.TabIndex = 37;
+            this.chkScoreCap.Text = "Apply Score Cap?";
+            this.chkScoreCap.UseVisualStyleBackColor = true;
+            this.chkScoreCap.CheckedChanged += new System.EventHandler(this.upDown_ValueChanged);
+            // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(175, 408);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(113, 17);
+            this.label15.TabIndex = 35;
+            this.label15.Text = "Score Threshold";
+            // 
+            // txtScoreCap
+            // 
+            this.txtScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtScoreCap.Location = new System.Drawing.Point(303, 406);
+            this.txtScoreCap.Margin = new System.Windows.Forms.Padding(4);
+            this.txtScoreCap.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.txtScoreCap.Name = "txtScoreCap";
+            this.txtScoreCap.Size = new System.Drawing.Size(138, 22);
+            this.txtScoreCap.TabIndex = 36;
+            this.txtScoreCap.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.txtScoreCap.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
             // 
             // ddlPoolType
             // 
@@ -603,53 +670,11 @@
             this.label12.TabIndex = 33;
             this.label12.Text = "Pool Type";
             // 
-            // chkScoreCap
-            // 
-            this.chkScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkScoreCap.AutoSize = true;
-            this.chkScoreCap.Location = new System.Drawing.Point(12, 404);
-            this.chkScoreCap.Name = "chkScoreCap";
-            this.chkScoreCap.Size = new System.Drawing.Size(143, 21);
-            this.chkScoreCap.TabIndex = 37;
-            this.chkScoreCap.Text = "Apply Score Cap?";
-            this.chkScoreCap.UseVisualStyleBackColor = true;
-            this.chkScoreCap.CheckedChanged += new System.EventHandler(this.upDown_ValueChanged);
-            // 
-            // label15
-            // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(175, 406);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(113, 17);
-            this.label15.TabIndex = 35;
-            this.label15.Text = "Score Threshold";
-            // 
-            // txtScoreCap
-            // 
-            this.txtScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtScoreCap.Location = new System.Drawing.Point(303, 404);
-            this.txtScoreCap.Margin = new System.Windows.Forms.Padding(4);
-            this.txtScoreCap.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.txtScoreCap.Name = "txtScoreCap";
-            this.txtScoreCap.Size = new System.Drawing.Size(138, 22);
-            this.txtScoreCap.TabIndex = 36;
-            this.txtScoreCap.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.txtScoreCap.ValueChanged += new System.EventHandler(this.upDown_ValueChanged);
-            // 
             // TournamentSetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(885, 580);
+            this.ClientSize = new System.Drawing.Size(885, 596);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -668,6 +693,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtDoubleLimit)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtPenaltyThreshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtScoreCap)).EndInit();
             this.ResumeLayout(false);
 
@@ -715,6 +741,8 @@
         private System.Windows.Forms.CheckBox chkScoreCap;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.NumericUpDown txtScoreCap;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.NumericUpDown txtPenaltyThreshold;
     }
 }
 

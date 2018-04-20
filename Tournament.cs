@@ -824,6 +824,7 @@ namespace SwordJet
         public List<Pool> GenerateRoundRobin()
         {
             int fightersPerPool = fighters.Count / numberOfPools;
+            int oddFighters = fighters.Count % numberOfPools;
             pools = new List<Pool>();
 
             //clone the list of fighters so we don't remove from the master list
@@ -843,6 +844,13 @@ namespace SwordJet
 
                 //add random fighters to the pool until we have the correct size
                 for (int j = 0; j < fightersPerPool; j++)
+                {
+                    int randIndex = Helpers.rng.Next(0, fightersClone.Count);
+                    poolFighters.Add(fightersClone[randIndex].id);
+                    fightersClone.RemoveAt(randIndex);
+                }
+
+                if(oddFighters > i)
                 {
                     int randIndex = Helpers.rng.Next(0, fightersClone.Count);
                     poolFighters.Add(fightersClone[randIndex].id);

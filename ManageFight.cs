@@ -100,13 +100,24 @@ namespace SwordJet
         {
             aScore = 0;
             bScore = 0;
+            int aPenalties = 0;
+            int bPenalties = 0;
             doubleCount = 0;
 
             foreach (Exchange ex in fight.exchanges)
             {
                 aScore += ex.fighterAScore;
+                aPenalties += (ex.penaltyA ? 1 : 0);
                 bScore += ex.fighterBScore;
+                bPenalties += (ex.penaltyB ? 1 : 0);
                 if (ex.dbl) doubleCount++;
+            }
+
+            //subtract accrued penalties
+            if (tournament.penaltyThreshold > 0)
+            {
+                aScore = Math.Max(0, (aScore - (aPenalties / tournament.penaltyThreshold)));
+                bScore = Math.Max(0, (bScore - (bPenalties / tournament.penaltyThreshold)));
             }
 
             string resultText = "A Score: " + aScore;
@@ -146,12 +157,14 @@ namespace SwordJet
             int fighterAScore = Math.Max(0, (int)(txtFighterAScore.Value - txtFighterBScore.Value));
             int fighterBScore = Math.Max(0, (int)(txtFighterBScore.Value - txtFighterAScore.Value));
 
-            Exchange exchange = new Exchange(fighterAScore, fighterBScore, chkDouble.Checked);
+            Exchange exchange = new Exchange(fighterAScore, fighterBScore, chkDouble.Checked, chkPenaltyA.Checked, chkPenaltyB.Checked);
             fight.exchanges.Add(exchange);
 
             txtFighterAScore.Value = 0;
             txtFighterBScore.Value = 0;
             chkDouble.Checked = false;
+            chkPenaltyA.Checked = false;
+            chkPenaltyB.Checked = false;
 
             LoadExchanges();
         }

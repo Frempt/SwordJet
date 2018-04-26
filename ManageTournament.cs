@@ -201,11 +201,11 @@ namespace SwordJet
 
                         Font boldFont = new Font(Font, FontStyle.Bold);
 
-                        Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                        Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Red };
                         panel.Controls.Add(fighterALabel, 0, 0);
                         panel.SetColumnSpan(fighterALabel, 2);
 
-                        Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                        Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Blue };
                         panel.Controls.Add(fighterBLabel, 3, 0);
                         panel.SetColumnSpan(fighterBLabel, 2);
 
@@ -325,11 +325,11 @@ namespace SwordJet
 
                     Font boldFont = new Font(Font, FontStyle.Bold);
 
-                    Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                    Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Red };
                     panel.Controls.Add(fighterALabel, 0, 0);
                     panel.SetColumnSpan(fighterALabel, 2);
 
-                    Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                    Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Blue };
                     panel.Controls.Add(fighterBLabel, 3, 0);
                     panel.SetColumnSpan(fighterBLabel, 2);
 
@@ -407,11 +407,11 @@ namespace SwordJet
             {
                 List<Fight> round = bracket.rounds[0];
 
-                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                Label fighterALabel = new Label() { Text = "Fighter A", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Red };
                 panel.Controls.Add(fighterALabel, 0, 0);
                 panel.SetColumnSpan(fighterALabel, 2);
 
-                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter };
+                Label fighterBLabel = new Label() { Text = "Fighter B", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.Blue };
                 panel.Controls.Add(fighterBLabel, 3, 0);
                 panel.SetColumnSpan(fighterBLabel, 2);
 
@@ -590,7 +590,7 @@ namespace SwordJet
             {
                 Fight f = tournament.GetFightByID(dialog.fight.fightID);
                 f.exchanges = dialog.fight.exchanges;
-                f.SetResults(tournament.doubleThreshold);
+                f.SetResults(tournament);
 
                 FileAccessHelper.SaveTournament(tournament, FilePath);
                 LoadTournament();

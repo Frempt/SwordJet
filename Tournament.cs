@@ -11,6 +11,7 @@ namespace SwordJet
         public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED }
         public enum PoolType { FIXEDROUNDS = 0, ROUNDROBIN = 1, SWISSPAIRS = 2 }
         public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
+        public enum AfterblowBehaviour { IGNORE = 0, WEIGHT = 1 };
 
         public string name;
         public int numberOfRounds;
@@ -26,6 +27,8 @@ namespace SwordJet
         public int drawPoints;
         public int lossPoints;
         public int? doubleThreshold;
+        public AfterblowBehaviour afterblowBehaviour;
+        public int penaltyThreshold;
 
         public List<Club> clubs = new List<Club>();
         public List<Fighter> fighters = new List<Fighter>();
@@ -166,7 +169,7 @@ namespace SwordJet
             table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Pool", typeof(string));
-            table.Columns.Add("PoolScore", typeof(int));
+            table.Columns.Add("PoolScore", typeof(double));
             table.Columns.Add("PoolDoubles", typeof(int));
             table.Columns.Add("PoolBuchholz", typeof(double));
             table.Columns.Add("PoolHitScore", typeof(int));
@@ -259,9 +262,10 @@ namespace SwordJet
         }
 
         //return the given fighter's pool score
-        public int GetFighterScore(Fighter fighter)
+        public double GetFighterScore(Fighter fighter)
         {
             int score = 0;
+            int numberOfFights = 0;
 
             foreach (Pool pool in pools)
             {
@@ -297,14 +301,15 @@ namespace SwordJet
                                 }
 
                                 score += gainedScore;
-                                break;
+                                numberOfFights++;
+                                //break;
                             }
                         }
                     }
                 }
             }
 
-            return score;
+            return (numberOfFights == 0) ? 0 : score/numberOfFights;
         }
 
         //return a given fighter's number of doubles from all of their pool fights
@@ -335,7 +340,7 @@ namespace SwordJet
                             if (result != Fight.FightResult.PENDING)
                             {
                                 doubles += fight.doubleCount;
-                                break;
+                                //break;
                             }
                         }
                     }
@@ -350,6 +355,7 @@ namespace SwordJet
         {
             int given = 0;
             int received = 0;
+            int penalties = 0;
 
             foreach (Pool pool in pools)
             {
@@ -366,11 +372,13 @@ namespace SwordJet
                                 {
                                     given += exch.fighterAScore;
                                     received += exch.fighterBScore;
+                                    penalties += (exch.penaltyA ? 1 : 0);
                                 }
                                 else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
                                 {
                                     given += exch.fighterBScore;
                                     received += exch.fighterAScore;
+                                    penalties += (exch.penaltyB ? 1 : 0);
                                 }
                             }
                         }
@@ -378,13 +386,16 @@ namespace SwordJet
                 }
             }
 
+            //subtract accrued penalties
+            if(penaltyThreshold > 0) given = Math.Max(0, (given - (given / penaltyThreshold)));
+
             return given - received;
         }
 
         //return a given fighter's buchholz score - likely not needed for breaking ties anymore - only calculate if there is a tie?
         public double GetFighterBuchholzScore(Fighter fighter)
         {
-            int buchholz = 0;
+            double buchholz = 0;
             int fightCount = 0;
 
             foreach (Pool pool in pools)
@@ -415,14 +426,14 @@ namespace SwordJet
                                     if (fight.fighterA == fighter.id) opponent = GetFighterByID(fight.fighterB);
                                     else opponent = GetFighterByID(fight.fighterA);
 
-                                    int opponentScore = GetFighterScore(opponent);
+                                    double opponentScore = GetFighterScore(opponent);
                                     int opponentDoubles = GetFighterDoubles(opponent);
 
                                     //don't allow negative scores
                                     buchholz += Math.Max(0,(opponentScore - opponentDoubles));
                                     fightCount++;
 
-                                    break;
+                                    //break;
                                 } 
                             }
                         }
@@ -431,7 +442,7 @@ namespace SwordJet
             }
 
             //return the buchholz
-            return (fightCount == 0) ? 0 : Math.Round((double)(buchholz / fightCount),2);
+            return (fightCount == 0) ? 0 : Math.Round((buchholz / fightCount),2);
         }
 
         //get the fighter's score in tie breaker round

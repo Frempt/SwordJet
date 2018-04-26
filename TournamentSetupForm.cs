@@ -164,6 +164,7 @@ namespace SwordJet
                 tournament.fightTimeMinutes = (int)txtFightTime.Value;
                 tournament.scoreThreshold = (chkScoreCap.Checked) ? (int?)txtScoreCap.Value : null;
                 tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
+                tournament.penaltyThreshold = (int)txtPenaltyThreshold.Value;
                 tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
                 tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
                 tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
@@ -201,6 +202,7 @@ namespace SwordJet
                 if (tournament.scoreThreshold != null) txtScoreCap.Value = (int)tournament.scoreThreshold;
                 chkDoubleOut.Checked = (tournament.doubleThreshold != null);
                 if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
+                txtPenaltyThreshold.Value = tournament.penaltyThreshold;
 
                 lstFighters.DataSource = tournament.fighters;
                 lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
@@ -213,6 +215,7 @@ namespace SwordJet
                     btnDelete.Enabled = false;
                     txtScoreCap.Enabled = false;
                     txtDoubleLimit.Enabled = false;
+                    txtPenaltyThreshold.Enabled = false;
                     txtDrawPoints.Enabled = false;
                     txtWinPoints.Enabled = false;
                     txtLossPoints.Enabled = false;

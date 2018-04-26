@@ -17,6 +17,7 @@ namespace SwordJet
         public static int fightGenerationRetryLimit;
         public static List<string> poolNames;
         public static List<int> eliminationSizes;
+        public static List<string> qualificationSortOrder;
     }
 
     public static class Helpers
@@ -527,20 +528,31 @@ namespace SwordJet
             return false;
         }
 
-        public void SetResults(int? doubleThreshold = null)
+        public void SetResults(Tournament tournament)
         {
             int aScore = 0;
             int bScore = 0;
+            int aPenalties = 0;
+            int bPenalties = 0;
             doubleCount = 0;
 
             foreach(Exchange ex in exchanges)
             {
                 aScore += ex.fighterAScore;
+                aPenalties += (ex.penaltyA ? 1 : 0);
                 bScore += ex.fighterBScore;
+                bPenalties += (ex.penaltyB ? 1 : 0);
                 if (ex.dbl) doubleCount++;
             }
 
-            if(doubleThreshold != null && allowDraw && doubleCount >= doubleThreshold)
+            //subtract accrued penalties
+            if (tournament.penaltyThreshold > 0)
+            {
+                aScore = Math.Max(0, (aScore - (aPenalties / tournament.penaltyThreshold)));
+                bScore = Math.Max(0, (bScore - (bPenalties / tournament.penaltyThreshold)));
+            }
+
+            if (tournament.doubleThreshold != null && allowDraw && doubleCount >= tournament.doubleThreshold)
             {
                 fighterAResult = FightResult.DQ;
                 fighterBResult = FightResult.DQ;
@@ -573,21 +585,25 @@ namespace SwordJet
     {
         public int fighterAScore = 0;
         public int fighterBScore = 0;
+        public bool penaltyA = false;
+        public bool penaltyB = false;
         public bool dbl = false;
 
         public Exchange() { }
 
-        public Exchange(int aScore, int bScore, bool dblHit)
+        public Exchange(int aScore, int bScore, bool dblHit, bool penA, bool penB)
         {
             fighterAScore = aScore;
             fighterBScore = bScore;
             dbl = dblHit;
+            penaltyA = penA;
+            penaltyB = penB;
         }
 
         public override string ToString()
         {
-            string display = "A Score: " + fighterAScore;
-            display += ", B Score: " + fighterBScore;
+            string display = "A Score: " + fighterAScore + (penaltyA ? " (PENALTY)" : "");
+            display += ", B Score: " + fighterBScore + (penaltyB ? " (PENALTY)" : "");
             if (dbl) display += " - DOUBLE";
             return display;
         }

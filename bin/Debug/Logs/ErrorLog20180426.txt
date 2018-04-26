@@ -1,0 +1,4 @@
+
+26/04/2018 21:00:14: 
+Sequence contains no elements    at System.Linq.Enumerable.Last[TSource](IEnumerable`1 source)
+   at SwordJet.ManageTournament.LoadTournament() in C:\Users\fremp\Documents\GitHub\TournamentGenerator\ManageTournament.cs:line 150

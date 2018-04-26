@@ -213,7 +213,7 @@ namespace SwordJet
                 row["Pool"] = poolname;
 
                 //get the fighters score details
-                row["PoolScore"] = GetFighterScore(fighter);
+                row["PoolScore"] = Math.Round(GetFighterScore(fighter),1);
                 row["PoolDoubles"] = GetFighterDoubles(fighter);
                 row["PoolBuchholz"] = GetFighterBuchholzScore(fighter);
                 row["PoolHitScore"] = GetFighterHitScore(fighter);
@@ -309,7 +309,7 @@ namespace SwordJet
                 }
             }
 
-            return (numberOfFights == 0) ? 0 : score/numberOfFights;
+            return (numberOfFights == 0) ? 0.0 : (double)score/(double)numberOfFights;
         }
 
         //return a given fighter's number of doubles from all of their pool fights
@@ -944,7 +944,7 @@ namespace SwordJet
             {
                 DataTable table = new DataTable();
                 table.Columns.Add("ID", typeof(int));
-                table.Columns.Add("Score", typeof(int));
+                table.Columns.Add("Score", typeof(double));
                 table.Columns.Add("Doubles", typeof(int));
                 table.Columns.Add("HitScore", typeof(int));
                 table.Columns.Add("TieBreaker", typeof(int));
@@ -979,13 +979,13 @@ namespace SwordJet
 
                             int j = i + 1;
 
-                            int lastPlaceScore = (int)dv[i]["Score"];
+                            double lastPlaceScore = (double)dv[i]["Score"];
                             int lastPlaceDoubles = (int)dv[i]["Doubles"];
                             int lastPlaceHitScore = (int)dv[i]["HitScore"];
                             double lastPlaceBuchholz = (double)dv[i]["Buchholz"];
 
                             //work down list
-                            while ((j < fighters.Count) && (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                            while ((j < fighters.Count) && (lastPlaceScore == (double)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
                                 && lastPlaceHitScore == (int)dv[j]["HitScore"]
                                 && lastPlaceBuchholz == (double)dv[j]["Buchholz"]))
                             {
@@ -998,7 +998,7 @@ namespace SwordJet
                             if (tiedFighters.Count > 1)
                             {
                                 //work up list
-                                while ((j >= 0) && (lastPlaceScore == (int)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
+                                while ((j >= 0) && (lastPlaceScore == (double)dv[j]["Score"] && lastPlaceDoubles == (int)dv[j]["Doubles"]
                                     && lastPlaceHitScore == (int)dv[j]["HitScore"]
                                     && lastPlaceBuchholz == (double)dv[j]["Buchholz"]))
                                 {

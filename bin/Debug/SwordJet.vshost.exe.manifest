@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SwordJet.exe" size="364544">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SwordJet.exe" size="365056">
       <assemblyIdentity name="SwordJet" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>H/IEnha33YlgF+gmKqv5UQWld/c=</dsig:DigestValue>
+        <dsig:DigestValue>5THN8NU6+qGEUvkDbNuXxOExtp4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

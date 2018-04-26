@@ -169,7 +169,7 @@ namespace SwordJet
             table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Pool", typeof(string));
-            table.Columns.Add("PoolScore", typeof(int));
+            table.Columns.Add("PoolScore", typeof(double));
             table.Columns.Add("PoolDoubles", typeof(int));
             table.Columns.Add("PoolBuchholz", typeof(double));
             table.Columns.Add("PoolHitScore", typeof(int));
@@ -262,9 +262,10 @@ namespace SwordJet
         }
 
         //return the given fighter's pool score
-        public int GetFighterScore(Fighter fighter)
+        public double GetFighterScore(Fighter fighter)
         {
             int score = 0;
+            int numberOfFights = 0;
 
             foreach (Pool pool in pools)
             {
@@ -300,14 +301,15 @@ namespace SwordJet
                                 }
 
                                 score += gainedScore;
-                                break;
+                                numberOfFights++;
+                                //break;
                             }
                         }
                     }
                 }
             }
 
-            return score;
+            return (numberOfFights == 0) ? 0 : score/numberOfFights;
         }
 
         //return a given fighter's number of doubles from all of their pool fights
@@ -338,7 +340,7 @@ namespace SwordJet
                             if (result != Fight.FightResult.PENDING)
                             {
                                 doubles += fight.doubleCount;
-                                break;
+                                //break;
                             }
                         }
                     }
@@ -424,14 +426,14 @@ namespace SwordJet
                                     if (fight.fighterA == fighter.id) opponent = GetFighterByID(fight.fighterB);
                                     else opponent = GetFighterByID(fight.fighterA);
 
-                                    int opponentScore = GetFighterScore(opponent);
+                                    double opponentScore = GetFighterScore(opponent);
                                     int opponentDoubles = GetFighterDoubles(opponent);
 
                                     //don't allow negative scores
                                     buchholz += Math.Max(0,(opponentScore - opponentDoubles));
                                     fightCount++;
 
-                                    break;
+                                    //break;
                                 } 
                             }
                         }

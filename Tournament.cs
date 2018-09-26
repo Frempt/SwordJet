@@ -387,7 +387,7 @@ namespace SwordJet
             }
 
             //subtract accrued penalties
-            if(penaltyThreshold > 0) given = Math.Max(0, (given - (given / penaltyThreshold)));
+            if(penaltyThreshold > 0) given = Math.Max(0, (given - (penalties / penaltyThreshold)));
 
             return given - received;
         }

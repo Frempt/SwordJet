@@ -34,9 +34,7 @@ namespace SwordJet
             lblFighterAName.Text = tournament.GetFighterByID(fight.fighterA).name;
             lblFighterBName.Text = tournament.GetFighterByID(fight.fighterB).name;
 
-            //todo handle when fight has already been completed?
-            //not sure if this should be allowed or not
-
+            //ensure the fight isn't already complete
             if (fight.fighterAResult == Fight.FightResult.PENDING || fight.fighterBResult == Fight.FightResult.PENDING)
             {
                 timeRemainingSeconds = tournament.fightTimeMinutes * 60;

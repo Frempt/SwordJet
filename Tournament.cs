@@ -647,7 +647,6 @@ namespace SwordJet
 
             //try to logically order all of the fights
             //avoid the same fighter fighting twice in a row if possible
-            //todo finish this properly
             while (fightsFull.Count > 0)
             {
                 for (int i = 0; i < fightsFull.Count;)
@@ -677,7 +676,7 @@ namespace SwordJet
                         else { i++; }
                     }
 
-                    //if we haven't found a 
+                    //if we haven't found a unique fight, allow the same fighter to fight twice in a row
                     if (i >= fightsFull.Count) allowDouble = true;
                 }
             }

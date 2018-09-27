@@ -101,10 +101,14 @@ namespace SwordJet
         public static void WriteToLog(string logName, string textToLog)
         {
             //write the specified text to a log file
-            //todo log into AppData? user may not have write permission to executing directory
             //todo clean up old log files?
-            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+            folderPath = Path.Combine(folderPath, "SwordJet");
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+            folderPath = Path.Combine(folderPath, "Logs");
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
             string filePath = Path.Combine(folderPath, logName + DateTime.Today.ToString("yyyyMMdd") + ".txt");
 
             using (StreamWriter stream = File.AppendText(filePath))
@@ -228,6 +232,7 @@ namespace SwordJet
         {
             List<Pool> pools = tournament.pools;
 
+            //TODO refactor generation - outdated
             HSSFWorkbook book = new HSSFWorkbook();
 
             //create a entry of DocumentSummaryInformation

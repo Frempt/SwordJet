@@ -51,6 +51,7 @@ namespace SwordJet
                     lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
 
                     txtName.Text = "";
+                    ddlNationality.SelectedItem = Country.Countries.Where(c => c.code == "GB").First();
 
                     //recalculate the pool length message
                     CalculateMessage();

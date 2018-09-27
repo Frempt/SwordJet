@@ -65,6 +65,9 @@
   <PropertyGroup>
     <StartupObject>SwordJet.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>sj_logo_FGZ_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NPOI, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
@@ -178,6 +181,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SJ Logo1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sj_logo_FGZ_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

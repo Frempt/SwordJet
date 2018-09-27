@@ -40,7 +40,7 @@
             this.btnNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnNew.Location = new System.Drawing.Point(9, 318);
-            this.btnNew.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnNew.Margin = new System.Windows.Forms.Padding(2);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(271, 28);
             this.btnNew.TabIndex = 0;
@@ -53,7 +53,7 @@
             this.btnExisting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExisting.Location = new System.Drawing.Point(9, 352);
-            this.btnExisting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnExisting.Margin = new System.Windows.Forms.Padding(2);
             this.btnExisting.Name = "btnExisting";
             this.btnExisting.Size = new System.Drawing.Size(271, 28);
             this.btnExisting.TabIndex = 1;
@@ -85,7 +85,7 @@
             this.Controls.Add(this.btnExisting);
             this.Controls.Add(this.btnNew);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TournamentManager";
             this.Text = "SwordJet - Tournament Manager";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

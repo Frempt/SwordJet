@@ -48,10 +48,11 @@
             this.tbcFights.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbcFights.Location = new System.Drawing.Point(3, 3);
+            this.tbcFights.Location = new System.Drawing.Point(2, 2);
+            this.tbcFights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbcFights.Name = "tbcFights";
             this.tbcFights.SelectedIndex = 0;
-            this.tbcFights.Size = new System.Drawing.Size(1073, 389);
+            this.tbcFights.Size = new System.Drawing.Size(805, 317);
             this.tbcFights.TabIndex = 0;
             // 
             // dgvFighters
@@ -63,19 +64,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvFighters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvFighters.Location = new System.Drawing.Point(3, 0);
+            this.dgvFighters.Location = new System.Drawing.Point(2, 0);
+            this.dgvFighters.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvFighters.Name = "dgvFighters";
             this.dgvFighters.ReadOnly = true;
             this.dgvFighters.RowTemplate.Height = 24;
-            this.dgvFighters.Size = new System.Drawing.Size(879, 232);
+            this.dgvFighters.Size = new System.Drawing.Size(659, 188);
             this.dgvFighters.TabIndex = 1;
             // 
             // btnExtendPools
             // 
             this.btnExtendPools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExtendPools.Location = new System.Drawing.Point(888, 158);
+            this.btnExtendPools.Location = new System.Drawing.Point(666, 128);
+            this.btnExtendPools.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnExtendPools.Name = "btnExtendPools";
-            this.btnExtendPools.Size = new System.Drawing.Size(185, 35);
+            this.btnExtendPools.Size = new System.Drawing.Size(139, 28);
             this.btnExtendPools.TabIndex = 2;
             this.btnExtendPools.Text = "Extend Pools";
             this.btnExtendPools.UseVisualStyleBackColor = true;
@@ -84,9 +87,10 @@
             // btnExcel
             // 
             this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcel.Location = new System.Drawing.Point(888, 0);
+            this.btnExcel.Location = new System.Drawing.Point(666, 0);
+            this.btnExcel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(185, 35);
+            this.btnExcel.Size = new System.Drawing.Size(139, 28);
             this.btnExcel.TabIndex = 3;
             this.btnExcel.Text = "Export to Excel";
             this.btnExcel.UseVisualStyleBackColor = true;
@@ -95,9 +99,10 @@
             // btnAdvance
             // 
             this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdvance.Location = new System.Drawing.Point(888, 199);
+            this.btnAdvance.Location = new System.Drawing.Point(666, 162);
+            this.btnAdvance.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAdvance.Name = "btnAdvance";
-            this.btnAdvance.Size = new System.Drawing.Size(185, 33);
+            this.btnAdvance.Size = new System.Drawing.Size(139, 27);
             this.btnAdvance.TabIndex = 4;
             this.btnAdvance.Text = "Advance";
             this.btnAdvance.UseVisualStyleBackColor = true;
@@ -108,7 +113,8 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+            this.splitContainer1.Location = new System.Drawing.Point(9, 10);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -123,16 +129,18 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbcFights);
-            this.splitContainer1.Size = new System.Drawing.Size(1073, 503);
-            this.splitContainer1.SplitterDistance = 235;
+            this.splitContainer1.Size = new System.Drawing.Size(805, 409);
+            this.splitContainer1.SplitterDistance = 191;
+            this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 5;
             // 
             // btnRatingsExport
             // 
             this.btnRatingsExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRatingsExport.Location = new System.Drawing.Point(888, 41);
+            this.btnRatingsExport.Location = new System.Drawing.Point(666, 33);
+            this.btnRatingsExport.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnRatingsExport.Name = "btnRatingsExport";
-            this.btnRatingsExport.Size = new System.Drawing.Size(185, 35);
+            this.btnRatingsExport.Size = new System.Drawing.Size(139, 28);
             this.btnRatingsExport.TabIndex = 5;
             this.btnRatingsExport.Text = "HEMA Ratings Export";
             this.btnRatingsExport.UseVisualStyleBackColor = true;
@@ -140,11 +148,12 @@
             // 
             // ManageTournament
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1097, 527);
+            this.ClientSize = new System.Drawing.Size(823, 428);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "ManageTournament";
             this.Text = "Manage Tournament";
             this.Load += new System.EventHandler(this.ManageTournament_Load);

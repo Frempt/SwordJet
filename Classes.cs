@@ -496,6 +496,7 @@ namespace SwordJet
         public FightResult fighterBResult;
         public bool oddFight = false;
         public bool allowDraw = true;
+        public bool isFinal = false;
 
         public List<Exchange> exchanges = new List<Exchange>();
 

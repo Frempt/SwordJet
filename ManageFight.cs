@@ -15,6 +15,7 @@ namespace SwordJet
         public int timeRemainingSeconds = 0;
         public Tournament tournament = null;
         public bool allowDraw = true;
+        public bool isFinal = false;
 
         public bool ended = false;
 
@@ -23,13 +24,14 @@ namespace SwordJet
         private int bScore = 0;
         private int doubleCount = 0;
 
-        public ManageFight(Fight fightToManage, Tournament tournamentToManage, bool draw = true)
+        public ManageFight(Fight fightToManage, Tournament tournamentToManage, bool draw = true, bool final = false)
         {
             InitializeComponent();
 
             fight = fightToManage;
             tournament = tournamentToManage;
             allowDraw = draw;
+            isFinal = final;
 
             lblFighterAName.Text = tournament.GetFighterByID(fight.fighterA).name;
             lblFighterBName.Text = tournament.GetFighterByID(fight.fighterB).name;
@@ -39,7 +41,7 @@ namespace SwordJet
 
             if (fight.fighterAResult == Fight.FightResult.PENDING || fight.fighterBResult == Fight.FightResult.PENDING)
             {
-                timeRemainingSeconds = tournament.fightTimeMinutes * 60;
+                timeRemainingSeconds = (isFinal ? tournament.fightTimeMinutesFinal : tournament.fightTimeMinutes) * 60;
 
                 UpdateTimeDisplay();
 
@@ -132,7 +134,9 @@ namespace SwordJet
                 ShowConclusionMessage();
             }
 
-            if(aScore >= tournament.scoreThreshold || bScore >= tournament.scoreThreshold || (suddenDeath && aScore != bScore))
+            if(aScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold) 
+                || bScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold)
+                || (suddenDeath && aScore != bScore))
             {
                 ShowConclusionMessage();
             }

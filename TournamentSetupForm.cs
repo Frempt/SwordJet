@@ -54,7 +54,7 @@ namespace SwordJet
                     ddlNationality.SelectedItem = Country.Countries.Where(c => c.code == "GB").First();
 
                     //recalculate the pool length message
-                    CalculateMessage();
+                    //CalculateMessage();
 
                     txtName.Focus();
 
@@ -114,11 +114,11 @@ namespace SwordJet
 
                 message.Append("maximum fighting time per pool.");
 
-                lblLengthMessage.Text = message.ToString();
+                //lblLengthMessage.Text = message.ToString();
             }
             else
             {
-                lblLengthMessage.Text = "Insufficient fighters for number of pools/rounds.";
+                //lblLengthMessage.Text = "Insufficient fighters for number of pools/rounds.";
             }
         }
 
@@ -133,7 +133,7 @@ namespace SwordJet
 
                 lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
 
-                CalculateMessage();
+                //CalculateMessage();
 
                 //save changes
                 SaveTournament();
@@ -145,7 +145,7 @@ namespace SwordJet
             if (!loading)
             {
                 //recalulate pool length message
-                CalculateMessage();
+                //CalculateMessage();
 
                 //save changes
                 SaveTournament();
@@ -163,7 +163,9 @@ namespace SwordJet
                 tournament.drawPoints = (int)txtDrawPoints.Value;
                 tournament.lossPoints = (int)txtLossPoints.Value;
                 tournament.fightTimeMinutes = (int)txtFightTime.Value;
+                tournament.fightTimeMinutesFinal = (int)txtFinalFightTime.Value;
                 tournament.scoreThreshold = (chkScoreCap.Checked) ? (int?)txtScoreCap.Value : null;
+                tournament.scoreThresholdFinal = (chkFinalScoreCap.Checked) ? (int?)txtFinalScoreCap.Value : null;
                 tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
                 tournament.penaltyThreshold = (int)txtPenaltyThreshold.Value;
                 tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
@@ -199,8 +201,11 @@ namespace SwordJet
                 txtDrawPoints.Value = tournament.drawPoints;
                 txtLossPoints.Value = tournament.lossPoints;
                 txtFightTime.Value = tournament.fightTimeMinutes;
+                txtFinalFightTime.Value = tournament.fightTimeMinutesFinal;
                 chkScoreCap.Checked = (tournament.scoreThreshold != null);
+                chkFinalScoreCap.Checked = (tournament.scoreThresholdFinal != null);
                 if (tournament.scoreThreshold != null) txtScoreCap.Value = (int)tournament.scoreThreshold;
+                if (tournament.scoreThresholdFinal != null) txtFinalScoreCap.Value = (int)tournament.scoreThresholdFinal;
                 chkDoubleOut.Checked = (tournament.doubleThreshold != null);
                 if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
                 txtPenaltyThreshold.Value = tournament.penaltyThreshold;
@@ -208,13 +213,14 @@ namespace SwordJet
                 lstFighters.DataSource = tournament.fighters;
                 lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
 
-                CalculateMessage();
+                //CalculateMessage();
 
                 if (tournament.stage != Tournament.TournamentStage.REGISTRATION)
                 {
                     button1.Enabled = false;
                     btnDelete.Enabled = false;
                     txtScoreCap.Enabled = false;
+                    txtFinalScoreCap.Enabled = false;
                     txtDoubleLimit.Enabled = false;
                     txtPenaltyThreshold.Enabled = false;
                     txtDrawPoints.Enabled = false;
@@ -223,11 +229,13 @@ namespace SwordJet
                     txtPools.Enabled = false;
                     txtRounds.Enabled = false;
                     txtFightTime.Enabled = false;
+                    txtFinalFightTime.Enabled = false;
                     txtName.Enabled = false;
                     ddlClub.Enabled = false;
                     btnClubEdit.Enabled = false;
                     ddlNationality.Enabled = false;
                     chkScoreCap.Enabled = false;
+                    chkFinalScoreCap.Enabled = false;
                     chkDoubleOut.Enabled = false;
                     txtTournamentName.Enabled = false;
                     ddlPoolType.Enabled = false;
@@ -279,7 +287,7 @@ namespace SwordJet
             if (!loading)
             {
                 //recalulate pool length message
-                CalculateMessage();
+                //CalculateMessage();
 
                 //save changes
                 SaveTournament();

@@ -17,7 +17,9 @@ namespace SwordJet
         public int numberOfRounds;
         public int numberOfPools;
         public int? scoreThreshold;
+        public int? scoreThresholdFinal;
         public int fightTimeMinutes;
+        public int fightTimeMinutesFinal;
         public TournamentStage stage = TournamentStage.REGISTRATION;
         public PoolType poolType = PoolType.FIXEDROUNDS;
         public EliminationType eliminationType = EliminationType.RANDOMISED;
@@ -43,7 +45,9 @@ namespace SwordJet
             numberOfPools = 1;
             numberOfRounds = 1;
             fightTimeMinutes = 1;
+            fightTimeMinutesFinal = 1;
             scoreThreshold = null;
+            scoreThresholdFinal = null;
             eliminationSize = 8;
             matchedEliminations = false;
             winPoints = 3;
@@ -1120,6 +1124,8 @@ namespace SwordJet
 
                 bronzeFight.allowDraw = false;
                 goldFight.allowDraw = false;
+                bronzeFight.isFinal = true;
+                goldFight.isFinal = true;
                 finals = new List<Fight>() { bronzeFight, goldFight };
             }
         }

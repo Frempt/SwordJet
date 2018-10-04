@@ -577,7 +577,7 @@ namespace SwordJet
         {
             Fight f = tournament.GetFightByID((Guid)((Button)sender).Tag);
 
-            ManageFight dialog = new ManageFight(f, tournament, f.allowDraw);
+            ManageFight dialog = new ManageFight(f, tournament, f.allowDraw, f.isFinal);
             dialog.FormClosed += Dialog_FormClosed;
             if(!dialog.IsDisposed)dialog.ShowDialog();
         }

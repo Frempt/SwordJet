@@ -774,7 +774,7 @@ namespace SwordJet
                 int firstPoolSize = vw.Count / 2;
                 if (firstPoolSize % 2 == 1)
                 {
-                    if ((pools.Count / 2) % 2 == 1)//(pools.Count / 2 < numberOfRounds / 2)
+                    if ((pools.Count / 2) % 2 == 1)
                     {
                         firstPoolSize++;
                     }
@@ -787,7 +787,7 @@ namespace SwordJet
                 //add fighters to correct pools
                 for (int i = 0; i < vw.Count; i++)
                 {
-                    if (i > firstPoolSize)
+                    if (i >= firstPoolSize)
                     {
                         bottomFighters.Add((int)vw[i]["ID"]);
                     }

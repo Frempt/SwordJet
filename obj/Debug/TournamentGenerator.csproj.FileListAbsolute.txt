@@ -105,3 +105,4 @@ C:\Users\jomacgilp\Source\Repos\TournamentGenerator\obj\Debug\SwordJet.Propertie
 C:\Users\jomacgilp\Source\Repos\TournamentGenerator\obj\Debug\TournamentGenerator.csproj.GenerateResource.Cache
 C:\Users\jomacgilp\Source\Repos\TournamentGenerator\obj\Debug\SwordJet.exe.manifest
 C:\Users\jomacgilp\Source\Repos\TournamentGenerator\obj\Debug\SwordJet.application
+C:\Users\jomacgilp\Source\Repos\TournamentGenerator\obj\Debug\SwordJet.MergePoolResults.resources

@@ -106,6 +106,12 @@
     <Compile Include="ManageTournament.Designer.cs">
       <DependentUpon>ManageTournament.cs</DependentUpon>
     </Compile>
+    <Compile Include="MergePoolResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MergePoolResults.Designer.cs">
+      <DependentUpon>MergePoolResults.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pool.cs" />
     <Compile Include="Tournament.cs" />
     <Compile Include="TournamentManager.cs">
@@ -130,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ManageTournament.resx">
       <DependentUpon>ManageTournament.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MergePoolResults.resx">
+      <DependentUpon>MergePoolResults.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TournamentManager.resx">
       <DependentUpon>TournamentManager.cs</DependentUpon>

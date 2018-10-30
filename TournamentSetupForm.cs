@@ -19,13 +19,17 @@ namespace SwordJet
         {
             InitializeComponent();
 
+            //load config drop down lists
             foreach (var item in Enum.GetValues(typeof(Tournament.EliminationType))) { ddlElimType.Items.Add(item); }
             foreach (var item in Enum.GetValues(typeof(Tournament.PoolType))) { ddlPoolType.Items.Add(item); }
             foreach (var item in ConfigValues.eliminationSizes) { ddlElimSize.Items.Add(item); }
+            foreach (var item in Enum.GetValues(typeof(Tournament.AfterblowBehaviour))) { ddlAfterblowBehaviour.Items.Add(item); }
+            foreach (var item in Enum.GetValues(typeof(Tournament.PenaltyBehaviour))) { ddlPenaltyBehaviour.Items.Add(item); }
 
             FilePath = filePath;
             LoadTournament();
 
+            //load countries list
             ddlNationality.DataSource = Country.Countries;
             ddlNationality.SelectedItem = Country.Countries.Where(c => c.code == "GB").First();
 
@@ -168,6 +172,8 @@ namespace SwordJet
                 tournament.scoreThresholdFinal = (chkFinalScoreCap.Checked) ? (int?)txtFinalScoreCap.Value : null;
                 tournament.doubleThreshold = (chkDoubleOut.Checked) ? (int?)txtDoubleLimit.Value : null;
                 tournament.penaltyThreshold = (int)txtPenaltyThreshold.Value;
+                tournament.afterblowBehaviour = (Tournament.AfterblowBehaviour)ddlAfterblowBehaviour.SelectedItem;
+                tournament.penaltyBehaviour = (Tournament.PenaltyBehaviour)ddlPenaltyBehaviour.SelectedItem;
                 tournament.poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
                 tournament.eliminationSize = int.Parse(ddlElimSize.SelectedItem.ToString());
                 tournament.eliminationType = (Tournament.EliminationType)ddlElimType.SelectedItem;
@@ -209,6 +215,8 @@ namespace SwordJet
                 chkDoubleOut.Checked = (tournament.doubleThreshold != null);
                 if (tournament.doubleThreshold != null) txtDoubleLimit.Value = (int)tournament.doubleThreshold;
                 txtPenaltyThreshold.Value = tournament.penaltyThreshold;
+                ddlPenaltyBehaviour.SelectedItem = tournament.penaltyBehaviour;
+                ddlAfterblowBehaviour.SelectedItem = tournament.afterblowBehaviour;
 
                 lstFighters.DataSource = tournament.fighters;
                 lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
@@ -223,6 +231,8 @@ namespace SwordJet
                     txtFinalScoreCap.Enabled = false;
                     txtDoubleLimit.Enabled = false;
                     txtPenaltyThreshold.Enabled = false;
+                    ddlPenaltyBehaviour.Enabled = false;
+                    ddlAfterblowBehaviour.Enabled = false;
                     txtDrawPoints.Enabled = false;
                     txtWinPoints.Enabled = false;
                     txtLossPoints.Enabled = false;

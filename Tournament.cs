@@ -11,7 +11,8 @@ namespace SwordJet
         public enum TournamentStage { REGISTRATION = 0, POOLFIGHTS, TIEBREAKERS, ELIMINATIONS, FINALS, CLOSED }
         public enum PoolType { FIXEDROUNDS = 0, ROUNDROBIN = 1, SWISSPAIRS = 2 }
         public enum EliminationType { RANDOMISED = 0, MATCHED = 1 }
-        public enum AfterblowBehaviour { IGNORE = 0, WEIGHT = 1 };
+        public enum AfterblowBehaviour { NOSCORE = 0, WEIGHTSCORE = 1, FULLSCORE = 2 };
+        public enum PenaltyBehaviour { NONE = 0, SUBTRACTSCORE = 1 }
 
         public string name;
         public int numberOfRounds;
@@ -31,6 +32,7 @@ namespace SwordJet
         public int? doubleThreshold;
         public AfterblowBehaviour afterblowBehaviour;
         public int penaltyThreshold;
+        public PenaltyBehaviour penaltyBehaviour;
 
         public List<Club> clubs = new List<Club>();
         public List<Fighter> fighters = new List<Fighter>();
@@ -391,7 +393,7 @@ namespace SwordJet
             }
 
             //subtract accrued penalties
-            if(penaltyThreshold > 0) given = Math.Max(0, (given - (penalties / penaltyThreshold)));
+            if(penaltyThreshold > 0 && penaltyBehaviour == PenaltyBehaviour.SUBTRACTSCORE) given = Math.Max(0, (given - (penalties / penaltyThreshold)));
 
             return given - received;
         }

@@ -114,7 +114,7 @@ namespace SwordJet
             }
 
             //subtract accrued penalties
-            if (tournament.penaltyThreshold > 0)
+            if (tournament.penaltyThreshold > 0 && tournament.penaltyBehaviour == Tournament.PenaltyBehaviour.SUBTRACTSCORE)
             {
                 aScore = Math.Max(0, (aScore - (aPenalties / tournament.penaltyThreshold)));
                 bScore = Math.Max(0, (bScore - (bPenalties / tournament.penaltyThreshold)));
@@ -156,8 +156,22 @@ namespace SwordJet
 
         private void btnAddExchange_Click(object sender, EventArgs e)
         {
-            int fighterAScore = Math.Max(0, (int)(txtFighterAScore.Value - txtFighterBScore.Value));
-            int fighterBScore = Math.Max(0, (int)(txtFighterBScore.Value - txtFighterAScore.Value));
+            int fighterAScore = (int)txtFighterAScore.Value;
+            int fighterBScore = (int)txtFighterBScore.Value;
+
+            if (fighterAScore > 0 && fighterBScore > 0)
+            {
+                if(tournament.afterblowBehaviour == Tournament.AfterblowBehaviour.NOSCORE)
+                {
+                    fighterAScore = 0;
+                    fighterBScore = 0;
+                }
+                else if(tournament.afterblowBehaviour == Tournament.AfterblowBehaviour.WEIGHTSCORE)
+                {
+                    fighterAScore = Math.Max(0, (int)(txtFighterAScore.Value - txtFighterBScore.Value));
+                    fighterBScore = Math.Max(0, (int)(txtFighterBScore.Value - txtFighterAScore.Value));
+                }
+            }
 
             Exchange exchange = new Exchange(fighterAScore, fighterBScore, chkDouble.Checked, chkPenaltyA.Checked, chkPenaltyB.Checked);
             fight.exchanges.Add(exchange);

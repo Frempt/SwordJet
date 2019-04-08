@@ -6,7 +6,7 @@ Fight Management components are basic and not very customisable. Eventually, it 
 
 Pool seeding will be added when I decide how I want it to work.
 
-The tool in its current 0.8.x version (i.e. a fully featured manager rather than pre 0.8 which was a generator) has managed a weighted target Swiss Pairs tournament, and a 2 pool round robin (with fights managed manually) - proved to work without issues each time.
+The tool in its current 0.8.x version (i.e. a fully featured manager rather than pre 0.8 which was a generator) has managed a handful of different tournaments, mostly without issue.
 
 Fancy features will be added when I feel like it. They will likely include (but will not be limited to) -
 

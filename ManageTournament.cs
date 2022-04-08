@@ -179,6 +179,7 @@ namespace SwordJet
                     TabPage page = new TabPage("POOL - " + pool.name);
                     page.Width = tbcFights.Width;
                     page.Height = tbcFights.Height;
+                    page.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
                     TabControl childTabs = new TabControl();
                     childTabs.SizeMode = TabSizeMode.FillToRight;
@@ -186,6 +187,7 @@ namespace SwordJet
                     childTabs.Left = 0;
                     childTabs.Width = page.Width;
                     childTabs.Height = page.Height;
+                    childTabs.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
                     for (int i = 0; i < pool.rounds.Count; i++)
                     {
@@ -194,10 +196,13 @@ namespace SwordJet
                         TabPage childPage = new TabPage("Round " + (i + 1));
                         childPage.Width = childTabs.Width;
                         childPage.Height = childTabs.Height;
+                        childPage.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
                         TableLayoutPanel panel = new TableLayoutPanel();
                         panel.Width = childPage.Width;
                         panel.Height = childPage.Height;
+                        panel.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
+                        panel.AutoScroll = true;
 
                         Font boldFont = new Font(Font, FontStyle.Bold);
 

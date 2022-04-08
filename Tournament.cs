@@ -688,10 +688,10 @@ namespace SwordJet
             }
 
             //add the fights to the pool as once big round
-            pool.rounds.Add(round);
+            //pool.rounds.Add(round);
 
             //could use this to break it into rounds instead, probably not necessary
-            //pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
+            pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
 
             return pool;
         }

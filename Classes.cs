@@ -620,6 +620,7 @@ namespace SwordJet
     {
         public int id;
         public string name;
+        public int seed;
 
         //supplemental information, may or may not be used
         public string club;
@@ -637,6 +638,14 @@ namespace SwordJet
         {
             id = fighterId;
             name = fighterName;
+            seed = 0;
+        }
+
+        public Fighter(int fighterId, string fighterName, int fighterSeed)
+        {
+            id = fighterId;
+            name = fighterName;
+            seed = fighterSeed;
         }
 
         public override string ToString()

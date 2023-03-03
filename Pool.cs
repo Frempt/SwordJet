@@ -158,7 +158,8 @@ namespace SwordJet
                     //ensure the fight hasn't happened already, and the fighter isn't fighting themselves (that would be pretty dumb)
                     //also try and make sure that the first fight of a round does not contain either of the fighters from the last fight of the previous round
                     //not always possible; if we fail too many times on that condition, just allow it
-                    while (HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent])) || opponent == l || (prevFighterA != null && prevFighterB != null
+                    while ((HasFightHappenedAlready(new Fight(roundFighters[l], roundFighters[opponent]))) 
+                                || opponent == l || (prevFighterA != null && prevFighterB != null
                                 && (roundFighters[opponent] == prevFighterA || roundFighters[opponent] == prevFighterB)
                                 && round.Count == 0 && roundFighters.Count > 4 && tries < (ConfigValues.fightGenerationRetryLimit / 2)));
 

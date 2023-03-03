@@ -330,5 +330,11 @@ namespace SwordJet
             ddlClub.DataSource = null;
             ddlClub.DataSource = tournament.clubs;
         }
+
+        private void lstFighters_onCheck(object sender, ItemCheckEventArgs e)
+        {            
+            tournament.fighters[e.Index].seed = e.NewValue == CheckState.Checked ? 1 : 0;
+            SaveTournament();
+        }
     }
 }

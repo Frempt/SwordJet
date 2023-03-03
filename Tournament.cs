@@ -716,6 +716,25 @@ namespace SwordJet
             return pool;
         }
 
+        public Pool GenerateRapidPool(string name, List<int> fighters)
+        {
+            Pool pool = new Pool();
+            pool.name = name;
+            pool.fighters = fighters;
+
+            int roundsThisPool = numberOfRounds;
+
+            //generate the correct number of fights
+            for (int k = 0; k < roundsThisPool; k++)
+            {
+                List<Fight> round = pool.GenerateRound();
+
+                if (round == null) return null;
+            }
+
+            return pool;
+        }
+
         //generate the pools for this tournament
         public List<Pool> GeneratePools()
         {
@@ -846,8 +865,41 @@ namespace SwordJet
             //clone the list of fighters so we don't remove from the master list
             List<Fighter> fightersClone = new List<Fighter>();
             fightersClone.AddRange(fighters);
+            fightersClone = fightersClone.OrderBy(f => f.seed).ThenBy(f=>Helpers.rng.Next(0,1000)).ToList();
+
+            List<string> poolNames = new List<string>();
+            List<List<int>> poolFighters = new List<List<int>>();
 
             for (int i = 0; i < numberOfPools; i++)
+            {
+                List<string> poolNameValues = new List<string>();
+                poolNameValues.AddRange(ConfigValues.poolNames);
+
+                int nameIndex = Helpers.rng.Next(0, poolNameValues.Count);
+                poolNames.Add(poolNameValues[nameIndex]);
+                poolNameValues.RemoveAt(nameIndex);
+
+                poolFighters.Add(new List<int>());
+            }
+
+            while (fightersClone.Count > 0)
+            {
+                for (int i = 0; i < numberOfPools; i++)
+                {
+                    if (fightersClone.Count == 0) break;
+
+                    poolFighters[i].Add(fightersClone[0].id);
+                    fightersClone.RemoveAt(0);
+                }
+            }
+
+            for (int i = 0; i < numberOfPools; i++)
+            {
+                pools.Add(GenerateRoundRobinPool(poolNames[i], poolFighters[i]));
+            }
+
+            //pre seeded pools logic
+            /*for (int i = 0; i < numberOfPools; i++)
             {
                 List<string> poolNames = new List<string>();
                 poolNames.AddRange(ConfigValues.poolNames);
@@ -884,12 +936,56 @@ namespace SwordJet
                 }
 
                 pools.Add(GenerateRoundRobinPool(name, poolFighters));
-            }
+            }*/
 
             return pools;
         }
 
         public List<Pool> GenerateFixedPools()
+        {
+            int fightersPerPool = fighters.Count / numberOfPools;
+            pools = new List<Pool>();
+
+            //clone the list of fighters so we don't remove from the master list
+            List<Fighter> fightersClone = new List<Fighter>();
+            fightersClone.AddRange(fighters);
+
+            for (int i = 0; i < numberOfPools; i++)
+            {
+                List<string> poolNames = new List<string>();
+                poolNames.AddRange(ConfigValues.poolNames);
+
+                int nameIndex = Helpers.rng.Next(0, poolNames.Count);
+                string name = poolNames[nameIndex];
+                poolNames.RemoveAt(nameIndex);
+
+                List<int> poolFighters = new List<int>();
+
+                //add random fighters to the pool until we have the correct size
+                for (int j = 0; j < fightersPerPool; j++)
+                {
+                    int randIndex = Helpers.rng.Next(0, fightersClone.Count);
+                    poolFighters.Add(fightersClone[randIndex].id);
+                    fightersClone.RemoveAt(randIndex);
+                }
+
+                //if there are any odd fighters, add them to the last pool
+                if (i == numberOfPools - 1 && fightersClone.Count > 0)
+                {
+                    while (fightersClone.Count > 0)
+                    {
+                        poolFighters.Add(fightersClone[0].id);
+                        fightersClone.RemoveAt(0);
+                    }
+                }
+
+                pools.Add(GenerateFixedPool(name, poolFighters));
+            }
+
+            return pools;
+        }
+
+        public List<Pool> GenerateRapidPools()
         {
             int fightersPerPool = fighters.Count / numberOfPools;
             pools = new List<Pool>();

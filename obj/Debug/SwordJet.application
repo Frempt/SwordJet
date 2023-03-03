@@ -4,17 +4,17 @@
   <description asmv2:publisher="SwordJet" asmv2:product="SwordJet" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" mapFileExtensions="true" />
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
-    <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="SwordJet.exe.manifest" size="4547">
+    <dependentAssembly dependencyType="install" codebase="SwordJet.exe.manifest" size="4617">
       <assemblyIdentity name="SwordJet.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>+6eV3XN8E4lOnQ8sqLmRKXBo0qg=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>oZ34pE3JceRhUT5RbXoXqEkssaCiooT1UncONRwz8sE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

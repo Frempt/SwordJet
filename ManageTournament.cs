@@ -484,19 +484,22 @@ namespace SwordJet
                     Control[] ctrlsB = changedControl.Parent.Controls.Find("BResult", false);
                     ComboBox ddlB = (ComboBox)ctrlsB.Where(ct => (Guid)ct.Tag == fight.fightID).First();
 
-                    switch (result)
+                    if ((Fight.FightResult)ddlB.SelectedItem == Fight.FightResult.PENDING)
                     {
-                        case Fight.FightResult.DRAW:
-                            ddlB.SelectedItem = Fight.FightResult.DRAW;
-                            break;
+                        switch (result)
+                        {
+                            case Fight.FightResult.DRAW:
+                                ddlB.SelectedItem = Fight.FightResult.DRAW;
+                                break;
 
-                        case Fight.FightResult.LOSS:
-                            ddlB.SelectedItem = Fight.FightResult.WIN;
-                            break;
+                            case Fight.FightResult.LOSS:
+                                ddlB.SelectedItem = Fight.FightResult.WIN;
+                                break;
 
-                        case Fight.FightResult.WIN:
-                            ddlB.SelectedItem = Fight.FightResult.LOSS;
-                            break;
+                            case Fight.FightResult.WIN:
+                                ddlB.SelectedItem = Fight.FightResult.LOSS;
+                                break;
+                        }
                     }
                 }
                 else if (changedControl.Name == "BResult")
@@ -508,19 +511,22 @@ namespace SwordJet
                     Control[] ctrlsA = changedControl.Parent.Controls.Find("AResult", false);
                     ComboBox ddlA = (ComboBox)ctrlsA.Where(ct => (Guid)ct.Tag == fight.fightID).First();
 
-                    switch (result)
+                    if ((Fight.FightResult)ddlA.SelectedItem == Fight.FightResult.PENDING)
                     {
-                        case Fight.FightResult.DRAW:
-                            ddlA.SelectedItem = Fight.FightResult.DRAW;
-                            break;
+                        switch (result)
+                        {
+                            case Fight.FightResult.DRAW:
+                                ddlA.SelectedItem = Fight.FightResult.DRAW;
+                                break;
 
-                        case Fight.FightResult.LOSS:
-                            ddlA.SelectedItem = Fight.FightResult.WIN;
-                            break;
+                            case Fight.FightResult.LOSS:
+                                ddlA.SelectedItem = Fight.FightResult.WIN;
+                                break;
 
-                        case Fight.FightResult.WIN:
-                            ddlA.SelectedItem = Fight.FightResult.LOSS;
-                            break;
+                            case Fight.FightResult.WIN:
+                                ddlA.SelectedItem = Fight.FightResult.LOSS;
+                                break;
+                        }
                     }
                 }
                 else if (changedControl.Name == "AResultRB")

@@ -713,5 +713,31 @@ namespace SwordJet
                 System.Diagnostics.Process.Start(dialog.SelectedPath);
             }
         }
+
+        private void btnMerge_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                MergeResults mergeDialog = new MergeResults(tournament, FileAccessHelper.LoadTournament(dialog.FileName));
+                mergeDialog.FormClosed += MergeDialog_Closed;
+                if (!mergeDialog.IsDisposed) mergeDialog.ShowDialog();
+            }
+        }
+
+        private void MergeDialog_Closed(object sender, EventArgs e)
+        {
+            MergeResults dialog = (MergeResults)sender;
+            if (dialog.DialogResult == DialogResult.OK)
+            {
+                tournament.MergeFightResults(dialog.updates);
+                FileAccessHelper.SaveTournament(tournament, FilePath);
+            }
+
+            LoadTournament();
+            SelectLastPage();
+        }
     }
 }

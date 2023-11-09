@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Configuration;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SwordJet
 {
@@ -52,6 +53,7 @@ namespace SwordJet
                 try
                 {
                     Tournament tournament = new Tournament();
+                    tournament.name = Path.GetFileNameWithoutExtension(dialog.FileName);
                     FileAccessHelper.SaveTournament(tournament, path);
 
                     TournamentSetupForm tournForm = new TournamentSetupForm(path);

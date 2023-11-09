@@ -161,6 +161,39 @@ namespace SwordJet
             return null;
         }
 
+        //get a Fight by specific ID
+        //returns null if no match found
+        public Fight FindFight(Guid fightID)
+        {
+            foreach (Pool p in pools)
+            {
+                foreach(List<Fight> round in p.rounds)
+                {
+                    foreach(Fight f in round)
+                    {
+                        if (f.fightID == fightID) return f;
+                    }
+                }
+            }
+
+            foreach (Fight f in finals)
+            {
+                if (f.fightID == fightID) return f;
+            }
+
+            return null;
+        }
+
+        //copies the results of the updates parameter fights into the tournament fights with matching FightID
+        public void MergeFightResults(List<Fight> updates)
+        {
+            foreach(Fight f in updates)
+            {
+                Fight exF = FindFight(f.fightID);
+                exF = f;
+            }
+        }
+
         //get a sorted data view of all tournament fighters
         public DataView GetFightersDataView()
         {
@@ -1334,6 +1367,35 @@ namespace SwordJet
 
             return true;
         }
-    }
 
+        /// <summary>
+        /// Returns true if the Tournament objects have the same Fight IDs (regardless of current results), and the tournament is at the same stage
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool DoTournamentsMatch(Tournament a, Tournament b)
+        {
+            if (a.stage != b.stage) return false;
+
+            for (int i = 0; i < a.pools.Count; i++)
+            {
+                Pool p = a.pools[i];
+                for (int j = 0; j < p.rounds.Count; j++)
+                {
+                    List<Fight> round = p.rounds[j];
+
+                    for (int k = 0; k < round.Count; k++)
+                    {
+                        Fight fightA = a.pools[i].rounds[j][k];
+                        Fight fightB = b.pools[i].rounds[j][k];
+
+                        if (fightA.fightID != fightB.fightID) return false;
+                    }
+                }
+            }
+
+           return true;
+        }
+    }
 }

@@ -45,7 +45,8 @@ namespace SwordJet
             {
                 if((bool)row["Merge?"] == true)
                 {
-                    updates.Add(secondTournament.FindFight((Guid)row["Fight ID"]));
+                    Guid id = Guid.Parse(row["Fight ID"].ToString());
+                    updates.Add(secondTournament.FindFight(id));
                 }
             }
 
@@ -87,27 +88,72 @@ namespace SwordJet
 
                         if (a.fighterAResult != b.fighterAResult || a.fighterBResult != b.fighterBResult || a.doubleCount != b.doubleCount)
                         {
-                            DataRow row = table.NewRow();
+                            table.Rows.Add(GetFightDataRow(table,p,a,b));
+                        }
+                    }
+                }
+            }
 
-                            row["Fight ID"] = a.fightID;
-                            row["Fighter A"] = firstTournament.GetFighterByID(a.fighterA).name;
-                            row["Fighter B"] = firstTournament.GetFighterByID(a.fighterB).name;
-                            row["Pool"] = p.name;
-                            row["Fighter A Result (First Tournament)"] = a.fighterAResult.ToString();
-                            row["Fighter B Result (First Tournament)"] = a.fighterBResult.ToString();
-                            row["Doubles (First Tournament)"] = a.doubleCount;
-                            row["Fighter A Result (Second Tournament)"] = b.fighterAResult.ToString();
-                            row["Fighter B Result (Second Tournament)"] = b.fighterBResult.ToString();
-                            row["Doubles (Second Tournament)"] = b.doubleCount;
-                            row["Merge?"] = true;
+            for(int i = 0; i < firstTournament.eliminations.Count; i++)
+            {
+                Pool p = firstTournament.eliminations[i];
+                for (int j = 0; j < p.rounds.Count; j++)
+                {
+                    List<Fight> round = p.rounds[j];
 
-                            table.Rows.Add(row);
+                    for (int k = 0; k < round.Count; k++)
+                    {
+                        Fight a = firstTournament.eliminations[i].rounds[j][k];
+                        Fight b = secondTournament.eliminations[i].rounds[j][k];
+
+                        if (a.fighterAResult != b.fighterAResult || a.fighterBResult != b.fighterBResult || a.doubleCount != b.doubleCount)
+                        {
+                            table.Rows.Add(GetFightDataRow(table, p, a, b));
+                        }
+                    }
+                }
+            }
+
+            if(firstTournament.tieBreakers != null)
+            {
+                Pool p = firstTournament.tieBreakers;
+                for (int j = 0; j < p.rounds.Count; j++)
+                {
+                    List<Fight> round = p.rounds[j];
+
+                    for (int k = 0; k < round.Count; k++)
+                    {
+                        Fight a = firstTournament.tieBreakers.rounds[j][k];
+                        Fight b = secondTournament.tieBreakers.rounds[j][k];
+
+                        if (a.fighterAResult != b.fighterAResult || a.fighterBResult != b.fighterBResult || a.doubleCount != b.doubleCount)
+                        {
+                            table.Rows.Add(GetFightDataRow(table, p, a, b));
                         }
                     }
                 }
             }
 
             dgvResults.DataSource = table;
+        }
+
+        private DataRow GetFightDataRow(DataTable table, Pool p, Fight a, Fight b)
+        {
+            DataRow row = table.NewRow();
+
+            row["Fight ID"] = a.fightID;
+            row["Fighter A"] = firstTournament.GetFighterByID(a.fighterA).name;
+            row["Fighter B"] = firstTournament.GetFighterByID(a.fighterB).name;
+            row["Pool"] = p.name;
+            row["Fighter A Result (First Tournament)"] = a.fighterAResult.ToString();
+            row["Fighter B Result (First Tournament)"] = a.fighterBResult.ToString();
+            row["Doubles (First Tournament)"] = a.doubleCount;
+            row["Fighter A Result (Second Tournament)"] = b.fighterAResult.ToString();
+            row["Fighter B Result (Second Tournament)"] = b.fighterBResult.ToString();
+            row["Doubles (Second Tournament)"] = b.doubleCount;
+            row["Merge?"] = (b.IsComplete());//true;
+
+            return row;
         }
     }
 }

@@ -584,6 +584,14 @@ namespace SwordJet
         {
             return (fighterAResult != FightResult.PENDING && fighterBResult != FightResult.PENDING);
         }
+
+        public void MergeValues(Fight merge)
+        {
+            doubleCount = merge.doubleCount;
+            fighterAResult = merge.fighterAResult;
+            fighterBResult = merge.fighterBResult;
+            exchanges = merge.exchanges;
+        }
     }
 
     [Serializable]

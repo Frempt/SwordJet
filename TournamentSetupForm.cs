@@ -249,6 +249,7 @@ namespace SwordJet
                     chkDoubleOut.Enabled = false;
                     txtTournamentName.Enabled = false;
                     ddlPoolType.Enabled = false;
+                    lstFighters.Enabled = false;
 
                     if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS)
                     {

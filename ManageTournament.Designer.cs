@@ -35,8 +35,8 @@
             this.btnExcel = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btnRatingsExport = new System.Windows.Forms.Button();
             this.btnMerge = new System.Windows.Forms.Button();
+            this.btnRatingsExport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFighters)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -87,15 +87,10 @@
             // 
             // btnExcel
             // 
-            this.btnExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExcel.Location = new System.Drawing.Point(888, 0);
-            this.btnExcel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnExcel.Location = new System.Drawing.Point(0, 0);
             this.btnExcel.Name = "btnExcel";
-            this.btnExcel.Size = new System.Drawing.Size(185, 34);
-            this.btnExcel.TabIndex = 3;
-            this.btnExcel.Text = "Export to Excel";
-            this.btnExcel.UseVisualStyleBackColor = true;
-            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
+            this.btnExcel.Size = new System.Drawing.Size(75, 23);
+            this.btnExcel.TabIndex = 7;
             // 
             // btnAdvance
             // 
@@ -135,18 +130,6 @@
             this.splitContainer1.SplitterDistance = 234;
             this.splitContainer1.TabIndex = 5;
             // 
-            // btnRatingsExport
-            // 
-            this.btnRatingsExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRatingsExport.Location = new System.Drawing.Point(888, 41);
-            this.btnRatingsExport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnRatingsExport.Name = "btnRatingsExport";
-            this.btnRatingsExport.Size = new System.Drawing.Size(185, 34);
-            this.btnRatingsExport.TabIndex = 5;
-            this.btnRatingsExport.Text = "HEMA Ratings Export";
-            this.btnRatingsExport.UseVisualStyleBackColor = true;
-            this.btnRatingsExport.Click += new System.EventHandler(this.btnRatingsExport_Click);
-            // 
             // btnMerge
             // 
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -157,6 +140,18 @@
             this.btnMerge.Text = "Merge Results";
             this.btnMerge.UseVisualStyleBackColor = true;
             this.btnMerge.Click += new System.EventHandler(this.btnMerge_Click);
+            // 
+            // btnRatingsExport
+            // 
+            this.btnRatingsExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRatingsExport.Location = new System.Drawing.Point(885, 2);
+            this.btnRatingsExport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnRatingsExport.Name = "btnRatingsExport";
+            this.btnRatingsExport.Size = new System.Drawing.Size(185, 34);
+            this.btnRatingsExport.TabIndex = 5;
+            this.btnRatingsExport.Text = "HEMA Ratings Export";
+            this.btnRatingsExport.UseVisualStyleBackColor = true;
+            this.btnRatingsExport.Click += new System.EventHandler(this.btnRatingsExport_Click);
             // 
             // ManageTournament
             // 

@@ -672,11 +672,6 @@ namespace SwordJet
             dialog.Dispose();
         }
 
-        private void btnExcel_Click(object sender, EventArgs e)
-        {
-            GenerateSpreadsheet();
-        }
-
         private void btnAdvance_Click(object sender, EventArgs e)
         {
             DialogResult result;

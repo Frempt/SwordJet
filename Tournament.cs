@@ -22,8 +22,8 @@ namespace SwordJet
         public int fightTimeMinutes;
         public int fightTimeMinutesFinal;
         public TournamentStage stage = TournamentStage.REGISTRATION;
-        public PoolType poolType = PoolType.FIXEDROUNDS;
-        public EliminationType eliminationType = EliminationType.RANDOMISED;
+        public PoolType poolType = PoolType.ROUNDROBIN;
+        public EliminationType eliminationType = EliminationType.MATCHED;
         public int eliminationSize;
         public bool matchedEliminations;
         public int winPoints;
@@ -190,7 +190,7 @@ namespace SwordJet
             foreach(Fight f in updates)
             {
                 Fight exF = FindFight(f.fightID);
-                exF = f;
+                exF.MergeValues(f);
             }
         }
 

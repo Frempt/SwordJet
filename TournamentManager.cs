@@ -101,5 +101,10 @@ namespace SwordJet
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            //todo open settings/config dialog
+        }
     }
 }

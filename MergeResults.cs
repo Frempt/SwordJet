@@ -19,17 +19,19 @@ namespace SwordJet
         {
             InitializeComponent();
 
-            if(!Tournament.DoTournamentsMatch(a,b))
+            if (!Tournament.DoTournamentsMatch(a, b))
             {
                 MessageBox.Show("Loaded tournament files do not match, results cannot be merged");
                 Close();
             }
+            else
+            {
+                firstTournament = a;
+                secondTournament = b;
+                updates = new List<Fight>();
 
-            firstTournament = a;
-            secondTournament = b;
-            updates = new List<Fight>();
-
-            LoadFightList();
+                LoadFightList();
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

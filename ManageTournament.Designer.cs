@@ -53,7 +53,7 @@
             this.tbcFights.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbcFights.Name = "tbcFights";
             this.tbcFights.SelectedIndex = 0;
-            this.tbcFights.Size = new System.Drawing.Size(1073, 391);
+            this.tbcFights.Size = new System.Drawing.Size(1073, 264);
             this.tbcFights.TabIndex = 0;
             // 
             // dgvFighters

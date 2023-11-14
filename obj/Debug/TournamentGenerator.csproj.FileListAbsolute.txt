@@ -40,3 +40,4 @@ C:\Users\jomacgilp\TournamentGenerator\obj\Debug\SwordJet.Properties.Resources.r
 C:\Users\jomacgilp\TournamentGenerator\obj\Debug\TournamentGenerator.csproj.GenerateResource.Cache
 C:\Users\jomacgilp\TournamentGenerator\obj\Debug\SwordJet.exe.manifest
 C:\Users\jomacgilp\TournamentGenerator\obj\Debug\SwordJet.application
+C:\Users\jomacgilp\TournamentGenerator\obj\Debug\SwordJet.Settings.resources

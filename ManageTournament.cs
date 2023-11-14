@@ -116,12 +116,14 @@ namespace SwordJet
                 tournament = FileAccessHelper.LoadTournament(FilePath);
 
                 btnExtendPools.Enabled = false;
+                btnExtendPools.Visible = false;
 
                 //setup UI elements depending on the tournament stage
                 switch (tournament.stage)
                 {
                     case Tournament.TournamentStage.REGISTRATION:
                         btnAdvance.Text = "Begin Pools";
+                        btnMerge.Enabled = false;
                         break;
 
                     case Tournament.TournamentStage.POOLFIGHTS:
@@ -136,7 +138,12 @@ namespace SwordJet
                         //}
 
                         //we can't extend round robin
-                        if (tournament.poolType != Tournament.PoolType.ROUNDROBIN) btnExtendPools.Enabled = true;
+                        if (tournament.poolType != Tournament.PoolType.ROUNDROBIN)
+                        {
+                            btnExtendPools.Enabled = true;
+                            btnExtendPools.Visible = true;
+                        }
+
                         break;
 
                     case Tournament.TournamentStage.TIEBREAKERS:
@@ -161,6 +168,7 @@ namespace SwordJet
                     case Tournament.TournamentStage.CLOSED:
                         btnAdvance.Text = "---";
                         btnAdvance.Enabled = false;
+                        btnMerge.Enabled = false;
                         break;
                 }
 
@@ -712,6 +720,9 @@ namespace SwordJet
         private void btnMerge_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Select the SJT file with results to merge";
+            dialog.DefaultExt = "sjt";
+            dialog.Filter = "SwordJet Tournament Files|*.sjt";
             DialogResult result = dialog.ShowDialog();
 
             if (result == DialogResult.OK)

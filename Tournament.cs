@@ -721,10 +721,10 @@ namespace SwordJet
             }
 
             //add the fights to the pool as once big round
-            //pool.rounds.Add(round);
+            pool.rounds.Add(round);
 
             //could use this to break it into rounds instead, probably not necessary
-            pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
+            //pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));
 
             return pool;
         }
@@ -898,25 +898,31 @@ namespace SwordJet
             //clone the list of fighters so we don't remove from the master list
             List<Fighter> fightersClone = new List<Fighter>();
             fightersClone.AddRange(fighters);
+            //order by seed to ensure seeded fighters are allocated first, then randomise
             fightersClone = fightersClone.OrderBy(f => f.seed).ThenBy(f=>Helpers.rng.Next(0,1000)).ToList();
 
             List<string> poolNames = new List<string>();
             List<List<int>> poolFighters = new List<List<int>>();
 
+            //copy the possible pool names from config - we will be removing them as they are taken 
+            List<string> poolNameValues = new List<string>();
+            poolNameValues.AddRange(ConfigValues.poolNames);
+
             for (int i = 0; i < numberOfPools; i++)
             {
-                List<string> poolNameValues = new List<string>();
-                poolNameValues.AddRange(ConfigValues.poolNames);
-
+                //pick random pool name from config
                 int nameIndex = Helpers.rng.Next(0, poolNameValues.Count);
                 poolNames.Add(poolNameValues[nameIndex]);
                 poolNameValues.RemoveAt(nameIndex);
 
+                //add an empty list to fill with fighter IDs
                 poolFighters.Add(new List<int>());
             }
 
+            //keep going until all fighters have a pool
             while (fightersClone.Count > 0)
             {
+                //assign the fighters to each pool, using the sort order already determined
                 for (int i = 0; i < numberOfPools; i++)
                 {
                     if (fightersClone.Count == 0) break;
@@ -926,50 +932,11 @@ namespace SwordJet
                 }
             }
 
+            //generate fights for each pool
             for (int i = 0; i < numberOfPools; i++)
             {
                 pools.Add(GenerateRoundRobinPool(poolNames[i], poolFighters[i]));
             }
-
-            //pre seeded pools logic
-            /*for (int i = 0; i < numberOfPools; i++)
-            {
-                List<string> poolNames = new List<string>();
-                poolNames.AddRange(ConfigValues.poolNames);
-
-                int nameIndex = Helpers.rng.Next(0, poolNames.Count);
-                string name = poolNames[nameIndex];
-                poolNames.RemoveAt(nameIndex);
-
-                List<int> poolFighters = new List<int>();
-
-                //add random fighters to the pool until we have the correct size
-                for (int j = 0; j < fightersPerPool; j++)
-                {
-                    int randIndex = Helpers.rng.Next(0, fightersClone.Count);
-                    poolFighters.Add(fightersClone[randIndex].id);
-                    fightersClone.RemoveAt(randIndex);
-                }
-
-                if(oddFighters > i)
-                {
-                    int randIndex = Helpers.rng.Next(0, fightersClone.Count);
-                    poolFighters.Add(fightersClone[randIndex].id);
-                    fightersClone.RemoveAt(randIndex);
-                }
-
-                //if there are any odd fighters, add them to the last pool
-                if (i == numberOfPools - 1 && fightersClone.Count > 0)
-                {
-                    while (fightersClone.Count > 0)
-                    {
-                        poolFighters.Add(fightersClone[0].id);
-                        fightersClone.RemoveAt(0);
-                    }
-                }
-
-                pools.Add(GenerateRoundRobinPool(name, poolFighters));
-            }*/
 
             return pools;
         }

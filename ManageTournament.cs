@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace SwordJet
@@ -33,10 +31,10 @@ namespace SwordJet
             bool done = false;
             foreach (TabPage pg in tbcFights.TabPages)
             {
-                if(pg.Controls[0].GetType() == typeof(TabControl))
+                if (pg.Controls[0].GetType() == typeof(TabControl))
                 {
                     TabControl subTabs = (TabControl)pg.Controls[0];
-                    foreach(TabPage child in subTabs.TabPages)
+                    foreach (TabPage child in subTabs.TabPages)
                     {
                         if (!IsPageComplete(child))
                         {
@@ -68,13 +66,13 @@ namespace SwordJet
         {
             TableLayoutPanel pnl = (TableLayoutPanel)page.Controls[0];
 
-            foreach(Control c in pnl.Controls)
+            foreach (Control c in pnl.Controls)
             {
-                if(c.GetType() == typeof(ComboBox))
+                if (c.GetType() == typeof(ComboBox))
                 {
                     if ((Fight.FightResult)(((ComboBox)c).SelectedItem) == Fight.FightResult.PENDING) return false;
                 }
-                else if(c.GetType() == typeof(CheckBox))
+                else if (c.GetType() == typeof(CheckBox))
                 {
                     string pairedCtrlName = "AResultRB";
                     if (c.Name.StartsWith("A")) pairedCtrlName = "BResultRB";
@@ -82,7 +80,7 @@ namespace SwordJet
                     Control[] ctrls = c.Parent.Controls.Find(pairedCtrlName, false);
                     CheckBox rbCtrl2 = (CheckBox)ctrls.Where(ct => ct.Tag.ToString() == c.Tag.ToString()).First();
 
-                    if(!((CheckBox)c).Checked && !rbCtrl2.Checked) return false;
+                    if (!((CheckBox)c).Checked && !rbCtrl2.Checked) return false;
                 }
             }
 
@@ -598,7 +596,7 @@ namespace SwordJet
 
             ManageFight dialog = new ManageFight(f, tournament, f.allowDraw, f.isFinal);
             dialog.FormClosed += Dialog_FormClosed;
-            if(!dialog.IsDisposed)dialog.ShowDialog();
+            if (!dialog.IsDisposed) dialog.ShowDialog();
         }
 
         private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
@@ -709,7 +707,7 @@ namespace SwordJet
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             DialogResult result = dialog.ShowDialog();
 
-            if(result == DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 FileAccessHelper.HEMARatingsExport(tournament, dialog.SelectedPath);
 

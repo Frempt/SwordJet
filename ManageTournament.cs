@@ -201,7 +201,7 @@ namespace SwordJet
 
                         TabPage childPage = new TabPage("Round " + (i + 1));
                         childPage.Width = childTabs.Width;
-                        childPage.Height = childTabs.Height;
+                        childPage.Height = (int)(childTabs.Height * 0.8f);
                         childPage.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
                         TableLayoutPanel panel = new TableLayoutPanel();
@@ -302,6 +302,31 @@ namespace SwordJet
 
                             panel.Controls.Add(manageButton, 6, rowIndex);
                         }
+
+                        Label l = new Label();
+                        l.Text = " ";
+
+                        panel.Controls.Add(l, 0, round.Count + 1);
+
+                        l = new Label();
+                        l.Text = " ";
+
+                        panel.Controls.Add(l, 0, round.Count + 2);
+
+                        l = new Label();
+                        l.Text = " ";
+
+                        panel.Controls.Add(l, 0, round.Count + 3);
+
+                        l = new Label();
+                        l.Text = " ";
+
+                        panel.Controls.Add(l, 0, round.Count + 4);
+
+                        l = new Label();
+                        l.Text = " ";
+
+                        panel.Controls.Add(l, 0, round.Count + 5);
 
                         childPage.Controls.Add(panel);
                         childTabs.TabPages.Add(childPage);

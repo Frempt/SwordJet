@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentSetupForm));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lstFighters = new System.Windows.Forms.CheckedListBox();
             this.btnClubEdit = new System.Windows.Forms.Button();
             this.ddlNationality = new System.Windows.Forms.ComboBox();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -81,7 +82,7 @@
             this.txtScoreCap = new System.Windows.Forms.NumericUpDown();
             this.ddlPoolType = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.lstFighters = new System.Windows.Forms.CheckedListBox();
+            this.btnEditFighter = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtPools)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRounds)).BeginInit();
@@ -111,9 +112,10 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.btnEditFighter);
             this.panel1.Controls.Add(this.lstFighters);
             this.panel1.Controls.Add(this.btnClubEdit);
             this.panel1.Controls.Add(this.ddlNationality);
@@ -131,6 +133,18 @@
             this.panel1.Size = new System.Drawing.Size(413, 662);
             this.panel1.TabIndex = 2;
             // 
+            // lstFighters
+            // 
+            this.lstFighters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstFighters.FormattingEnabled = true;
+            this.lstFighters.Location = new System.Drawing.Point(7, 151);
+            this.lstFighters.Name = "lstFighters";
+            this.lstFighters.Size = new System.Drawing.Size(402, 463);
+            this.lstFighters.TabIndex = 8;
+            this.lstFighters.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lstFighters_onCheck);
+            // 
             // btnClubEdit
             // 
             this.btnClubEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -145,7 +159,7 @@
             // 
             // ddlNationality
             // 
-            this.ddlNationality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlNationality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlNationality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlNationality.FormattingEnabled = true;
@@ -158,12 +172,12 @@
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(219, 630);
+            this.btnDelete.Location = new System.Drawing.Point(287, 630);
             this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(188, 28);
+            this.btnDelete.Size = new System.Drawing.Size(120, 28);
             this.btnDelete.TabIndex = 10;
-            this.btnDelete.Text = "Delete Selected Fighter";
+            this.btnDelete.Text = "Delete Selected";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
@@ -174,7 +188,7 @@
             this.lblFighterCount.Location = new System.Drawing.Point(4, 636);
             this.lblFighterCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFighterCount.Name = "lblFighterCount";
-            this.lblFighterCount.Size = new System.Drawing.Size(133, 16);
+            this.lblFighterCount.Size = new System.Drawing.Size(145, 17);
             this.lblFighterCount.TabIndex = 14;
             this.lblFighterCount.Text = "Number of Fighters: 0";
             // 
@@ -183,13 +197,13 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(1, 75);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(70, 16);
+            this.label14.Size = new System.Drawing.Size(74, 17);
             this.label14.TabIndex = 6;
             this.label14.Text = "Nationality";
             // 
             // ddlClub
             // 
-            this.ddlClub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlClub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlClub.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlClub.FormattingEnabled = true;
@@ -204,7 +218,7 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(4, 42);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(34, 16);
+            this.label13.Size = new System.Drawing.Size(36, 17);
             this.label13.TabIndex = 4;
             this.label13.Text = "Club";
             // 
@@ -214,13 +228,13 @@
             this.label1.Location = new System.Drawing.Point(4, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 16);
+            this.label1.Size = new System.Drawing.Size(50, 17);
             this.label1.TabIndex = 3;
             this.label1.Text = "Name*";
             // 
             // txtName
             // 
-            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(81, 6);
             this.txtName.Margin = new System.Windows.Forms.Padding(4);
@@ -235,7 +249,7 @@
             this.label2.Location = new System.Drawing.Point(9, 75);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 16);
+            this.label2.Size = new System.Drawing.Size(113, 17);
             this.label2.TabIndex = 3;
             this.label2.Text = "Number of Pools";
             // 
@@ -245,13 +259,13 @@
             this.label3.Location = new System.Drawing.Point(9, 105);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(108, 16);
+            this.label3.Size = new System.Drawing.Size(114, 17);
             this.label3.TabIndex = 4;
             this.label3.Text = "Rounds per Pool";
             // 
             // txtPools
             // 
-            this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtPools.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPools.Location = new System.Drawing.Point(153, 73);
             this.txtPools.Margin = new System.Windows.Forms.Padding(4);
@@ -272,7 +286,7 @@
             // 
             // txtRounds
             // 
-            this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtRounds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRounds.Location = new System.Drawing.Point(153, 103);
             this.txtRounds.Margin = new System.Windows.Forms.Padding(4);
@@ -298,7 +312,7 @@
             this.label4.Location = new System.Drawing.Point(8, 350);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(121, 16);
+            this.label4.Size = new System.Drawing.Size(132, 17);
             this.label4.TabIndex = 12;
             this.label4.Text = "Fight time (minutes)";
             // 
@@ -332,13 +346,13 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(9, 14);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(119, 16);
+            this.label5.Size = new System.Drawing.Size(126, 17);
             this.label5.TabIndex = 15;
             this.label5.Text = "Tournament Name";
             // 
             // txtTournamentName
             // 
-            this.txtTournamentName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtTournamentName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTournamentName.Location = new System.Drawing.Point(153, 11);
             this.txtTournamentName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -352,7 +366,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(9, 198);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 16);
+            this.label6.Size = new System.Drawing.Size(75, 17);
             this.label6.TabIndex = 17;
             this.label6.Text = "Win Points";
             // 
@@ -361,7 +375,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(9, 228);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(78, 16);
+            this.label7.Size = new System.Drawing.Size(83, 17);
             this.label7.TabIndex = 19;
             this.label7.Text = "Draw Points";
             // 
@@ -370,13 +384,13 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(8, 257);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(76, 16);
+            this.label8.Size = new System.Drawing.Size(81, 17);
             this.label8.TabIndex = 21;
             this.label8.Text = "Loss Points";
             // 
             // txtLossPoints
             // 
-            this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtLossPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLossPoints.Location = new System.Drawing.Point(153, 256);
             this.txtLossPoints.Margin = new System.Windows.Forms.Padding(4);
@@ -397,7 +411,7 @@
             // 
             // txtDrawPoints
             // 
-            this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtDrawPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDrawPoints.Location = new System.Drawing.Point(153, 225);
             this.txtDrawPoints.Margin = new System.Windows.Forms.Padding(4);
@@ -418,7 +432,7 @@
             // 
             // txtWinPoints
             // 
-            this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtWinPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWinPoints.Location = new System.Drawing.Point(153, 196);
             this.txtWinPoints.Margin = new System.Windows.Forms.Padding(4);
@@ -463,7 +477,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(11, 436);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(138, 16);
+            this.label9.Size = new System.Drawing.Size(146, 17);
             this.label9.TabIndex = 25;
             this.label9.Text = "Double DQ Threshold";
             // 
@@ -471,10 +485,10 @@
             // 
             this.chkDoubleOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkDoubleOut.AutoSize = true;
-            this.chkDoubleOut.Location = new System.Drawing.Point(12, 406);
+            this.chkDoubleOut.Location = new System.Drawing.Point(12, 405);
             this.chkDoubleOut.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkDoubleOut.Name = "chkDoubleOut";
-            this.chkDoubleOut.Size = new System.Drawing.Size(293, 20);
+            this.chkDoubleOut.Size = new System.Drawing.Size(313, 21);
             this.chkDoubleOut.TabIndex = 27;
             this.chkDoubleOut.Text = "DQ On Doubles? (only applies to Pool fights)";
             this.chkDoubleOut.UseVisualStyleBackColor = true;
@@ -482,7 +496,7 @@
             // 
             // btnManage
             // 
-            this.btnManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnManage.Location = new System.Drawing.Point(11, 580);
             this.btnManage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -498,13 +512,13 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(9, 168);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(114, 16);
+            this.label10.Size = new System.Drawing.Size(119, 17);
             this.label10.TabIndex = 29;
             this.label10.Text = "Eliminations Type";
             // 
             // ddlElimType
             // 
-            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlElimType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimType.FormattingEnabled = true;
@@ -517,7 +531,7 @@
             // 
             // ddlElimSize
             // 
-            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlElimSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlElimSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlElimSize.FormattingEnabled = true;
@@ -533,13 +547,13 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(8, 134);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(108, 16);
+            this.label11.Size = new System.Drawing.Size(114, 17);
             this.label11.TabIndex = 31;
             this.label11.Text = "Eliminations Size";
             // 
             // panel2
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panel2.Controls.Add(this.ddlAfterblowBehaviour);
             this.panel2.Controls.Add(this.label20);
@@ -589,7 +603,7 @@
             // 
             // ddlAfterblowBehaviour
             // 
-            this.ddlAfterblowBehaviour.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlAfterblowBehaviour.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlAfterblowBehaviour.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlAfterblowBehaviour.FormattingEnabled = true;
@@ -606,13 +620,13 @@
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(6, 490);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(126, 16);
+            this.label20.Size = new System.Drawing.Size(134, 17);
             this.label20.TabIndex = 54;
             this.label20.Text = "Afterblow Behaviour";
             // 
             // ddlPenaltyBehaviour
             // 
-            this.ddlPenaltyBehaviour.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlPenaltyBehaviour.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlPenaltyBehaviour.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlPenaltyBehaviour.FormattingEnabled = true;
@@ -629,7 +643,7 @@
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(6, 549);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(116, 16);
+            this.label18.Size = new System.Drawing.Size(123, 17);
             this.label18.TabIndex = 52;
             this.label18.Text = "Penalty Behaviour";
             // 
@@ -639,7 +653,7 @@
             this.label22.AutoSize = true;
             this.label22.Location = new System.Drawing.Point(254, 292);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(109, 16);
+            this.label22.Size = new System.Drawing.Size(117, 17);
             this.label22.TabIndex = 51;
             this.label22.Text = "Final Fight Config";
             // 
@@ -647,10 +661,10 @@
             // 
             this.chkFinalScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkFinalScoreCap.AutoSize = true;
-            this.chkFinalScoreCap.Location = new System.Drawing.Point(228, 324);
+            this.chkFinalScoreCap.Location = new System.Drawing.Point(223, 323);
             this.chkFinalScoreCap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkFinalScoreCap.Name = "chkFinalScoreCap";
-            this.chkFinalScoreCap.Size = new System.Drawing.Size(138, 20);
+            this.chkFinalScoreCap.Size = new System.Drawing.Size(143, 21);
             this.chkFinalScoreCap.TabIndex = 48;
             this.chkFinalScoreCap.Text = "Apply Score Cap?";
             this.chkFinalScoreCap.UseVisualStyleBackColor = true;
@@ -661,7 +675,7 @@
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(220, 377);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(107, 16);
+            this.label19.Size = new System.Drawing.Size(113, 17);
             this.label19.TabIndex = 46;
             this.label19.Text = "Score Threshold";
             // 
@@ -692,7 +706,7 @@
             this.label21.Location = new System.Drawing.Point(220, 350);
             this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(121, 16);
+            this.label21.Size = new System.Drawing.Size(132, 17);
             this.label21.TabIndex = 41;
             this.label21.Text = "Fight time (minutes)";
             // 
@@ -727,7 +741,7 @@
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(47, 292);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(128, 16);
+            this.label17.Size = new System.Drawing.Size(138, 17);
             this.label17.TabIndex = 40;
             this.label17.Text = "General Fight Config";
             // 
@@ -737,13 +751,13 @@
             this.label16.AutoSize = true;
             this.label16.Location = new System.Drawing.Point(6, 519);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(116, 16);
+            this.label16.Size = new System.Drawing.Size(123, 17);
             this.label16.TabIndex = 38;
             this.label16.Text = "Penalty Threshold";
             // 
             // txtPenaltyThreshold
             // 
-            this.txtPenaltyThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtPenaltyThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPenaltyThreshold.Location = new System.Drawing.Point(153, 517);
             this.txtPenaltyThreshold.Margin = new System.Windows.Forms.Padding(4);
@@ -756,10 +770,10 @@
             // 
             this.chkScoreCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkScoreCap.AutoSize = true;
-            this.chkScoreCap.Location = new System.Drawing.Point(14, 325);
+            this.chkScoreCap.Location = new System.Drawing.Point(14, 324);
             this.chkScoreCap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkScoreCap.Name = "chkScoreCap";
-            this.chkScoreCap.Size = new System.Drawing.Size(138, 20);
+            this.chkScoreCap.Size = new System.Drawing.Size(143, 21);
             this.chkScoreCap.TabIndex = 37;
             this.chkScoreCap.Text = "Apply Score Cap?";
             this.chkScoreCap.UseVisualStyleBackColor = true;
@@ -771,7 +785,7 @@
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(8, 377);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(107, 16);
+            this.label15.Size = new System.Drawing.Size(113, 17);
             this.label15.TabIndex = 35;
             this.label15.Text = "Score Threshold";
             // 
@@ -797,7 +811,7 @@
             // 
             // ddlPoolType
             // 
-            this.ddlPoolType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ddlPoolType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ddlPoolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlPoolType.FormattingEnabled = true;
@@ -814,21 +828,21 @@
             this.label12.Location = new System.Drawing.Point(9, 46);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(70, 16);
+            this.label12.Size = new System.Drawing.Size(72, 17);
             this.label12.TabIndex = 33;
             this.label12.Text = "Pool Type";
             // 
-            // lstFighters
+            // btnEditFighter
             // 
-            this.lstFighters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstFighters.FormattingEnabled = true;
-            this.lstFighters.Location = new System.Drawing.Point(7, 151);
-            this.lstFighters.Name = "lstFighters";
-            this.lstFighters.Size = new System.Drawing.Size(402, 463);
-            this.lstFighters.TabIndex = 8;
-            this.lstFighters.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lstFighters_onCheck);
+            this.btnEditFighter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEditFighter.Location = new System.Drawing.Point(159, 630);
+            this.btnEditFighter.Margin = new System.Windows.Forms.Padding(4);
+            this.btnEditFighter.Name = "btnEditFighter";
+            this.btnEditFighter.Size = new System.Drawing.Size(120, 28);
+            this.btnEditFighter.TabIndex = 16;
+            this.btnEditFighter.Text = "Edit Selected";
+            this.btnEditFighter.UseVisualStyleBackColor = true;
+            this.btnEditFighter.Click += new System.EventHandler(this.btnEditFighter_Click);
             // 
             // TournamentSetupForm
             // 
@@ -915,6 +929,8 @@
         private System.Windows.Forms.ComboBox ddlAfterblowBehaviour;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.CheckedListBox lstFighters;
+        private System.Windows.Forms.Button btnEditFighter;
     }
 }
+
 

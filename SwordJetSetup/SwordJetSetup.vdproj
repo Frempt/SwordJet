@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_2956E43D7219444B87AB515E52DD1F95"
+        "MsmKey" = "8:_04A11E205DBF49329BEFD1B8563C4A9F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,14 +27,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5A655FA23B1240878C739C2800CAAFC5"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_5AC9F9C11F2D6FCCA6F38B13E2D300D1"
+        "OwnerKey" = "8:_3160A4F89F8E4812A4A17B132ABE4098"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5AC9F9C11F2D6FCCA6F38B13E2D300D1"
-        "OwnerKey" = "8:_3160A4F89F8E4812A4A17B132ABE4098"
+        "MsmKey" = "8:_E4DB1D90026D453CBEE1EA4FDB7B12A8"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -144,29 +144,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2956E43D7219444B87AB515E52DD1F95"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04A11E205DBF49329BEFD1B8563C4A9F"
             {
-            "SourcePath" = "8:..\\SwordJet\\countries.csv"
-            "TargetName" = "8:countries.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_CD3D3A66B1D844E3807E4D8D4696765B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A655FA23B1240878C739C2800CAAFC5"
-            {
-            "SourcePath" = "8:..\\SwordJet\\sj_logo_FGZ_icon.ico"
+            "SourcePath" = "8:..\\sj_logo_FGZ_icon.ico"
             "TargetName" = "8:sj_logo_FGZ_icon.ico"
             "Tag" = "8:"
             "Folder" = "8:_CD3D3A66B1D844E3807E4D8D4696765B"
@@ -213,6 +193,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4DB1D90026D453CBEE1EA4FDB7B12A8"
+            {
+            "SourcePath" = "8:..\\countries.csv"
+            "TargetName" = "8:countries.csv"
+            "Tag" = "8:"
+            "Folder" = "8:_CD3D3A66B1D844E3807E4D8D4696765B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -271,15 +271,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SwordJet - Tournament Manager"
-        "ProductCode" = "8:{9DF9F118-064C-4EAB-9F33-C7A72D59EF76}"
-        "PackageCode" = "8:{493A8555-FBDB-4B1B-A4C4-809557585022}"
+        "ProductCode" = "8:{585B100B-2A32-4D0F-B35F-08518C7F22BD}"
+        "PackageCode" = "8:{6F48594C-C7C1-474F-8C94-DD56F3191152}"
         "UpgradeCode" = "8:{ACCC7B04-9A66-4FED-B3AF-A7DD2CB8EB1C}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.8.16"
+        "ProductVersion" = "8:0.8.18"
         "Manufacturer" = "8:SwordJet"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -807,7 +807,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3160A4F89F8E4812A4A17B132ABE4098"
             {
-            "SourcePath" = "8:..\\SwordJet\\obj\\Debug\\SwordJet.exe"
+            "SourcePath" = "8:..\\obj\\Debug\\SwordJet.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CD3D3A66B1D844E3807E4D8D4696765B"

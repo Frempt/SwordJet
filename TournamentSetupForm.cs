@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Configuration;
 
 namespace SwordJet
 {
@@ -97,7 +95,7 @@ namespace SwordJet
                 message.Append(" minutes maximum time means a total of ");
 
                 //calculate total maximum length of fighting time
-                double totalTime = (fightLength * numFights)/numPools;
+                double totalTime = (fightLength * numFights) / numPools;
 
                 if (totalTime > 60)
                 {
@@ -109,7 +107,7 @@ namespace SwordJet
                     totalTime -= totalHours * 60;
                 }
 
-                if(totalTime > 0)
+                if (totalTime > 0)
                 {
                     message.Append(totalTime);
                     message.Append(" ");
@@ -129,7 +127,7 @@ namespace SwordJet
         private void btnDelete_Click(object sender, EventArgs e)
         {
             //remove selected fighter
-            if(lstFighters.SelectedItem != null)
+            if (lstFighters.SelectedItem != null)
             {
                 tournament.fighters.RemoveAt(lstFighters.SelectedIndex);
                 lstFighters.DataSource = null;
@@ -227,6 +225,7 @@ namespace SwordJet
                 {
                     button1.Enabled = false;
                     btnDelete.Enabled = false;
+                    btnEditFighter.Enabled = false;
                     txtScoreCap.Enabled = false;
                     txtFinalScoreCap.Enabled = false;
                     txtDoubleLimit.Enabled = false;
@@ -277,7 +276,7 @@ namespace SwordJet
         {
             Tournament.PoolType poolType = (Tournament.PoolType)ddlPoolType.SelectedItem;
 
-            switch(poolType) 
+            switch (poolType)
             {
                 case Tournament.PoolType.FIXEDROUNDS:
                     txtPools.Enabled = true;
@@ -333,9 +332,42 @@ namespace SwordJet
         }
 
         private void lstFighters_onCheck(object sender, ItemCheckEventArgs e)
-        {            
+        {
             tournament.fighters[e.Index].seed = e.NewValue == CheckState.Checked ? 1 : 0;
             SaveTournament();
+        }
+
+        private void btnEditFighter_Click(object sender, EventArgs e)
+        {
+            if (lstFighters.SelectedItem != null)
+            {
+                Fighter f = (Fighter)lstFighters.SelectedItem;
+
+                tournament.fighters.Remove(f);
+
+                txtName.Text = f.name;
+
+                for (int i = 0; i < ddlClub.Items.Count; i++)
+                {
+                    if (((Club)ddlClub.Items[i]).name == f.club)
+                    {
+                        ddlClub.SelectedIndex = i;
+                        break;
+                    }
+                }
+
+                for (int i = 0; i < ddlNationality.Items.Count; i++)
+                {
+                    if (((Country)ddlNationality.Items[i]).code == f.country)
+                    {
+                        ddlNationality.SelectedIndex = i;
+                        break;
+                    }
+                }
+
+                lstFighters.DataSource = null;
+                lstFighters.DataSource = tournament.fighters;
+            }
         }
     }
 }

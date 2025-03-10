@@ -667,61 +667,146 @@ namespace SwordJet
         {
             Pool pool = new Pool();
             pool.name = name;
+            fighters.Shuffle();
             pool.fighters = fighters;
 
             //get every possible distinct fight in the pool
             List<int[]> distinctPairs = pool.fighters.GetDistinctPairs();
-            List<Fight> fightsFull = new List<Fight>();
-            foreach(int[] pair in distinctPairs)
+
+            if (fighters.Count == 5)
             {
-                fightsFull.Add(new Fight(pair[0], pair[1]));
-            }
+                List<Fight> round = new List<Fight>();
 
-            //randomise fight order
-            fightsFull.Shuffle();
+                round.Add(new Fight(fighters[0], fighters[1]));
+                round.Add(new Fight(fighters[2], fighters[3]));
+                round.Add(new Fight(fighters[0], fighters[4]));
+                round.Add(new Fight(fighters[1], fighters[2]));
+                round.Add(new Fight(fighters[3], fighters[4]));
+                round.Add(new Fight(fighters[0], fighters[2]));
+                round.Add(new Fight(fighters[1], fighters[4]));
+                round.Add(new Fight(fighters[3], fighters[0]));
+                round.Add(new Fight(fighters[2], fighters[4]));
+                round.Add(new Fight(fighters[1], fighters[3]));
 
-            List<Fight> round = new List<Fight>();
-
-            bool allowDouble = false;
-
-            //try to logically order all of the fights
-            //avoid the same fighter fighting twice in a row if possible
-            while (fightsFull.Count > 0)
-            {
-                for (int i = 0; i < fightsFull.Count;)
+                if(round.Count != distinctPairs.Count)
                 {
-                    //if this is the first fight, just add it without checking
-                    if (round.Count == 0)
+                    //debugging check
+                }
+
+                pool.rounds.Add(round);
+            }
+            else if (fighters.Count == 6)
+            {
+                List<Fight> round = new List<Fight>();
+
+                round.Add(new Fight(fighters[0], fighters[1]));
+                round.Add(new Fight(fighters[2], fighters[3]));
+                round.Add(new Fight(fighters[4], fighters[5]));
+
+                round.Add(new Fight(fighters[0], fighters[2]));
+                round.Add(new Fight(fighters[1], fighters[5]));
+                round.Add(new Fight(fighters[4], fighters[3]));
+
+                round.Add(new Fight(fighters[2], fighters[1]));
+                round.Add(new Fight(fighters[4], fighters[0]));
+                round.Add(new Fight(fighters[3], fighters[5]));
+
+                round.Add(new Fight(fighters[1], fighters[4]));
+                round.Add(new Fight(fighters[3], fighters[0]));
+                round.Add(new Fight(fighters[2], fighters[5]));
+
+                round.Add(new Fight(fighters[1], fighters[3]));
+                round.Add(new Fight(fighters[2], fighters[4]));
+                round.Add(new Fight(fighters[0], fighters[5]));
+
+                if (round.Count != distinctPairs.Count)
+                {
+                    //debugging check
+                }
+
+                pool.rounds.Add(round);
+            }
+            //todo 7man pool hamiltonian path
+            /*else if (fighters.Count == 7)
+            {
+                List<Fight> round = new List<Fight>();
+
+                round.Add(new Fight(fighters[0], fighters[1]));
+                round.Add(new Fight(fighters[2], fighters[3]));
+                round.Add(new Fight(fighters[4], fighters[5]));
+
+                round.Add(new Fight(fighters[0], fighters[2]));
+                round.Add(new Fight(fighters[1], fighters[5]));
+                round.Add(new Fight(fighters[4], fighters[3]));
+
+                round.Add(new Fight(fighters[2], fighters[1]));
+                round.Add(new Fight(fighters[4], fighters[0]));
+                round.Add(new Fight(fighters[3], fighters[5]));
+
+                round.Add(new Fight(fighters[1], fighters[4]));
+                round.Add(new Fight(fighters[3], fighters[0]));
+                round.Add(new Fight(fighters[2], fighters[5]));
+
+                round.Add(new Fight(fighters[1], fighters[3]));
+                round.Add(new Fight(fighters[2], fighters[4]));
+                round.Add(new Fight(fighters[0], fighters[5]));
+
+                pool.rounds.Add(round);
+            }*/
+            else
+            {
+                List<Fight> fightsFull = new List<Fight>();
+                foreach (int[] pair in distinctPairs)
+                {
+                    fightsFull.Add(new Fight(pair[0], pair[1]));
+                }
+
+                //randomise fight order
+                fightsFull.Shuffle();
+
+                List<Fight> round = new List<Fight>();
+
+                bool allowDouble = false;
+
+                //try to logically order all of the fights
+                //avoid the same fighter fighting twice in a row if possible
+                while (fightsFull.Count > 0)
+                {
+                    for (int i = 0; i < fightsFull.Count;)
                     {
-                        round.Add(fightsFull[i]);
-                        fightsFull.RemoveAt(i);
-                    }
-                    else
-                    {
-                        //if neither of the fighters in this fight were fighting last, OR we are allowing fighters to fight twice in a row, add the fight
-                        if ((fightsFull[i].fighterA != round.Last().fighterA
-                           && fightsFull[i].fighterA != round.Last().fighterB
-                           && fightsFull[i].fighterB != round.Last().fighterA
-                           && fightsFull[i].fighterB != round.Last().fighterB)
-                           || allowDouble)
+                        //if this is the first fight, just add it without checking
+                        if (round.Count == 0)
                         {
                             round.Add(fightsFull[i]);
                             fightsFull.RemoveAt(i);
-
-                            //reset the flag for allowing two fights in a row, and go back to the start of the list
-                            allowDouble = false;
-                            break;
                         }
-                        else { i++; }
+                        else
+                        {
+                            //if neither of the fighters in this fight were fighting last, OR we are allowing fighters to fight twice in a row, add the fight
+                            if ((fightsFull[i].fighterA != round.Last().fighterA
+                               && fightsFull[i].fighterA != round.Last().fighterB
+                               && fightsFull[i].fighterB != round.Last().fighterA
+                               && fightsFull[i].fighterB != round.Last().fighterB)
+                               || allowDouble)
+                            {
+                                round.Add(fightsFull[i]);
+                                fightsFull.RemoveAt(i);
+
+                                //reset the flag for allowing two fights in a row, and go back to the start of the list
+                                allowDouble = false;
+                                break;
+                            }
+                            else { i++; }
+                        }
+
+                        //if we haven't found a unique fight, allow the same fighter to fight twice in a row
+                        if (i >= fightsFull.Count) allowDouble = true;
                     }
-
-                    //if we haven't found a unique fight, allow the same fighter to fight twice in a row
-                    if (i >= fightsFull.Count) allowDouble = true;
                 }
-            }
 
-            //add the fights to the pool as once big round
-            pool.rounds.Add(round);
+                //add the fights to the pool as once big round
+                pool.rounds.Add(round);
+            }
 
             //could use this to break it into rounds instead, probably not necessary
             //pool.rounds.AddRange(round.Split(pool.fighters.Count / 2));

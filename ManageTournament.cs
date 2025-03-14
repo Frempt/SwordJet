@@ -298,7 +298,7 @@ namespace SwordJet
                             manageButton.Text = "Manage Fight";
                             manageButton.Tag = fight.fightID;
                             manageButton.Click += btnManageFight_Click;
-                            if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+                            //if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
 
                             panel.Controls.Add(manageButton, 6, rowIndex);
                         }
@@ -411,7 +411,7 @@ namespace SwordJet
                         manageButton.Text = "Manage Fight";
                         manageButton.Tag = fight.fightID;
                         manageButton.Click += btnManageFight_Click;
-                        if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+                        //if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
 
                         panel.Controls.Add(manageButton, 6, rowIndex);
                     }
@@ -488,7 +488,7 @@ namespace SwordJet
                     manageButton.Text = "Manage Fight";
                     manageButton.Tag = fight.fightID;
                     manageButton.Click += btnManageFight_Click;
-                    if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
+                    //if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
 
                     panel.Controls.Add(manageButton, 5, rowIndex);
                 }

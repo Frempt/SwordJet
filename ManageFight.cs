@@ -37,18 +37,18 @@ namespace SwordJet
             lblFighterBName.Text = tournament.GetFighterByID(fight.fighterB).name;
 
             //ensure the fight isn't already complete
-            if (fight.fighterAResult == Fight.FightResult.PENDING || fight.fighterBResult == Fight.FightResult.PENDING)
-            {
+            //if (fight.fighterAResult == Fight.FightResult.PENDING || fight.fighterBResult == Fight.FightResult.PENDING)
+           // {
                 timeRemainingSeconds = (isFinal ? tournament.fightTimeMinutesFinal : tournament.fightTimeMinutes) * 60;
 
                 UpdateTimeDisplay();
 
                 LoadExchanges();
-            }
-            else
-            {
-                Close();
-            }
+            //}
+            //else
+            //{
+            //    Close();
+            //}
         }
 
         private void UpdateTimeDisplay()
@@ -132,12 +132,7 @@ namespace SwordJet
                 ShowConclusionMessage();
             }
 
-            if(aScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold) 
-                || bScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold)
-                || (suddenDeath && aScore != bScore))
-            {
-                ShowConclusionMessage();
-            }
+            
         }
 
         private void btnStopStart_Click(object sender, EventArgs e)
@@ -183,6 +178,13 @@ namespace SwordJet
             chkPenaltyB.Checked = false;
 
             LoadExchanges();
+
+            if (aScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold)
+                || bScore >= (isFinal ? tournament.scoreThresholdFinal : tournament.scoreThreshold)
+                || (suddenDeath && aScore != bScore))
+            {
+                ShowConclusionMessage();
+            }
         }
 
         private void btnDeleteExchange_Click(object sender, EventArgs e)

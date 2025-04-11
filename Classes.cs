@@ -602,6 +602,7 @@ namespace SwordJet
             fighterAResult = merge.fighterAResult;
             fighterBResult = merge.fighterBResult;
             exchanges = merge.exchanges;
+            isDisabled = merge.isDisabled;
         }
     }
 

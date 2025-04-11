@@ -179,11 +179,14 @@ namespace SwordJet
             {
                 foreach(List<Fight> r in p.rounds)
                 {
-                    foreach(Fight f in r)
+                    foreach (Fight f in r)
                     {
-                        Fighter fighterA = tournament.GetFighterByID(f.fighterA);
-                        Fighter fighterB = tournament.GetFighterByID(f.fighterB);
-                        if(fighterB != null) fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", (f.fighterAResult == Fight.FightResult.DQ ? "LOSS" : f.fighterAResult.ToString()), (f.fighterBResult == Fight.FightResult.DQ ? "LOSS" : f.fighterBResult.ToString()), "\"POOL - " + p.name + "\"" }));
+                        if (!f.isDisabled)
+                        {
+                            Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                            Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                            if (fighterB != null) fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", (f.fighterAResult == Fight.FightResult.DQ ? "LOSS" : f.fighterAResult.ToString()), (f.fighterBResult == Fight.FightResult.DQ ? "LOSS" : f.fighterBResult.ToString()), "\"POOL - " + p.name + "\"" }));
+                        }
                     }
                 }
             }
@@ -192,9 +195,12 @@ namespace SwordJet
             {
                 foreach (Fight f in tournament.tieBreakers.rounds[0])
                 {
-                    Fighter fighterA = tournament.GetFighterByID(f.fighterA);
-                    Fighter fighterB = tournament.GetFighterByID(f.fighterB);
-                    fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "Tie Breaker" }));
+                    if (!f.isDisabled)
+                    {
+                        Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                        Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                        fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "Tie Breaker" }));
+                    }
                 }
             }
 
@@ -204,9 +210,12 @@ namespace SwordJet
                 {
                     foreach (Fight f in r)
                     {
-                        Fighter fighterA = tournament.GetFighterByID(f.fighterA);
-                        Fighter fighterB = tournament.GetFighterByID(f.fighterB);
-                        fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "ELIM - " + p.name }));
+                        if (!f.isDisabled)
+                        {
+                            Fighter fighterA = tournament.GetFighterByID(f.fighterA);
+                            Fighter fighterB = tournament.GetFighterByID(f.fighterB);
+                            fightCsv.AppendLine(string.Join(",", new string[] { "\"" + fighterA.name + "\"", "\"" + fighterB.name + "\"", f.fighterAResult.ToString(), f.fighterBResult.ToString(), "ELIM - " + p.name }));
+                        }
                     }
                 }
             }
@@ -502,6 +511,8 @@ namespace SwordJet
         public bool oddFight = false;
         public bool allowDraw = true;
         public bool isFinal = false;
+
+        public bool isDisabled = false;
 
         public List<Exchange> exchanges = new List<Exchange>();
 

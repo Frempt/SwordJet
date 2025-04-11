@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="SwordJet.exe.manifest" size="4617">
+    <dependentAssembly dependencyType="install" codebase="SwordJet.exe.manifest" size="4619">
       <assemblyIdentity name="SwordJet.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>KqiaLLxNpRhQs5tNJhMwV4+54g3Zz4wPCnPOMEs8CWI=</dsig:DigestValue>
+        <dsig:DigestValue>5LHjH59qBxw9UvXHGSa2cnGamgiv5xdL+a/obV5OUHw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

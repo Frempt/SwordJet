@@ -72,7 +72,7 @@ namespace SwordJet
                 {
                     if ((Fight.FightResult)(((ComboBox)c).SelectedItem) == Fight.FightResult.PENDING) return false;
                 }
-                else if (c.GetType() == typeof(CheckBox))
+                else if (c.GetType() == typeof(CheckBox) && c.Name.Contains("Result"))
                 {
                     string pairedCtrlName = "AResultRB";
                     if (c.Name.StartsWith("A")) pairedCtrlName = "BResultRB";
@@ -222,7 +222,7 @@ namespace SwordJet
 
                         panel.Controls.Add(new Label() { Text = "Doubles", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter }, 5, 0);
 
-                        panel.Controls.Add(new Label(), 6, 0);
+                        panel.Controls.Add(new Label() { Text = "Disable Fight?", Font = boldFont, TextAlign = ContentAlignment.MiddleCenter }, 6, 0);
                         panel.Controls.Add(new Label(), 7, 0);
 
                         for (int j = 0; j < round.Count; j++)
@@ -280,6 +280,13 @@ namespace SwordJet
                             if (tournament.stage != Tournament.TournamentStage.POOLFIGHTS) txtDoubles.Enabled = false;
                             panel.Controls.Add(txtDoubles, 5, rowIndex);
 
+                            CheckBox chkDisabled = new CheckBox();
+                            chkDisabled.Tag = fight.fightID;
+                            chkDisabled.Name = "isDisabled";
+                            chkDisabled.Checked = fight.isDisabled;
+                            chkDisabled.CheckedChanged += control_ValueChanged;
+                            panel.Controls.Add(chkDisabled, 7, rowIndex);
+
                             if (fight.oddFight)
                             {
                                 panel.Controls.Add(new Label() { Text = "Odd fight", TextAlign = ContentAlignment.MiddleCenter }, 7, rowIndex);
@@ -293,14 +300,14 @@ namespace SwordJet
                                     txtDoubles.Enabled = false;
                                 }
                             }
-
+                            
                             Button manageButton = new Button();
                             manageButton.Text = "Manage Fight";
                             manageButton.Tag = fight.fightID;
                             manageButton.Click += btnManageFight_Click;
                             //if (fight.fighterAResult != Fight.FightResult.PENDING && fight.fighterBResult != Fight.FightResult.PENDING) manageButton.Enabled = false;
 
-                            panel.Controls.Add(manageButton, 6, rowIndex);
+                            panel.Controls.Add(manageButton, 8, rowIndex);
                         }
 
                         Label l = new Label();

@@ -314,34 +314,37 @@ namespace SwordJet
                     {
                         foreach (Fight fight in round)
                         {
-                            Fight.FightResult result = Fight.FightResult.PENDING;
-
-                            if (fight.fighterA == fighter.id)
+                            if (!fight.isDisabled)
                             {
-                                result = fight.fighterAResult;
-                            }
-                            else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
-                            {
-                                result = fight.fighterBResult;
-                            }
+                                Fight.FightResult result = Fight.FightResult.PENDING;
 
-                            //only include fights where the fight complete
-                            if (result != Fight.FightResult.PENDING)
-                            {
-                                int gainedScore = 0;
-
-                                //select the approriate score based on the fighter's result
-                                switch (result)
+                                if (fight.fighterA == fighter.id)
                                 {
-                                    case Fight.FightResult.WIN: gainedScore = winPoints; break;
-                                    case Fight.FightResult.LOSS: gainedScore = lossPoints; break;
-                                    case Fight.FightResult.DRAW: gainedScore = drawPoints; break;
-                                    case Fight.FightResult.DQ: gainedScore = 0; break;
+                                    result = fight.fighterAResult;
+                                }
+                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
+                                {
+                                    result = fight.fighterBResult;
                                 }
 
-                                score += gainedScore;
-                                numberOfFights++;
-                                //break;
+                                //only include fights where the fight complete
+                                if (result != Fight.FightResult.PENDING)
+                                {
+                                    int gainedScore = 0;
+
+                                    //select the approriate score based on the fighter's result
+                                    switch (result)
+                                    {
+                                        case Fight.FightResult.WIN: gainedScore = winPoints; break;
+                                        case Fight.FightResult.LOSS: gainedScore = lossPoints; break;
+                                        case Fight.FightResult.DRAW: gainedScore = drawPoints; break;
+                                        case Fight.FightResult.DQ: gainedScore = 0; break;
+                                    }
+
+                                    score += gainedScore;
+                                    numberOfFights++;
+                                    //break;
+                                }
                             }
                         }
                     }
@@ -364,22 +367,25 @@ namespace SwordJet
                     {
                         foreach (Fight fight in round)
                         {
-                            Fight.FightResult result = Fight.FightResult.PENDING;
+                            if (!fight.isDisabled)
+                            {
+                                Fight.FightResult result = Fight.FightResult.PENDING;
 
-                            if (fight.fighterA == fighter.id)
-                            {
-                                result = fight.fighterAResult;
-                            }
-                            else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
-                            {
-                                result = fight.fighterBResult;
-                            }
+                                if (fight.fighterA == fighter.id)
+                                {
+                                    result = fight.fighterAResult;
+                                }
+                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
+                                {
+                                    result = fight.fighterBResult;
+                                }
 
-                            //only include matches which are finished
-                            if (result != Fight.FightResult.PENDING)
-                            {
-                                doubles += fight.doubleCount;
-                                //break;
+                                //only include matches which are finished
+                                if (result != Fight.FightResult.PENDING)
+                                {
+                                    doubles += fight.doubleCount;
+                                    //break;
+                                }
                             }
                         }
                     }
@@ -404,20 +410,23 @@ namespace SwordJet
                     {
                         foreach (Fight fight in round)
                         {
-                            foreach (Exchange exch in fight.exchanges)
+                            if (!fight.isDisabled)
                             {
-                                //add hits given/received from each exchange to the score
-                                if (fight.fighterA == fighter.id)
+                                foreach (Exchange exch in fight.exchanges)
                                 {
-                                    given += exch.fighterAScore;
-                                    received += exch.fighterBScore;
-                                    penalties += (exch.penaltyA ? 1 : 0);
-                                }
-                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
-                                {
-                                    given += exch.fighterBScore;
-                                    received += exch.fighterAScore;
-                                    penalties += (exch.penaltyB ? 1 : 0);
+                                    //add hits given/received from each exchange to the score
+                                    if (fight.fighterA == fighter.id)
+                                    {
+                                        given += exch.fighterAScore;
+                                        received += exch.fighterBScore;
+                                        penalties += (exch.penaltyA ? 1 : 0);
+                                    }
+                                    else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
+                                    {
+                                        given += exch.fighterBScore;
+                                        received += exch.fighterAScore;
+                                        penalties += (exch.penaltyB ? 1 : 0);
+                                    }
                                 }
                             }
                         }
@@ -445,35 +454,38 @@ namespace SwordJet
                     {
                         foreach (Fight fight in round)
                         {
-                            if (!fight.oddFight)
+                            if (!fight.isDisabled)
                             {
-                                Fight.FightResult result = Fight.FightResult.PENDING;
-
-                                if (fight.fighterA == fighter.id)
+                                if (!fight.oddFight)
                                 {
-                                    result = fight.fighterAResult;
+                                    Fight.FightResult result = Fight.FightResult.PENDING;
+
+                                    if (fight.fighterA == fighter.id)
+                                    {
+                                        result = fight.fighterAResult;
+                                    }
+                                    else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
+                                    {
+                                        result = fight.fighterBResult;
+                                    }
+
+                                    //only add score if fight is complete
+                                    if (result != Fight.FightResult.PENDING)
+                                    {
+                                        Fighter opponent = null;
+                                        if (fight.fighterA == fighter.id) opponent = GetFighterByID(fight.fighterB);
+                                        else opponent = GetFighterByID(fight.fighterA);
+
+                                        double opponentScore = GetFighterScore(opponent);
+                                        int opponentDoubles = GetFighterDoubles(opponent);
+
+                                        //don't allow negative scores
+                                        buchholz += Math.Max(0, (opponentScore - opponentDoubles));
+                                        fightCount++;
+
+                                        //break;
+                                    }
                                 }
-                                else if (fight.fighterB == fighter.id && !fight.oddFight) //if this was an odd fight and the fighter is the odd fighter, don't include the result in score
-                                {
-                                    result = fight.fighterBResult;
-                                }
-
-                                //only add score if fight is complete
-                                if (result != Fight.FightResult.PENDING)
-                                {
-                                    Fighter opponent = null;
-                                    if (fight.fighterA == fighter.id) opponent = GetFighterByID(fight.fighterB);
-                                    else opponent = GetFighterByID(fight.fighterA);
-
-                                    double opponentScore = GetFighterScore(opponent);
-                                    int opponentDoubles = GetFighterDoubles(opponent);
-
-                                    //don't allow negative scores
-                                    buchholz += Math.Max(0,(opponentScore - opponentDoubles));
-                                    fightCount++;
-
-                                    //break;
-                                } 
                             }
                         }
                     }

@@ -184,7 +184,7 @@ namespace SwordJet
                 Logging.WriteToLog("ErrorLog", ex.Message + " " + ex.StackTrace);
             }
 
-            LoadTournament();
+            //LoadTournament();
         }
 
         private void LoadTournament()
@@ -217,6 +217,13 @@ namespace SwordJet
                 ddlAfterblowBehaviour.SelectedItem = tournament.afterblowBehaviour;
 
                 lstFighters.DataSource = tournament.fighters;
+                for(int i = 0; i < lstFighters.Items.Count; i++)
+                {
+                    Fighter f = (Fighter)lstFighters.Items[i];
+
+                    if (f.seed > 0) lstFighters.SetItemChecked(i, true);
+                }
+
                 lblFighterCount.Text = "Number of Fighters: " + tournament.fighters.Count;
 
                 //CalculateMessage();

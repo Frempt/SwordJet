@@ -206,7 +206,9 @@ namespace SwordJet
             }
 
             table.Columns.Add("ID", typeof(int));
+            table.Columns.Add("Seed", typeof(int));
             table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Club", typeof(string));
             table.Columns.Add("Pool", typeof(string));
             table.Columns.Add("PoolScore", typeof(double));
             table.Columns.Add("PoolDoubles", typeof(int));
@@ -240,7 +242,9 @@ namespace SwordJet
                 }
 
                 row["ID"] = fighter.id;
+                row["Seed"] = fighter.seed;
                 row["Name"] = fighter.name;
+                row["Club"] = fighter.club;
 
                 //get the fighter's pool name
                 //if swiss pairs, will return the last pool the fighter was in
@@ -289,7 +293,7 @@ namespace SwordJet
 
             //sort the view
             //TODO add config options for this to be customised
-            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolHitScore DESC, PoolBuchholz DESC, TieBreakerScore DESC";
+            dv.Sort = "ElimSort DESC, PoolScore DESC, PoolDoubles ASC, PoolHitScore DESC, PoolBuchholz DESC, TieBreakerScore DESC, Seed DESC, Name ASC";
 
             //if tournament is finished, just sort by final rank
             if (stage == TournamentStage.CLOSED)

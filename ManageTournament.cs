@@ -609,6 +609,10 @@ namespace SwordJet
                         ddlB.SelectedItem = Fight.FightResult.DQ;
                     }
                 }
+                else if (changedControl.Name == "isDisabled")
+                {
+                    fight.isDisabled = ((CheckBox)changedControl).Checked;
+                }
 
                 //save changes
                 FileAccessHelper.SaveTournament(tournament, FilePath);
@@ -642,10 +646,53 @@ namespace SwordJet
                 f.SetResults(tournament);
 
                 FileAccessHelper.SaveTournament(tournament, FilePath);
-                LoadTournament();
 
-                SelectLastPage();
+                List<Control> controls = FindControlsByTag(Controls, f.fightID);
+                
+                foreach(Control c in controls)
+                {
+                    if (c.Name == "AResultRB")
+                    {
+                        ((CheckBox)c).Checked = (f.fighterAResult == Fight.FightResult.WIN);
+                    }
+                    else if (c.Name == "BResultRB")
+                    {
+                        ((CheckBox)c).Checked = (f.fighterBResult == Fight.FightResult.WIN);
+                    }
+                    else if (c.Name == "AResult")
+                    {
+                        ((ComboBox)c).SelectedItem = (f.fighterAResult);
+                    }
+                    else if (c.Name == "BResult")
+                    {
+                        ((ComboBox)c).SelectedItem = (f.fighterBResult);
+                    }
+                    else if (c.Name == "DBLCount")
+                    {
+                        ((NumericUpDown)c).Value = (f.doubleCount);
+                    }
+                }
+
+                LoadFighters();
+                //LoadTournament();
+
+                //SelectLastPage();
             }
+        }
+
+        private List<Control> FindControlsByTag(Control.ControlCollection controls, Guid tag)
+        {
+            List<Control> output = new List<Control>();
+
+            foreach (Control c in controls)
+            {
+                if (c.Tag != null && (Guid)c.Tag == tag) output.Add(c);
+
+                if (c.HasChildren) output.AddRange(FindControlsByTag(c.Controls, tag)); //Recursively check all children controls as well; ie groupboxes or tabpages
+
+            }
+
+            return output;
         }
 
         private void btnExtendPools_Click(object sender, EventArgs e)

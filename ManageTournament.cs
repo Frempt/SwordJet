@@ -359,12 +359,15 @@ namespace SwordJet
                     TabPage page = new TabPage("Finals");
                     page.Width = tbcFights.Width;
                     page.Height = tbcFights.Height;
+                    page.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
                     List<Fight> round = tournament.finals;
 
                     TableLayoutPanel panel = new TableLayoutPanel();
                     panel.Width = page.Width;
                     panel.Height = page.Height;
+                    panel.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
+                    panel.AutoScroll = true;
 
                     Font boldFont = new Font(Font, FontStyle.Bold);
 
@@ -439,10 +442,13 @@ namespace SwordJet
             TabPage page = new TabPage(pageNamePrefix + " - " + bracket.name);
             page.Width = tbcFights.Width;
             page.Height = tbcFights.Height;
+            page.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
 
             TableLayoutPanel panel = new TableLayoutPanel();
             panel.Width = page.Width;
             panel.Height = page.Height;
+            panel.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom);
+            panel.AutoScroll = true;
 
             Font boldFont = new Font(Font, FontStyle.Bold);
 
@@ -499,6 +505,29 @@ namespace SwordJet
 
                     panel.Controls.Add(manageButton, 5, rowIndex);
                 }
+
+                Label l = new Label();
+                l.Text = " ";
+
+                panel.Controls.Add(l, 0, round.Count + 1);
+
+                l = new Label();
+                l.Text = " ";
+
+                panel.Controls.Add(l, 0, round.Count + 2);
+
+                l = new Label();
+                l.Text = " ";
+
+                panel.Controls.Add(l, 0, round.Count + 3);
+
+                l = new Label();
+                l.Text = " ";
+
+                panel.Controls.Add(l, 0, round.Count + 4);
+
+                l = new Label();
+                l.Text = " ";
             }
 
             page.Controls.Add(panel);

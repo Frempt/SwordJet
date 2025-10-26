@@ -61,7 +61,6 @@ C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\TournamentGenerator.csproj.Ge
 C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\TournamentGenerator.csproj.CoreCompileInputs.cache
 C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\SwordJet.exe.manifest
 C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\SwordJet.application
-C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\TournamentGenerator.csproj.CopyComplete
 C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\SwordJet.exe
 C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\SwordJet.pdb
 C:\Users\jomacgilp\Source\Github\SwordJet\bin\Debug\SwordJet.exe.config
@@ -85,3 +84,5 @@ C:\Users\jomacgilp\Source\Github\SwordJet\obj\Debug\SwordJet.Properties.Resource
 C:\Users\jomacgilp\Source\Github\SwordJet\obj\Debug\TournamentGenerator.csproj.GenerateResource.Cache
 C:\Users\jomacgilp\Source\Github\SwordJet\obj\Debug\SwordJet.exe.manifest
 C:\Users\jomacgilp\Source\Github\SwordJet\obj\Debug\SwordJet.application
+C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\SwordJet.exe.config
+C:\Users\james\Documents\GitHub\SwordJet\obj\Debug\Tourname.6E1527CD.Up2Date
